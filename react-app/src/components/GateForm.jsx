@@ -28,13 +28,13 @@ export default function GateForm({ companyInfo, onSubmit }) {
     <div id="gate-overlay" className="open" style={{
       position:'fixed', inset:0, zIndex:1000, 
       background:'rgba(255,255,255,0.8)', backdropFilter:'blur(40px)',
-      display:'flex', alignItems:'center', justifyContent:'center', padding:20
+      overflowY:'auto', padding:'40px 20px', display:'block'
     }}>
       <div className="gate-panel" style={{
         width:'100%', maxWidth:520, background:'#fff', 
         border:'1px solid var(--border)', borderRadius:24, 
-        padding:56, 
-        textAlign:'center', position:'relative', overflow:'hidden'
+        position:'relative', overflow:'hidden', margin:'0 auto',
+        padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center'
       }}>
         {/* Glow effect */}
         <div style={{
@@ -49,14 +49,14 @@ export default function GateForm({ companyInfo, onSubmit }) {
         </div>
 
         <h2 style={{
-          fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:32, 
+          fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'clamp(24px, 5vw, 32px)', 
           lineHeight:1.1, marginBottom:16, letterSpacing:'-0.02em'
         }}>
           Your Results Are Ready
         </h2>
         
         <p style={{
-          fontSize:16, color:'var(--muted)', lineHeight:1.6, marginBottom:40
+          fontSize:15, color:'var(--muted)', lineHeight:1.6, marginBottom:32
         }}>
           Enter your work details to unlock your customized 100-day AI transformation roadmap and readiness index.
         </p>
@@ -106,9 +106,10 @@ export default function GateForm({ companyInfo, onSubmit }) {
         )}
 
         <button className="btn-primary" style={{
-          width:'100%', padding:20, borderRadius:12, background:'var(--accent)',
+          width:'100%', padding:'12px 24px', borderRadius:8, background:'var(--accent)',
           color:'#fff', border:'none', fontFamily:"'Syne',sans-serif", fontWeight:800,
-          fontSize:14, letterSpacing:'0.05em', cursor:'pointer', transition:'all 0.2s'
+          fontSize:11, letterSpacing:'0.1em', cursor:'pointer', transition:'all 0.2s',
+          boxShadow: 'none'
         }} onClick={submit}>
           UNLOCK MY REPORT →
         </button>

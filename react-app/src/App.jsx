@@ -33,9 +33,9 @@ export default function App() {
     setView('results');
     document.body.style.overflow = 'auto';
 
-    // Submit to backend
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     try {
-      await fetch('http://localhost:5000/api/magneto/leads', {
+      await fetch(`${apiUrl}/api/magneto/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -68,7 +68,8 @@ export default function App() {
   return (
     <>
       {/* Main page (always rendered, hidden when results open) */}
-      {view !== 'results' && (
+      {/* Main page sections */}
+      {view === 'home' && (
         <>
           <Navigation onStartAssessment={scrollToIntake} />
           <HeroSection onStartAssessment={scrollToIntake} onLearnMore={scrollToCats} />

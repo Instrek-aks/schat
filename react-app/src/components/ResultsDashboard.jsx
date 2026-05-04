@@ -185,34 +185,10 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
   return (
     <div id="results-overlay" className="open">
       <div className="results-nav">
-        <span style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:18}}>
+        <span className="results-nav-logo">
           <span style={{color:'var(--accent)'}}>instrek</span> — AI Readiness Report
         </span>
         <div style={{display:'flex',gap:12,alignItems:'center'}}>
-          <button 
-            className="btn-export" 
-            onClick={() => {
-              setIsExporting(true);
-              setTimeout(() => {
-                alert('PDF Report Generated Successfully!\nYour customized AI Readiness Roadmap is being downloaded.');
-                setIsExporting(false);
-              }, 1500);
-            }}
-            disabled={isExporting}
-          >
-            {isExporting ? (
-              'GENERATING PDF...'
-            ) : (
-              <>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" style={{marginRight:8}}>
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
-                DOWNLOAD PDF REPORT
-              </>
-            )}
-          </button>
           <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:'var(--muted)'}}>
             {companyInfo.company}
           </span>
@@ -282,8 +258,8 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
             <span className="r-section-num">02</span>
             <span className="r-section-title">Dimension Performance & Benchmarking</span>
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 380px',gap:40}}>
-            <div className="cat-breakdown-grid" style={{gridTemplateColumns:'repeat(2, 1fr)'}}>
+          <div className="results-split">
+            <div className="cat-breakdown-grid">
               {CATEGORIES.map((cat, i) => {
                 const pct = catScores[i];
                 const t = getTier(pct);
@@ -302,7 +278,7 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
                 );
               })}
             </div>
-            <div style={{background:'var(--bg2)',borderRadius:20,padding:32,border:'1px solid var(--border)',height:'fit-content'}}>
+            <div className="radar-card-wrap">
               <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:18,marginBottom:24}}>AI Capability Radar</div>
               <div style={{height:300,position:'relative'}}>
                 <Radar data={radarData} options={radarOptions} />

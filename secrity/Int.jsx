@@ -155,8 +155,9 @@ const SecurityRiskEngine = () => {
     if (!form.email || !form.role) return;
     
     // Submit to backend
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     try {
-      await fetch('http://localhost:5000/api/shieldgcc/leads', {
+      await fetch(`${apiUrl}/api/shieldgcc/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -77,7 +77,12 @@ export default function IntakeSection({ onLaunch }) {
           className="btn-primary" 
           onClick={() => canLaunch && onLaunch(form)} 
           disabled={!canLaunch}
-          style={{opacity: canLaunch ? 1 : 0.5}}
+          style={{
+            opacity: canLaunch ? 1 : 0.5,
+            padding: '12px 28px',
+            fontSize: '11px',
+            letterSpacing: '0.1em'
+          }}
         >
           LAUNCH FULL ASSESSMENT →
         </button>
