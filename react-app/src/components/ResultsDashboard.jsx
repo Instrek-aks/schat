@@ -186,7 +186,8 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
     <div id="results-overlay" className="open">
       <div className="results-nav">
         <span className="results-nav-logo">
-          <span style={{color:'var(--accent)'}}>instrek</span> — AI Readiness Report
+          <img src="/logo.png" alt="Instrek" className="logo-img" />
+          <span className="logo-sep">—</span> AI Readiness Report
         </span>
         <div style={{display:'flex',gap:12,alignItems:'center'}}>
           <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:'var(--muted)'}}>
@@ -318,7 +319,7 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
         <div className="sprint-cta">
           <div>
             <div className="sprint-cta-logo">
-              <span style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:20,color:'#fff'}}>instrek</span>
+              <img src="/logo.png" alt="Instrek" className="logo-img-inv" />
             </div>
             <div className="sprint-cta-title">
               {overall}% — YOUR PATH TO AI LEADERSHIP

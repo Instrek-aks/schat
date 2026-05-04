@@ -72,6 +72,26 @@ nav {
   font-size: 20px;
   letter-spacing: -0.02em;
   color: var(--text);
+  display: flex;
+  align-items: center;
+}
+
+.logo-img {
+  height: 24px;
+  width: auto;
+  display: block;
+}
+
+.logo-img-inv {
+  height: 28px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+}
+
+.logo-sep {
+  margin: 0 10px;
+  opacity: 0.3;
 }
 
 .nav-center {
@@ -112,7 +132,7 @@ nav {
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 120px 24px 60px;
+  padding: 140px 24px 60px;
 }
 
 .hero-eyebrow {
@@ -2000,7 +2020,7 @@ h2 {
   }
 
   section {
-    padding: 60px 16px !important;
+    padding: 88px 16px 60px !important;
   }
 
   .intake-grid {

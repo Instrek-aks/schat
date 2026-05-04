@@ -185,10 +185,7 @@ const SecurityRiskEngine = () => {
             <div>
               <div className="logo-row">
                 <div className="logo-mark">
-                  <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M8 2L14 5.5V10.5L8 14L2 10.5V5.5L8 2Z" fill="#050A0E"/>
-                    <path d="M8 5L11 6.75V10.25L8 12L5 10.25V6.75L8 5Z" fill="#00FFA3" opacity="0.5"/>
-                  </svg>
+                  <img src="/logo.png" alt="ShieldGCC" className="logo-img" />
                 </div>
                 <div className="logo-name">SHIELDGCC</div>
               </div>
