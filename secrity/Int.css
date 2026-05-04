@@ -57,7 +57,12 @@
 @keyframes fadeUp { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
 
 /* ─── HERO SCREEN ─── */
-.hero-screen { justify-content: space-between; padding: 48px 28px 36px; min-height: 100vh; }
+.hero-screen { 
+  justify-content: flex-start; 
+  padding: 32px 20px 40px; 
+  min-height: 100vh; 
+  gap: 24px;
+}
 
 .logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 48px; }
 .logo-mark {
@@ -76,8 +81,14 @@
 .badge.red { border-color: rgba(255,76,76,0.3); color: #FF7070; background: var(--red-dim); }
 
 .hero-headline {
-  font-family: var(--display); font-size: 38px; font-weight: 800; line-height: 1.1;
-  letter-spacing: -0.02em; margin-bottom: 16px;
+  font-family: var(--display); 
+  font-size: clamp(26px, 10vw, 38px); 
+  font-weight: 800; 
+  line-height: 1.05;
+  letter-spacing: -0.03em; 
+  margin-bottom: 20px;
+  max-width: 100%;
+  word-wrap: break-word;
 }
 .hero-headline em { font-style: normal; color: var(--green); }
 
@@ -96,16 +107,28 @@
 .fear-card-text strong { color: var(--text); font-style: normal; font-weight: 500; }
 
 .risk-ticker {
-  display: flex; gap: 8px; overflow: hidden; margin-bottom: 32px;
+  display: flex; 
+  gap: 8px; 
+  flex-wrap: wrap;
+  margin-bottom: 40px;
 }
 .ticker-item {
-  flex-shrink: 0; padding: 8px 14px; border-radius: 10px;
-  background: var(--surface2); border: 0.5px solid var(--border);
-  font-size: 12px; color: var(--text-sec);
-  display: flex; align-items: center; gap: 6px;
-  animation: ticker 20s linear infinite;
+  padding: 8px 12px; 
+  border-radius: 8px;
+  background: var(--surface2); 
+  border: 0.5px solid var(--border);
+  font-size: 11px; 
+  color: var(--text-sec);
+  display: flex; 
+  align-items: center; 
+  gap: 6px;
+  white-space: nowrap;
 }
-@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-100%)} }
+@media (min-width: 769px) {
+  .risk-ticker { overflow: hidden; flex-wrap: nowrap; }
+  .ticker-item { animation: ticker 20s linear infinite; flex-shrink: 0; }
+  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-100%)} }
+}
 .ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: blink 1.2s ease-in-out infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
@@ -133,8 +156,22 @@
 }
 .cta-ghost:hover { border-color: var(--border-accent); color: var(--green); }
 
-.trust-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 20px; }
-.trust-item { font-size: 11px; color: var(--text-ter); display: flex; align-items: center; gap: 5px; }
+.trust-row { 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  gap: 12px 20px; 
+  margin-top: 24px; 
+  flex-wrap: wrap; 
+}
+.trust-item { 
+  font-size: 11px; 
+  color: var(--text-ter); 
+  display: flex; 
+  align-items: center; 
+  gap: 5px; 
+  white-space: nowrap;
+}
 .trust-check { width: 14px; height: 14px; border-radius: 50%; background: var(--green-deep); border: 0.5px solid var(--border-accent); display: flex; align-items: center; justify-content: center; }
 .trust-check svg { width: 8px; height: 8px; }
 

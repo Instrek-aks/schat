@@ -1663,7 +1663,10 @@ h2 {
   background: #ffffff;
   color: var(--accent);
   flex-shrink: 0;
-  white-space: nowrap;
+  padding: 16px 32px;
+  font-size: clamp(10px, 3vw, 13px);
+  min-width: fit-content;
+  max-width: 100%;
 }
 
 .sprint-cta .btn-cta:hover {
@@ -2137,23 +2140,38 @@ h2 {
 
   .sprint-cta {
     flex-direction: column;
-    padding: 40px 20px;
+    align-items: center;
+    padding: 32px 20px;
     text-align: center;
-    gap: 24px;
+    gap: 20px;
     border-radius: 16px;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
   }
 
   .sprint-cta-title {
-    font-size: 24px;
+    font-size: 20px;
+    margin: 8px 0 12px;
   }
 
   .sprint-cta-body {
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   .btn-cta {
-    width: 100%;
-    padding: 16px;
+    width: auto;
+    max-width: 100%;
+    min-width: 0;
+    padding: 12px 20px;
+    font-size: clamp(11px, 4vw, 14px);
+    margin: 0 auto;
+    white-space: normal;
+    text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -2187,13 +2205,19 @@ h2 {
 /* PREVENT OVERFLOW & HORIZONTAL SCROLL */
 html, body {
   width: 100%;
+  max-width: 100%;
   overflow-x: hidden;
   position: relative;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-#results-overlay, #assessment-overlay, #gate-overlay {
+#results-overlay, #assessment-overlay, #gate-overlay, .results-body, .results-nav {
   overflow-x: hidden;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 * {
