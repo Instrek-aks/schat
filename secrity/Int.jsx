@@ -354,7 +354,6 @@ const SecurityRiskEngine = () => {
 
             <div>
               <button className="cta-primary" onClick={startQuiz}>Run My GCC Risk Scan →</button>
-              <button className="cta-ghost" onClick={viewDemoReport} style={{ marginBottom: '12px', border: '1px solid rgba(0, 214, 143, 0.4)', color: 'var(--green-hi)' }}>Demo: View Sample Report 📄</button>
               <button className="cta-ghost" onClick={() => goScreen('form')}>Talk to a GCC Security Advisor</button>
               <div className="trust-row">
                 <div className="trust-item">

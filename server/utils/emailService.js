@@ -211,7 +211,7 @@ exports.sendRiskReportEmail = async (leadData) => {
               <td class="value">${Date.now()}</td>
             </tr>
           </table>
-          <a href="${process.env.CLIENT_URL || 'http://localhost:5173'}/?leadId=${_id}" class="cta-button" target="_blank" style="background-color: #00D68F; color: #0D1117 !important; margin-bottom: 15px;">
+          <a href="${process.env.CLIENT_URL || 'https://sca1-t.netlify.app'}/?leadId=${_id}" class="cta-button" target="_blank" style="background-color: #00D68F; color: #0D1117 !important; margin-bottom: 15px;">
             View Your Full GCC Risk Report
           </a>
 
