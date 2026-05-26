@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './Int.css';
+import ReportView from './ReportView';
 
 const questions = [
   {
@@ -48,6 +49,34 @@ const SecurityRiskEngine = () => {
   const [scanItemsStatus, setScanItemsStatus] = useState(['idle', 'idle', 'idle', 'idle']);
   const [form, setForm] = useState({ email: '', role: '', size: '', company: '' });
   const [results, setResults] = useState(null);
+  const [reportLead, setReportLead] = useState(null);
+  const [loadingReport, setLoadingReport] = useState(false);
+  const [errorReport, setErrorReport] = useState(null);
+
+  // Check for leadId query parameter on load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const leadId = params.get('leadId');
+    if (leadId) {
+      setLoadingReport(true);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      fetch(`${apiUrl}/api/shieldgcc/leads/${leadId}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Lead report not found');
+          return res.json();
+        })
+        .then(data => {
+          setReportLead(data);
+          setScreen('report');
+          setLoadingReport(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setErrorReport('Could not retrieve risk report. It may have expired or does not exist.');
+          setLoadingReport(false);
+        });
+    }
+  }, []);
 
   // Fear rotation
   useEffect(() => {
@@ -154,24 +183,63 @@ const SecurityRiskEngine = () => {
   const submitForm = async () => {
     if (!form.email || !form.role) return;
     
+    const p1Score = results?.pillarScores?.find(p => p.name.includes('Sovereignty'))?.score || 0;
+    const p2Score = results?.pillarScores?.find(p => p.name.includes('Accountability'))?.score || 0;
+    const p3Score = results?.pillarScores?.find(p => p.name.includes('Quantum'))?.score || 0;
+
     // Submit to backend
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     try {
-      await fetch(`${apiUrl}/api/shieldgcc/leads`, {
+      const response = await fetch(`${apiUrl}/api/shieldgcc/leads`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...form,
           riskScore: results?.avg,
-          tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation'
+          tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
+          p1Score,
+          p2Score,
+          p3Score
         })
       });
+      const data = await response.json();
+      if (data.leadId) {
+        // Save the leadId in local storage or state to construct the dynamic link if needed
+        localStorage.setItem('shieldgcc_lead_id', data.leadId);
+      }
     } catch (err) {
       console.error('Failed to submit lead:', err);
     }
 
     goScreen('confirm');
   };
+
+  if (loadingReport) {
+    return (
+      <div className="int-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', flexDirection: 'column' }}>
+        <div className="scan-ring" style={{ animation: 'spin 2s linear infinite' }}>
+          <div className="scan-ring-inner"></div>
+        </div>
+        <h2 style={{ fontFamily: 'var(--serif)', fontSize: '24px', marginTop: '20px', color: '#fff' }}>Loading your GCC Security Report...</h2>
+        <p style={{ color: 'var(--muted)', marginTop: '8px' }}>Fetching board-ready risk assessment profile...</p>
+      </div>
+    );
+  }
+
+  if (errorReport) {
+    return (
+      <div className="int-container" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', flexDirection: 'column', padding: '40px', textAlign: 'center' }}>
+        <div style={{ fontSize: '48px', marginBottom: '20px' }}>⚠️</div>
+        <h2 style={{ fontFamily: 'var(--serif)', fontSize: '28px', color: '#fff', marginBottom: '16px' }}>Report Unavailable</h2>
+        <p style={{ color: 'var(--muted)', maxWidth: '480px', marginBottom: '32px', lineHeight: '1.6' }}>{errorReport}</p>
+        <button className="cta-primary" onClick={() => { window.location.href = window.location.origin; }}>Go to Home Screen</button>
+      </div>
+    );
+  }
+
+  if (screen === 'report' && reportLead) {
+    return <ReportView lead={reportLead} />;
+  }
 
   return (
     <div className="int-container">
