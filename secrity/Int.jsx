@@ -52,6 +52,7 @@ const SecurityRiskEngine = () => {
   const [reportLead, setReportLead] = useState(null);
   const [loadingReport, setLoadingReport] = useState(false);
   const [errorReport, setErrorReport] = useState(null);
+  const [createdLeadId, setCreatedLeadId] = useState(null);
 
   // Check for leadId query parameter on load
   useEffect(() => {
@@ -206,12 +207,79 @@ const SecurityRiskEngine = () => {
       if (data.leadId) {
         // Save the leadId in local storage or state to construct the dynamic link if needed
         localStorage.setItem('shieldgcc_lead_id', data.leadId);
+        setCreatedLeadId(data.leadId);
       }
     } catch (err) {
       console.error('Failed to submit lead:', err);
     }
 
     goScreen('confirm');
+  };
+
+  const viewReportSkipForm = async () => {
+    const p1Score = results?.pillarScores?.find(p => p.name.includes('Sovereignty'))?.score || 0;
+    const p2Score = results?.pillarScores?.find(p => p.name.includes('Accountability'))?.score || 0;
+    const p3Score = results?.pillarScores?.find(p => p.name.includes('Quantum'))?.score || 0;
+
+    const anonymousForm = {
+      firstName: 'GCC',
+      lastName: 'Leader',
+      email: 'anonymous@shieldgcc-scan.com',
+      role: 'GCC Leader',
+      size: '500-2000',
+      company: 'ShieldGCC Assessment'
+    };
+
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    try {
+      const response = await fetch(`${apiUrl}/api/shieldgcc/leads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...anonymousForm,
+          riskScore: results?.avg,
+          tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
+          p1Score,
+          p2Score,
+          p3Score
+        })
+      });
+      const data = await response.json();
+      if (data.leadId) {
+        window.location.search = `?leadId=${data.leadId}`;
+      }
+    } catch (err) {
+      console.error('Failed to submit anonymous lead:', err);
+      // Fallback: render local report state immediately
+      setReportLead({
+        ...anonymousForm,
+        riskScore: results?.avg,
+        tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
+        p1Score,
+        p2Score,
+        p3Score,
+        createdAt: new Date().toISOString()
+      });
+      setScreen('report');
+    }
+  };
+
+  const viewDemoReport = () => {
+    setReportLead({
+      firstName: 'Michael',
+      lastName: 'Chen',
+      email: 'michael.chen@globaltech.com',
+      role: 'CISO',
+      company: 'GlobalTech GCC India',
+      size: '2000+',
+      riskScore: 78,
+      tier: 'Critical Exposure',
+      p1Score: 90,
+      p2Score: 85,
+      p3Score: 62,
+      createdAt: new Date().toISOString()
+    });
+    setScreen('report');
   };
 
   if (loadingReport) {
@@ -286,6 +354,7 @@ const SecurityRiskEngine = () => {
 
             <div>
               <button className="cta-primary" onClick={startQuiz}>Run My GCC Risk Scan →</button>
+              <button className="cta-ghost" onClick={viewDemoReport} style={{ marginBottom: '12px', border: '1px solid rgba(0, 214, 143, 0.4)', color: 'var(--green-hi)' }}>Demo: View Sample Report 📄</button>
               <button className="cta-ghost" onClick={() => goScreen('form')}>Talk to a GCC Security Advisor</button>
               <div className="trust-row">
                 <div className="trust-item">
@@ -425,6 +494,7 @@ const SecurityRiskEngine = () => {
             </div>
 
             <button className="result-cta" onClick={() => goScreen('form')}>Get My Full Risk Report →</button>
+            <button className="result-cta" onClick={viewReportSkipForm} style={{ background: 'linear-gradient(90deg, #00FFA3 0%, #00D68F 100%)', color: '#0D1117', marginTop: '12px' }}>View Live Report (Skip Sign up) ⚡</button>
             <button className="result-ghost" onClick={() => goScreen('form')}>Book a 20-min GCC Security Briefing</button>
             <div className="result-urgency">{results.urgency}</div>
           </div>
@@ -515,6 +585,18 @@ const SecurityRiskEngine = () => {
                 </div>
                 <div className="confirm-detail-row"><span className="cd-label">Delivery</span><span className="cd-val">Within 24 hours</span></div>
               </div>
+
+              {createdLeadId && (
+                <button 
+                  className="cta-primary" 
+                  onClick={() => {
+                    window.location.search = `?leadId=${createdLeadId}`;
+                  }}
+                  style={{ marginBottom: '16px', width: '100%' }}
+                >
+                  View My Live Risk Report →
+                </button>
+              )}
 
               <button className="confirm-back" onClick={() => goScreen('hero')}>Run another scan</button>
             </div>
