@@ -493,7 +493,6 @@ const SecurityRiskEngine = () => {
             </div>
 
             <button className="result-cta" onClick={() => goScreen('form')}>Get My Full Risk Report →</button>
-            <button className="result-cta" onClick={viewReportSkipForm} style={{ background: 'linear-gradient(90deg, #00FFA3 0%, #00D68F 100%)', color: '#0D1117', marginTop: '12px' }}>View Live Report (Skip Sign up) ⚡</button>
             <button className="result-ghost" onClick={() => goScreen('form')}>Book a 20-min GCC Security Briefing</button>
             <div className="result-urgency">{results.urgency}</div>
           </div>
