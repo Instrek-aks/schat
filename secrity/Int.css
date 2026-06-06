@@ -107,10 +107,14 @@
 .fear-card-text strong { color: var(--text); font-style: normal; font-weight: 500; }
 
 .risk-ticker {
-  display: flex; 
-  gap: 8px; 
-  flex-wrap: wrap;
+  overflow: hidden;
   margin-bottom: 40px;
+  width: 100%;
+}
+.ticker-track {
+  display: flex; 
+  gap: 24px; 
+  flex-wrap: wrap;
 }
 .ticker-item {
   padding: 8px 12px; 
@@ -125,9 +129,16 @@
   white-space: nowrap;
 }
 @media (min-width: 769px) {
-  .risk-ticker { overflow: hidden; flex-wrap: nowrap; }
-  .ticker-item { animation: ticker 20s linear infinite; flex-shrink: 0; }
-  @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-100%)} }
+  .ticker-track {
+    flex-wrap: nowrap;
+    width: max-content;
+    animation: ticker 30s linear infinite;
+  }
+  .ticker-item { flex-shrink: 0; }
+  @keyframes ticker { 
+    0%{transform:translateX(0)} 
+    100%{transform:translateX(calc(-50% - 12px))} 
+  }
 }
 .ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--red); animation: blink 1.2s ease-in-out infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }

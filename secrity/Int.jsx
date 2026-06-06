@@ -344,11 +344,18 @@ const SecurityRiskEngine = () => {
               </div>
 
               <div className="risk-ticker">
-                <div className="ticker-item"><div className="ticker-dot"></div>IP Leakage via LLM APIs</div>
-                <div className="ticker-item"><div className="ticker-dot"></div>Shadow AI Agents</div>
-                <div className="ticker-item"><div className="ticker-dot"></div>Post-Quantum Exposure</div>
-                <div className="ticker-item"><div className="ticker-dot"></div>DPDP Non-Compliance</div>
-                <div className="ticker-item"><div className="ticker-dot"></div>Agentic Backdoors</div>
+                <div className="ticker-track">
+                  <div className="ticker-item"><div className="ticker-dot"></div>IP Leakage via LLM APIs</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>Shadow AI Agents</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>Post-Quantum Exposure</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>DPDP Non-Compliance</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>Agentic Backdoors</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>IP Leakage via LLM APIs</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>Shadow AI Agents</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>Post-Quantum Exposure</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>DPDP Non-Compliance</div>
+                  <div className="ticker-item"><div className="ticker-dot"></div>Agentic Backdoors</div>
+                </div>
               </div>
             </div>
 
