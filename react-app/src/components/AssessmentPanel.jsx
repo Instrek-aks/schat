@@ -6,7 +6,7 @@ import Seismograph from './Seismograph.jsx';
 const ANS_COLORS = ['#f43f5e','#f59e0b','#60a5fa','#2dd4bf','#10b981'];
 const ANS_LABELS = ['A','B','C','D','E'];
 
-export default function AssessmentPanel({ onClose, onComplete }) {
+export default function AssessmentPanel({ sessionId, onClose, onComplete }) {
   const [catIdx, setCatIdx] = useState(0);
   const [qIdx, setQIdx] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -24,8 +24,25 @@ export default function AssessmentPanel({ onClose, onComplete }) {
   // live score estimate (Weighted)
   const liveScore = calculateOverallScore(answers);
 
-  function selectAnswer(score) {
+  async function selectAnswer(score) {
     setAnswers(prev => ({...prev, [ansKey]: score}));
+    
+    if (sessionId) {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      try {
+        await fetch(`${apiUrl}/api/magneto/answer`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            sessionId,
+            ansKey,
+            score
+          })
+        });
+      } catch (err) {
+        console.error('Failed to save answer:', err);
+      }
+    }
   }
 
   function next() {

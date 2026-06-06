@@ -260,3 +260,111 @@ exports.sendRiskReportEmail = async (leadData) => {
     throw error;
   }
 };
+
+exports.sendMagnetoReportEmail = async (assessment) => {
+  const { leadInfo, companyInfo, scores, reportToken, sessionId } = assessment;
+  
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('[emailService] RESEND_API_KEY is not set in environment variables. Email notification skipped.');
+    return;
+  }
+
+  let fromValue = process.env.RESEND_FROM || 'Magneto AI <onboarding@resend.dev>';
+  
+  if (fromValue.includes('<') && fromValue.includes('>') && !fromValue.includes('@')) {
+    fromValue = fromValue.replace('<', '<info@');
+  }
+
+  const emailRegex = /<([^>]+)>/;
+  const match = fromValue.match(emailRegex);
+  const fromEmail = match ? match[1] : fromValue;
+
+  let themeColor = '#60A5FA'; // Default blue
+  if (scores?.overallPct < 45) themeColor = '#EF4444'; // Red
+  if (scores?.overallPct >= 78) themeColor = '#10B981'; // Green
+
+  const rgbColor = hexToRgb(themeColor);
+  const frontendUrl = process.env.CLIENT_URL || 'http://localhost:5173'; // fallback for dev
+  const reportLink = `${frontendUrl}/report/${reportToken}`;
+
+  const htmlContent = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="utf-8">
+      <style>
+        body { font-family: 'Segoe UI', sans-serif; background-color: #03071E; color: #EEEEE6; margin: 0; padding: 0; }
+        .email-container { max-width: 600px; margin: 20px auto; background-color: #060D2E; border-radius: 12px; overflow: hidden; }
+        .header { background-color: #0A1535; padding: 30px 20px; text-align: center; border-bottom: 2px solid #2563EB; }
+        .logo { color: #2563EB; font-size: 24px; font-weight: 800; text-transform: uppercase; margin: 0; }
+        .logo-sub { color: #5A6272; font-size: 11px; text-transform: uppercase; margin-top: 5px; }
+        .content { padding: 40px 30px; }
+        .greeting { font-size: 18px; font-weight: 600; margin-top: 0; margin-bottom: 20px; color: #FFFFFF; }
+        .intro-text { color: #A0AEC0; font-size: 15px; line-height: 1.6; margin-bottom: 30px; }
+        .score-card { background-color: #0A1535; border-radius: 8px; padding: 25px; text-align: center; margin-bottom: 30px; }
+        .score-title { font-size: 13px; color: #5A6272; text-transform: uppercase; margin: 0 0 10px 0; }
+        .score-value { font-size: 64px; font-weight: 800; margin: 0; line-height: 1; }
+        .tier-badge { display: inline-block; padding: 6px 16px; font-size: 14px; font-weight: 700; border-radius: 30px; margin-top: 15px; text-transform: uppercase; }
+        .cta-button { display: block; background-color: #2563EB; color: #FFFFFF !important; text-decoration: none; text-align: center; font-size: 16px; font-weight: 700; padding: 15px; border-radius: 6px; margin-bottom: 30px; }
+        .footer { background-color: #0A1535; padding: 20px; text-align: center; font-size: 12px; color: #5A6272; border-top: 1px solid rgba(255,255,255,0.05); }
+      </style>
+    </head>
+    <body>
+      <div class="email-container">
+        <div class="header">
+          <h1 class="logo">Instrek Magneto</h1>
+          <div class="logo-sub">AI Readiness Platform</div>
+        </div>
+        <div class="content">
+          <h2 class="greeting">Hi ${leadInfo?.name || 'Leader'},</h2>
+          <p class="intro-text">
+            Thank you for completing the Magneto AI Readiness Assessment. We have processed your responses and your custom readiness report is ready.
+          </p>
+          
+          <div class="score-card">
+            <p class="score-title">Overall Maturity Score</p>
+            <h2 class="score-value" style="color: ${themeColor};">${scores?.overallPct || 0}%</h2>
+            <span class="tier-badge" style="background-color: rgba(${rgbColor}, 0.15); color: ${themeColor}; border: 1px solid ${themeColor};">
+              ${scores?.tier || 'Assessed'}
+            </span>
+          </div>
+
+          <a href="${reportLink}" class="cta-button">
+            View Your Full Results Dashboard
+          </a>
+        </div>
+        <div class="footer">
+          <p>Instrek &copy; 2026. All rights reserved.</p>
+        </div>
+      </div>
+    </body>
+    </html>
+  `;
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: fromValue,
+        to: leadInfo.email,
+        subject: `Your AI Readiness Report: ${scores?.overallPct || 0}%`,
+        html: htmlContent
+      })
+    });
+
+    const resultData = await response.json();
+
+    if (!response.ok) {
+      throw new Error(resultData.message || `Resend HTTP error ${response.status}`);
+    }
+
+    console.log('[emailService] Magneto report email successfully sent:', resultData);
+    return resultData;
+  } catch (error) {
+    console.error('[emailService] Failed to send Magneto report email:', error);
+  }
+};

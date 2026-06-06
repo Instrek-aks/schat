@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation.jsx';
 import HeroSection from './components/HeroSection.jsx';
 import CategoriesSection from './components/CategoriesSection.jsx';
@@ -10,13 +10,62 @@ import { useScoring } from './hooks/useScoring.js';
 
 // View states: 'home' | 'assessment' | 'gate' | 'results'
 export default function App() {
-  const [view, setView] = useState('home');
+  const [view, setView] = useState(() => {
+    if (window.location.pathname.startsWith('/report/')) return 'loading';
+    return 'home';
+  });
   const [companyInfo, setCompanyInfo] = useState(null);
   const [assessmentAnswers, setAssessmentAnswers] = useState(null);
-  const { calculateOverallScore } = useScoring();
+  const [sessionId, setSessionId] = useState(null);
+  const { calculateOverallScore, getTier } = useScoring();
 
-  function handleLaunchAssessment(info) {
+  // Check URL for report link on mount
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path.startsWith('/report/')) {
+      const token = path.split('/')[2];
+      if (token) {
+        fetchReport(token);
+      }
+    }
+  }, []);
+
+  async function fetchReport(token) {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    try {
+      const res = await fetch(`${apiUrl}/api/magneto/report/${token}`);
+      if (res.ok) {
+        const data = await res.json();
+        setCompanyInfo(data.companyInfo);
+        setAssessmentAnswers(data.answers);
+        setView('results');
+      } else {
+        console.error('Report not found');
+        setView('home'); // fallback
+      }
+    } catch (err) {
+      console.error('Error fetching report:', err);
+      setView('home');
+    }
+  }
+
+  async function handleLaunchAssessment(info) {
     setCompanyInfo(info);
+    
+    // Call backend to start
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    try {
+      const res = await fetch(`${apiUrl}/api/magneto/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ companyInfo: info })
+      });
+      const data = await res.json();
+      setSessionId(data.sessionId);
+    } catch (err) {
+      console.error('Failed to start assessment:', err);
+    }
+
     setView('assessment');
     document.body.style.overflow = 'hidden';
   }
@@ -29,23 +78,27 @@ export default function App() {
   async function handleGateSubmit(contactInfo) {
     const fullInfo = { ...companyInfo, ...contactInfo };
     const overallScore = calculateOverallScore(assessmentAnswers);
+    
     setCompanyInfo(fullInfo);
     setView('results');
     document.body.style.overflow = 'auto';
 
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     try {
-      await fetch(`${apiUrl}/api/magneto/leads`, {
+      await fetch(`${apiUrl}/api/magneto/gate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...fullInfo,
-          scores: assessmentAnswers,
-          overall: overallScore
+          sessionId,
+          email: contactInfo.email,
+          name: contactInfo.name || '',
+          answers: assessmentAnswers,
+          overallPct: overallScore,
+          tier: getTier ? getTier(overallScore) : 'Assessed'
         })
       });
     } catch (err) {
-      console.error('Failed to submit lead:', err);
+      console.error('Failed to submit gate:', err);
     }
   }
 
@@ -66,9 +119,13 @@ export default function App() {
   }
 
   return (
-    <>
-      {/* Main page (always rendered, hidden when results open) */}
-      {/* Main page sections */}
+    <div className="app-container">
+      {view === 'loading' && (
+        <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)' }}>
+          <h2>Loading your report...</h2>
+        </div>
+      )}
+
       {view === 'home' && (
         <>
           <Navigation onStartAssessment={scrollToIntake} />
@@ -81,6 +138,7 @@ export default function App() {
       {/* Assessment overlay */}
       {view === 'assessment' && (
         <AssessmentPanel
+          sessionId={sessionId}
           onClose={() => { setView('home'); document.body.style.overflow='auto'; }}
           onComplete={handleAssessmentComplete}
         />
@@ -99,6 +157,6 @@ export default function App() {
           onRestart={handleRestart}
         />
       )}
-    </>
+    </div>
   );
 }

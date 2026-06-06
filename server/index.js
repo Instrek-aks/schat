@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const chatRoutes = require('./routes/chatRoutes');
 const messageModelFactory = require('./models/Message');
 const shieldGccLeadModelFactory = require('./models/ShieldGccLead');
+const magnetoAssessmentModelFactory = require('./models/MagnetoAssessment');
+const magnetoRoutes = require('./routes/magnetoRoutes');
 const { sendRiskReportEmail } = require('./utils/emailService');
 
 dotenv.config();
@@ -25,6 +27,10 @@ mongoose.connect(MONGODB_URI)
     // Initialize ShieldGccLead model on the primary connection
     const ShieldGccLead = shieldGccLeadModelFactory(mongoose.connection);
     app.set('shieldGccLeadModel', ShieldGccLead);
+    
+    // Initialize MagnetoAssessment model on the primary connection
+    const MagnetoAssessment = magnetoAssessmentModelFactory(mongoose.connection);
+    app.set('magnetoAssessmentModel', MagnetoAssessment);
     
     // Create a separate database instance for "schat"
     const chatDb = mongoose.connection.useDb('schat');
@@ -50,35 +56,8 @@ app.get('/', (req, res) => {
 // --- CHAT ROUTES ---
 app.use('/api/chat', chatRoutes);
 
-// Endpoint to capture Magneto assessment leads
-app.post('/api/magneto/leads', (req, res) => {
-  const { email, company, role, revenue, industry, scores, overall } = req.body;
-  
-  if (!email) {
-    return res.status(400).json({ error: 'Email is required' });
-  }
-
-  const newLead = {
-    id: Date.now(),
-    project: 'Magneto',
-    email,
-    company,
-    role,
-    revenue,
-    industry,
-    scores,
-    overall,
-    timestamp: new Date()
-  };
-
-  leads.push(newLead);
-  console.log('New Magneto Lead Captured:', newLead);
-
-  res.status(201).json({ 
-    message: 'Lead captured successfully', 
-    leadId: newLead.id 
-  });
-});
+// --- MAGNETO ROUTES ---
+app.use('/api/magneto', magnetoRoutes);
 
 // Endpoint to capture ShieldGCC risk scan leads
 app.post('/api/shieldgcc/leads', async (req, res) => {
