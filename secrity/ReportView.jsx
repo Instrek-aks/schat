@@ -90,9 +90,9 @@ const ReportView = ({ lead }) => {
           --amber-pale: #FEF5E7;
           --muted:      #6B7C8D;
           --rule:       #D5CECC;
-          --serif:      'Playfair Display', Georgia, serif;
-          --sans:       'Epilogue', system-ui, sans-serif;
-          --mono:       'IBM Plex Mono', monospace;
+          --serif:      'Poppins', sans-serif;
+          --sans:       'Poppins', sans-serif;
+          --mono:       'Poppins', sans-serif;
 
           background: var(--paper);
           color: var(--ink);

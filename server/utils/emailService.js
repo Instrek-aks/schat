@@ -44,7 +44,7 @@ exports.sendRiskReportEmail = async (leadData) => {
       <meta charset="utf-8">
       <style>
         body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          font-family: 'Poppins', sans-serif;
           background-color: #03071E;
           color: #EEEEE6;
           margin: 0;
@@ -293,7 +293,7 @@ exports.sendMagnetoReportEmail = async (assessment) => {
     <head>
       <meta charset="utf-8">
       <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #03071E; color: #EEEEE6; margin: 0; padding: 0; }
+        body { font-family: 'Poppins', sans-serif; background-color: #03071E; color: #EEEEE6; margin: 0; padding: 0; }
         .email-container { max-width: 600px; margin: 20px auto; background-color: #060D2E; border-radius: 12px; overflow: hidden; }
         .header { background-color: #0A1535; padding: 30px 20px; text-align: center; border-bottom: 2px solid #2563EB; }
         .logo { color: #2563EB; font-size: 24px; font-weight: 800; text-transform: uppercase; margin: 0; }

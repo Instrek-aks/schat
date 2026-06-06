@@ -18,8 +18,8 @@
   --text: #F0F4F8;
   --text-sec: #7A9AAF;
   --text-ter: #3D5A6B;
-  --mono: 'DM Sans', system-ui;
-  --display: 'Syne', system-ui;
+  --mono: 'Poppins', system-ui;
+  --display: 'Poppins', system-ui;
 }
 
 .int-container {
