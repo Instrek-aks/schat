@@ -9,7 +9,17 @@ const ANS_LABELS = ['A','B','C','D','E'];
 export default function AssessmentPanel({ sessionId, onClose, onComplete }) {
   const [catIdx, setCatIdx] = useState(0);
   const [qIdx, setQIdx] = useState(0);
-  const [answers, setAnswers] = useState({});
+  const [answers, setAnswers] = useState(() => {
+    if (sessionId) {
+      try {
+        const saved = localStorage.getItem(`magneto_answers_${sessionId}`);
+        if (saved) return JSON.parse(saved);
+      } catch (e) {
+        console.error('Failed to parse saved answers from localStorage:', e);
+      }
+    }
+    return {};
+  });
   const { calculateOverallScore } = useScoring();
 
   const cat = CATEGORIES[catIdx];
@@ -24,23 +34,15 @@ export default function AssessmentPanel({ sessionId, onClose, onComplete }) {
   // live score estimate (Weighted)
   const liveScore = calculateOverallScore(answers);
 
-  async function selectAnswer(score) {
-    setAnswers(prev => ({...prev, [ansKey]: score}));
+  function selectAnswer(score) {
+    const nextAnswers = {...answers, [ansKey]: score};
+    setAnswers(nextAnswers);
     
     if (sessionId) {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       try {
-        await fetch(`${apiUrl}/api/magneto/answer`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            sessionId,
-            ansKey,
-            score
-          })
-        });
+        localStorage.setItem(`magneto_answers_${sessionId}`, JSON.stringify(nextAnswers));
       } catch (err) {
-        console.error('Failed to save answer:', err);
+        console.error('Failed to save answers to localStorage:', err);
       }
     }
   }

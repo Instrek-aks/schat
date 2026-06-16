@@ -790,18 +790,6 @@ h2 {
   background: #ffffff;
   border-color: #3b82f6;
 }
-  color: var(--text);
-  padding: 13px 18px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  text-align: left;
-  transition: all 0.18s;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-}
 
 .ans-badge {
   min-width: 26px;
@@ -1853,7 +1841,7 @@ h2 {
   font-size: 9px;
   letter-spacing: 0.16em;
   color: var(--muted);
-  marginBottom: 4px;
+  margin-bottom: 4px;
 }
 
 .panel-scroll-area {
