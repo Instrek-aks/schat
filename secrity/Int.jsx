@@ -54,28 +54,42 @@ const SecurityRiskEngine = () => {
   const [errorReport, setErrorReport] = useState(null);
   const [createdLeadId, setCreatedLeadId] = useState(null);
 
-  // Check for leadId query parameter on load
+  // Check for leadId or report query parameter on load
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const leadId = params.get('leadId');
-    if (leadId) {
+    const reportData = params.get('report');
+    if (reportData) {
       setLoadingReport(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      fetch(`${apiUrl}/api/shieldgcc/leads/${leadId}`)
-        .then(res => {
-          if (!res.ok) throw new Error('Lead report not found');
-          return res.json();
-        })
-        .then(data => {
-          setReportLead(data);
-          setScreen('report');
-          setLoadingReport(false);
-        })
-        .catch(err => {
-          console.error(err);
-          setErrorReport('Could not retrieve risk report. It may have expired or does not exist.');
-          setLoadingReport(false);
-        });
+      try {
+        const decoded = JSON.parse(decodeURIComponent(escape(window.atob(reportData))));
+        setReportLead(decoded);
+        setScreen('report');
+      } catch (err) {
+        console.error('Failed to parse report parameter', err);
+        setErrorReport('Could not decode this risk report link. The URL may be corrupted.');
+      }
+      setLoadingReport(false);
+    } else {
+      const leadId = params.get('leadId');
+      if (leadId) {
+        setLoadingReport(true);
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        fetch(`${apiUrl}/api/shieldgcc/leads/${leadId}`)
+          .then(res => {
+            if (!res.ok) throw new Error('Lead report not found');
+            return res.json();
+          })
+          .then(data => {
+            setReportLead(data);
+            setScreen('report');
+            setLoadingReport(false);
+          })
+          .catch(err => {
+            console.error(err);
+            setErrorReport('Could not retrieve risk report. It may have expired or does not exist.');
+            setLoadingReport(false);
+          });
+      }
     }
   }, []);
 
@@ -181,42 +195,111 @@ const SecurityRiskEngine = () => {
     goScreen('result');
   };
 
-  const submitForm = async () => {
+  const submitForm = () => {
     if (!form.email || !form.role) return;
     
     const p1Score = results?.pillarScores?.find(p => p.name.includes('Sovereignty'))?.score || 0;
     const p2Score = results?.pillarScores?.find(p => p.name.includes('Accountability'))?.score || 0;
     const p3Score = results?.pillarScores?.find(p => p.name.includes('Quantum'))?.score || 0;
 
-    // Submit to backend
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const username = form.email.split('@')[0];
+    const parts = username.split(/[._-]/);
+    let firstName = 'GCC';
+    let lastName = 'Leader';
+    if (parts.length >= 2) {
+      firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+      lastName = parts[parts.length - 1].charAt(0).toUpperCase() + parts[parts.length - 1].slice(1);
+    } else if (parts.length === 1) {
+      firstName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
+    }
+
+    const reportPayload = {
+      firstName,
+      lastName,
+      email: form.email,
+      role: form.role,
+      company: form.company || 'ShieldGCC Assessment',
+      size: form.size || '500-2000',
+      riskScore: results?.avg,
+      tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
+      p1Score,
+      p2Score,
+      p3Score,
+      createdAt: new Date().toISOString()
+    };
+
     try {
-      const response = await fetch(`${apiUrl}/api/shieldgcc/leads`, {
+      const encodedData = window.btoa(unescape(encodeURIComponent(JSON.stringify(reportPayload))));
+      localStorage.setItem('shieldgcc_lead_report', encodedData);
+      setCreatedLeadId(encodedData);
+
+      const shareableLink = `${window.location.origin}${window.location.pathname}?report=${encodedData}`;
+
+      let themeColor = '#FF4C4C'; // Critical
+      if (reportPayload.tier === 'Moderate Risk') {
+        themeColor = '#FFB830'; // Warning
+      } else if (reportPayload.tier === 'Strong Foundation') {
+        themeColor = '#00FFA3'; // Success
+      }
+
+      const emailHtml = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <style>
+            body { font-family: Arial, sans-serif; background-color: #03071E; color: #EEEEE6; margin: 0; padding: 20px; }
+            .container { max-width: 600px; margin: 0 auto; background-color: #060D2E; border: 1px solid rgba(255,255,255,0.05); border-radius: 12px; padding: 30px; text-align: center; }
+            .header { font-size: 24px; font-weight: bold; color: #2563EB; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+            .score-card { background-color: #0A1535; border-radius: 8px; padding: 25px; margin: 20px 0; border: 1px solid rgba(255,255,255,0.05); }
+            .score-title { font-size: 12px; color: #5A6272; text-transform: uppercase; letter-spacing: 1.5px; }
+            .score-value { font-size: 64px; font-weight: 800; color: ${themeColor}; margin: 10px 0 15px; }
+            .badge { display: inline-block; padding: 6px 16px; font-size: 14px; font-weight: bold; border-radius: 30px; text-transform: uppercase; background: rgba(255,255,255,0.05); color: ${themeColor}; border: 1px solid ${themeColor}; }
+            .cta-btn { display: inline-block; background-color: #00D68F; color: #0D1117 !important; text-decoration: none; font-weight: bold; padding: 14px 28px; border-radius: 6px; margin: 25px 0 15px; text-transform: uppercase; letter-spacing: 1px; }
+            .footer { font-size: 11px; color: #5A6272; margin-top: 30px; line-height: 1.5; }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">ShieldGCC</div>
+            <p style="color: #A0AEC0; font-size: 15px;">Hi ${firstName},</p>
+            <p style="color: #A0AEC0; font-size: 15px; line-height: 1.6;">Thank you for completing the ShieldGCC Live Risk Scan. Your assessment report has been successfully generated.</p>
+            <div class="score-card">
+              <div class="score-title">Your Risk Score</div>
+              <div class="score-value">${reportPayload.riskScore}</div>
+              <div class="badge">${reportPayload.tier}</div>
+            </div>
+            <a href="${shareableLink}" class="cta-btn">View My Risk Report</a>
+            <div class="footer">
+              <p>ShieldGCC Ltd. &copy; 2026. All rights reserved.</p>
+              <p>Governed by DPDP Act & GDPR compliance standards.</p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+
+      fetch('/.netlify/functions/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          ...form,
-          riskScore: results?.avg,
-          tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
-          p1Score,
-          p2Score,
-          p3Score
+          email: form.email,
+          subject: `ShieldGCC AI Risk Report: ${reportPayload.tier}`,
+          html: emailHtml
         })
-      });
-      const data = await response.json();
-      if (data.leadId) {
-        // Save the leadId in local storage or state to construct the dynamic link if needed
-        localStorage.setItem('shieldgcc_lead_id', data.leadId);
-        setCreatedLeadId(data.leadId);
-      }
+      })
+      .then(res => res.json())
+      .then(data => console.log('Email dispatched successfully:', data))
+      .catch(err => console.error('Failed to send email:', err));
+
     } catch (err) {
-      console.error('Failed to submit lead:', err);
+      console.error('Failed to serialize report data:', err);
     }
 
     goScreen('confirm');
   };
 
-  const viewReportSkipForm = async () => {
+  const viewReportSkipForm = () => {
     const p1Score = results?.pillarScores?.find(p => p.name.includes('Sovereignty'))?.score || 0;
     const p2Score = results?.pillarScores?.find(p => p.name.includes('Accountability'))?.score || 0;
     const p3Score = results?.pillarScores?.find(p => p.name.includes('Quantum'))?.score || 0;
@@ -227,39 +310,21 @@ const SecurityRiskEngine = () => {
       email: 'anonymous@shieldgcc-scan.com',
       role: 'GCC Leader',
       size: '500-2000',
-      company: 'ShieldGCC Assessment'
+      company: 'ShieldGCC Assessment',
+      riskScore: results?.avg,
+      tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
+      p1Score,
+      p2Score,
+      p3Score,
+      createdAt: new Date().toISOString()
     };
 
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     try {
-      const response = await fetch(`${apiUrl}/api/shieldgcc/leads`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...anonymousForm,
-          riskScore: results?.avg,
-          tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
-          p1Score,
-          p2Score,
-          p3Score
-        })
-      });
-      const data = await response.json();
-      if (data.leadId) {
-        window.location.search = `?leadId=${data.leadId}`;
-      }
+      const encodedData = window.btoa(unescape(encodeURIComponent(JSON.stringify(anonymousForm))));
+      window.location.search = `?report=${encodedData}`;
     } catch (err) {
       console.error('Failed to submit anonymous lead:', err);
-      // Fallback: render local report state immediately
-      setReportLead({
-        ...anonymousForm,
-        riskScore: results?.avg,
-        tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
-        p1Score,
-        p2Score,
-        p3Score,
-        createdAt: new Date().toISOString()
-      });
+      setReportLead(anonymousForm);
       setScreen('report');
     }
   };
@@ -592,15 +657,29 @@ const SecurityRiskEngine = () => {
               </div>
 
               {createdLeadId && (
-                <button 
-                  className="cta-primary" 
-                  onClick={() => {
-                    window.location.search = `?leadId=${createdLeadId}`;
-                  }}
-                  style={{ marginBottom: '16px', width: '100%' }}
-                >
-                  View My Live Risk Report →
-                </button>
+                <>
+                  <button 
+                    className="cta-primary" 
+                    onClick={() => {
+                      window.location.search = `?report=${createdLeadId}`;
+                    }}
+                    style={{ marginBottom: '16px', width: '100%' }}
+                  >
+                    View My Live Risk Report →
+                  </button>
+                  <button
+                    className="cta-ghost"
+                    onClick={() => {
+                      const shareableLink = `${window.location.origin}${window.location.pathname}?report=${createdLeadId}`;
+                      const subject = encodeURIComponent("ShieldGCC AI Risk Report");
+                      const body = encodeURIComponent(`Hi,\n\nHere is your custom ShieldGCC AI Risk Report.\n\nRisk Score: ${results?.avg}/100 (${results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation'})\n\nView full interactive report here:\n${shareableLink}\n\nBest regards,\nShieldGCC Team`);
+                      window.location.href = `mailto:${form.email}?subject=${subject}&body=${body}`;
+                    }}
+                    style={{ marginBottom: '16px', width: '100%', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}
+                  >
+                    📧 Email Report Link to Myself
+                  </button>
+                </>
               )}
 
               <button className="confirm-back" onClick={() => goScreen('hero')}>Run another scan</button>
