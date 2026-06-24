@@ -73,7 +73,9 @@ export default function App() {
   }
 
   function handleGateSubmit(contactInfo) {
-    const fullInfo = { ...companyInfo, ...contactInfo };
+    const emailLower = contactInfo.email ? contactInfo.email.trim().toLowerCase() : '';
+    const updatedContactInfo = { ...contactInfo, email: emailLower };
+    const fullInfo = { ...companyInfo, ...updatedContactInfo };
     setCompanyInfo(fullInfo);
     setView('results');
     document.body.style.overflow = 'auto';

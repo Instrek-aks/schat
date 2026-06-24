@@ -16,12 +16,13 @@ export default function GateForm({ companyInfo, onSubmit }) {
 
   function submit() {
     if (!email || !phone) { setError('All fields are required.'); return; }
-    if (!isWorkEmail(email)) {
+    const emailLower = email.trim().toLowerCase();
+    if (!isWorkEmail(emailLower)) {
       setError('Please use a corporate email (e.g., name@company.com)');
       return;
     }
     setError('');
-    onSubmit({ email, phone });
+    onSubmit({ email: emailLower, phone });
   }
 
   return (

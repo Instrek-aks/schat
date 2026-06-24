@@ -23,6 +23,7 @@ exports.handler = async (event, context) => {
 
   try {
     const { email, subject, html } = JSON.parse(event.body);
+    const emailLower = email ? email.trim().toLowerCase() : '';
 
     const apiKey = process.env.RESEND_API_KEY;
     const fromEmail = process.env.RESEND_FROM || 'ShieldGCC <info@shieldgcc.instrek.com>';
@@ -43,7 +44,7 @@ exports.handler = async (event, context) => {
       },
       body: JSON.stringify({
         from: fromEmail,
-        to: email,
+        to: emailLower,
         subject: subject,
         html: html
       })
