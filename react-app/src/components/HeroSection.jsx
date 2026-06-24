@@ -45,7 +45,7 @@ export default function HeroSection({ onStartAssessment, onLearnMore }) {
       <div className="hero-eyebrow reveal">ENTERPRISE AI READINESS ASSESSMENT</div>
       <h1 className="reveal reveal-delay-1">Is Your Organisation<br /><em>Ready for AI?</em></h1>
       <p className="hero-sub reveal reveal-delay-2">
-        Instrek's Magneto assesses your AI readiness across 7 critical dimensions — Strategy, Business, Data, Technology, Security, People, and Operations. Get your board-ready score in minutes.
+        Instrek's Magneto assesses your AI readiness across 7 critical dimensions - Strategy, Business, Data, Technology, Security, People, and Operations. Get your board-ready score in minutes.
       </p>
       <div className="hero-actions reveal reveal-delay-3">
         <button className="btn-primary" onClick={onStartAssessment}>BEGIN ASSESSMENT →</button>

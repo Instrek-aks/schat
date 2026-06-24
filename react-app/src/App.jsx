@@ -136,9 +136,14 @@ export default function App() {
           html: emailHtml
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}. Netlify functions are not hosted by the Vite dev server (run via netlify dev to test functions locally).`);
+        }
+        return res.json();
+      })
       .then(data => console.log('Magneto email sent successfully:', data))
-      .catch(err => console.error('Failed to send Magneto email:', err));
+      .catch(err => console.warn('Email dispatch skipped or failed:', err.message));
 
     } catch (err) {
       console.error('Failed to generate shareable report token:', err);

@@ -22,7 +22,7 @@ export default function IntakeSection({ onLaunch }) {
 
   return (
     <section id="intake-section">
-      <div className="section-eyebrow reveal">STEP 01 — COMPANY PROFILE</div>
+      <div className="section-eyebrow reveal">STEP 01 - COMPANY PROFILE</div>
       <h2 className="reveal reveal-delay-1">Tell Us About<br />Your Organisation</h2>
       
       <div className="intake-grid reveal reveal-delay-2">

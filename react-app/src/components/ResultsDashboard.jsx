@@ -124,7 +124,7 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
 
   const riskCards = [
     {type:'Regulatory',title:'Compliance & Governance Exposure',body:'Non-compliant AI under DPDP and sector regulations. Shadow AI and absent audit trails create enforcement risk.',val:'₹'+penaltyEx+' Cr',bc:'#e11d48',bd:'rgba(225,29,72,0.2)'},
-    {type:'Competitive',title:'AI Capability Gap vs Peers',body:'AI-native competitors are building structural leads in efficiency and intelligence that compound every quarter.',val:'18–24 month lag',bc:'#d97706',bd:'rgba(217,119,6,0.2)'},
+    {type:'Competitive',title:'AI Capability Gap vs Peers',body:'AI-native competitors are building structural leads in efficiency and intelligence that compound every quarter.',val:'18-24 month lag',bc:'#d97706',bd:'rgba(217,119,6,0.2)'},
     {type:'Revenue',title:'Unrealised AI Revenue Upside',body:'Personalisation and AI-native products are generating measurable revenue uplift for AI-mature peers.',val:'₹'+oppCost+' Cr/yr',bc:'#7c3aed',bd:'rgba(124,58,237,0.2)'},
   ];
 
@@ -134,9 +134,9 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
   
   const phases = [
     {
-      label:'Phase 1 — Foundation',
+      label:'Phase 1 - Foundation',
       title:'Eliminate Critical Gaps',
-      tl:'Days 1–30',
+      tl:'Days 1-30',
       ph:'#e11d48',
       items:[
         ACTION_LIBRARY[weakest.id].urgent,
@@ -149,9 +149,9 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
       ic:'#e11d48'
     },
     {
-      label:'Phase 2 — Acceleration',
+      label:'Phase 2 - Acceleration',
       title:'Deploy High-Impact AI',
-      tl:'Days 31–70',
+      tl:'Days 31-70',
       ph:'#d97706',
       items:[
         ACTION_LIBRARY[weakest.id].accelerate,
@@ -164,9 +164,9 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
       ic:'#d97706'
     },
     {
-      label:'Phase 3 — Scale',
+      label:'Phase 3 - Scale',
       title:'Achieve AI Sovereignty',
-      tl:'Days 71–100',
+      tl:'Days 71-100',
       ph:'#059669',
       items:[
         "Scale top AI use cases to full production",
@@ -187,7 +187,7 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
       <div className="results-nav">
         <span className="results-nav-logo">
           <img src="/logo.png" alt="Instrek" className="logo-img" />
-          <span className="logo-sep">—</span> AI Readiness Report
+          <span className="logo-sep">-</span> AI Readiness Report
         </span>
         <div style={{display:'flex',gap:12,alignItems:'center'}}>
           <span style={{fontFamily:"'JetBrains Mono',monospace",fontSize:11,color:'var(--muted)'}}>
@@ -322,10 +322,10 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
               <img src="/logo.png" alt="Instrek" className="logo-img-inv" />
             </div>
             <div className="sprint-cta-title">
-              {overall}% — YOUR PATH TO AI LEADERSHIP
+              {overall}% - YOUR PATH TO AI LEADERSHIP
             </div>
             <div className="sprint-cta-body">
-              Instrek has identified critical gaps across {weakNames}. Our 30-Day AI Acceleration Sprint delivers a prioritised roadmap, data architecture review, and governance framework — with a guaranteed path to your next maturity tier. Let's talk this week.
+              Instrek has identified critical gaps across {weakNames}. Our 30-Day AI Acceleration Sprint delivers a prioritised roadmap, data architecture review, and governance framework - with a guaranteed path to your next maturity tier. Let's talk this week.
             </div>
           </div>
           <button className="btn-cta" onClick={() => window.open('https://instrek.com','_blank')}>
@@ -334,7 +334,7 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
         </div>
 
         <div className="results-footer">
-          <div>© 2025 Instrek. AI Readiness Platform v2.8 — Confidential</div>
+          <div>© 2025 Instrek. AI Readiness Platform v2.8 - Confidential</div>
           <button className="btn-restart" onClick={onRestart}>↺ START NEW ASSESSMENT</button>
         </div>
       </div>

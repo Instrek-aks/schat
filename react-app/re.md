@@ -1,4 +1,4 @@
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
 INSTREK 
 MAGNETO 
 AI Readiness Assessment Platform 
@@ -6,9 +6,9 @@ DEVELOPER TECHNICAL DOCUMENTATION
 Scoring Logic  ·  Architecture  ·  Integration Guide  ·  Report Engine 
 Document Version 
 Classification 
-v1.0 — Initial Release 
+v1.0 - Initial Release 
 Product 
-Confidential — Developer Use 
+Confidential - Developer Use 
 Only 
 Client 
 Magneto AI Readiness Platform 
@@ -24,14 +24,14 @@ Magneto is Instrek's enterprise AI Readiness Assessment platform. It evaluates a
 readiness to adopt, deploy, and scale Artificial Intelligence across 7 critical dimensions derived from 
 Instrek's proprietary AI Readiness Questionnaire. The platform delivers a scored maturity report, risk 
 quantification, opportunity identification, and a 100-day transformation roadmap. 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
 1.2  Assessment Architecture 
 The platform follows a 5-stage flow: 
 1. Company Intake — Captures organisation profile (name, industry, revenue, size, role, AI 
 investment level). 
 2. Assessment — 22 weighted questions across 7 dimensions. Each question has 5 scored options 
-(1–5). 
+(1-5). 
 3. Email Gate — Corporate email verification before results are revealed. 
 4. Report Generation — All scoring, benchmarking, risk calculation, and roadmap logic executes 
 client-side in JavaScript. 
@@ -71,9 +71,9 @@ What it measures
 AI/ML strategy alignment, executive 
 sponsorship, ROI-based use case 
 prioritisation. 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
 02 Business Functions business 3 AI adoption across BUs, KPI definition, 
 IT-business collaboration. 
 03 Data Readiness data 4 Data centralisation, quality, governance, 
@@ -112,8 +112,8 @@ differentiator.
 3.1  Per-Question Score 
 Each question answered by the user stores a raw integer score (1–5) in a JavaScript answers object 
 indexed by dimension and question index: 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
  
 // answers[dimensionIndex][questionIndex] = score (integer 1–5) 
   
@@ -137,7 +137,7 @@ function calcCatScore(catIndex) {
   return max ? Math.round(pts / max * 100) : 0; 
 } 
   
-// Example — Data Readiness (4 questions, scores: 1,2,3,2) 
+// Example - Data Readiness (4 questions, scores: 1,2,3,2) 
 // pts = 1+2+3+2 = 8 
 // max = 4 × 5 = 20 
 // score = round(8/20 × 100) = 40% 
@@ -163,28 +163,28 @@ const overall = Math.round(
  
 3.4  Maturity Tier Classification 
 The OMS maps to one of 5 named maturity tiers. Thresholds are fixed and not configurable via UI: 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
  
 Tier Name OMS Range Display 
 Colour Description 
-Laggard 0 – 24% #EF4444 
+Laggard 0 - 24% #EF4444 
 (Red) 
 Critical foundational gaps. AI cannot deliver value 
 at scale without urgent remediation. 
-Explorer 25 – 44% #F59E0B 
+Explorer 25 - 44% #F59E0B 
 (Amber) 
 AI journey started but critical gaps across 
 multiple dimensions limit progress. 
-Builder 45 – 61% #60A5FA 
+Builder 45 - 61% #60A5FA 
 (Blue) 
 Meaningful capability with inconsistency. Closing 
 weakest dimension is highest leverage. 
-Scaler 62 – 77% #2DD4BF 
+Scaler 62 - 77% #2DD4BF 
 (Teal) 
 Strong foundations and growing deployment. 
 Focus on systematising and governing AI. 
-Leader 78 – 100% #10B981 
+Leader 78 - 100% #10B981 
 (Green) 
 Top-tier AI readiness. Challenge is compounding 
 the advantage and deepening AI into the core 
@@ -202,7 +202,7 @@ function getTier(pct) {
 3.5  Industry Benchmark Comparison 
 Each dimension score is compared against industry benchmark averages. Benchmarks are hard-coded 
 in the INDUSTRY_BENCHMARKS object and represent anonymised aggregate data from 340+ 
-enterprise assessments (2025–2026). 
+enterprise assessments (2025-2026). 
  
 const INDUSTRY_BENCHMARKS = { 
   "BFSI":          { strategy:55, business:45, data:40, technology:48, security:52, 
@@ -226,8 +226,8 @@ people:35, operations:40 },
 }; 
   
 // Benchmark delta displayed per dimension: 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
 const diff = dimScore - benchmarkScore; 
 // Positive diff = above average (shown in green with + prefix) 
 // Negative diff = below average (shown in red) 
@@ -274,8 +274,8 @@ revMult × (1 − OMS/100) × 0.35 35% of maximum exposure scales
 with maturity gap. 
 Lost Revenue Upside revMult × 0.18 × (1 − OMS/100) 18% AI revenue uplift 
 benchmark, scaled by gap. 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
 Operational Inefficiency revMult × 0.12 × (1 − OMS/100) 12% productivity gain benchmark, 
 scaled by gap. 
 Competitive Risk "18–24 month lag" (qualitative) Fixed qualitative label. No 
@@ -288,9 +288,9 @@ Revenue multipliers (revMult) are mapped from the revenue band selected in the i
  
 const revMult = { 
   "Under ₹50 Cr":      30, 
-  "₹50–250 Cr":      100, 
-  "₹250–1000 Cr":    300, 
-  "₹1000–5000 Cr":  1000, 
+  "₹50-250 Cr":      100, 
+  "₹250-1000 Cr":    300, 
+  "₹1000-5000 Cr":  1000, 
   "₹5000 Cr+":        2500, 
 }[companyInfo.revenue] || 200; 
   
@@ -326,8 +326,8 @@ const diff  = yours - avg;             // delta
 // diff >= 0 → colour: green (#10B981),  prefix: "+" 
 // diff < 0  → colour: red (#F43F5E),    prefix: "" (negative shown) 
   
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
 // Visual bar: two overlapping bars on same baseline 
 // "yours" bar fills to the user score % 
 // A vertical marker line sits at the benchmark % 
@@ -382,8 +382,8 @@ function drawGauge(pct, tierColor) {
   ctx.arc(endX, endY, 8, 0, 2*Math.PI); 
   ctx.fillStyle = tierColor; 
 } 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
  
  
 4.6  100-Day Roadmap Logic 
@@ -435,8 +435,8 @@ companyInfo = {
 // Assessment state 
 currentCat = Number;    // 0–6 (dimension index) 
 currentQ   = Number;    // 0–N (question index within dimension) 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
   
 // Answer store — populated as user answers questions 
 answers = { 
@@ -483,8 +483,8 @@ function isValidCorporateEmail(email) {
 Layer Recommended Purpose 
 Frontend Next.js 14 / React Component architecture, SSR for report 
 pages, SEO for landing page. 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
 Backend API Node.js / FastAPI Assessment session management, 
 scoring engine, report generation. 
 Database PostgreSQL Store assessments, responses, leads, and 
@@ -533,8 +533,8 @@ TABLE assessments
   created_at    TIMESTAMP 
   completed_at  TIMESTAMP NULL 
   email         VARCHAR(255) NULL  -- set at gate 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
   report_token  VARCHAR(64) NULL   -- set at gate 
   
 TABLE answers 
@@ -563,9 +563,9 @@ time as questions are answered. It is cosmetic but provides strong engagement va
 // Risk 1.0 = zero score    → highly erratic red line 
   
 // Colour mapping: 
-// risk < 0.3 → #10b981 (green)    — Strong signal 
-// risk < 0.6 → #f59e0b (amber)    — Developing signal 
-// risk >= 0.6 → #f43f5e (red)     — Critical gaps detected 
+// risk < 0.3 → #10b981 (green)    - Strong signal 
+// risk < 0.6 → #f59e0b (amber)    - Developing signal 
+// risk >= 0.6 → #f43f5e (red)     - Critical gaps detected 
   
 // Amplitude: amp = risk × canvasHeight × 0.38 
 // Each frame: v = center - (random × amp + sin(time) × amp × 0.5) 
@@ -581,7 +581,7 @@ dimension nav button shows three states:
  
 Clicking a completed or current dimension jumps directly to its first unanswered question. 
  
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
 7.3  Progress Bar 
 The linear progress bar at the top of the assessment panel fills based on total questions answered out 
 of 22: 
@@ -611,10 +611,10 @@ description text ("22 questions").
 7. Add the question bank: QUESTIONS[newId] = [ ...questions... ] 
 8. Add benchmark values for all industries: INDUSTRY_BENCHMARKS[each].newId = value 
 9. Add dimension findings: CAT_FINDINGS[newId] = { low, mid, high } 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
-10. Update the OMS divisor (currently 7 = CATEGORIES.length — handled automatically). 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
+10. Update the OMS divisor (currently 7 = CATEGORIES.length - handled automatically). 
  
 8.4  PDF Report Export 
 The current version has no PDF export. For production, implement a server-side PDF generator: 
@@ -658,10 +658,10 @@ await fetch("/api/lead", {
  
 9.  Brand & Design Tokens 
 9.1  Colour Palette 
-Token Hex Value Usage --bg #03071E Page background — deep navy. 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal --bg2 #060D2E Cards and panel backgrounds. --bg3 #0A1535 Elevated panels (panel header, seismo bar). --accent (primary) #2563EB All primary CTAs, active states, highlights. --accent2 #3B82F6 Hover states and gradient endpoints. --text #EEEEE6 Primary body text — warm off-white. --muted #5A6272 Secondary text, labels, placeholders. --danger #F43F5E Error states, low scores, risk indicators. --warn #F59E0B Warning states, medium scores. --safe #10B981 Success states, high scores. 
-Instrek Orange #E8602C Instrek brand accent — used on logo only in 
+Token Hex Value Usage --bg #03071E Page background - deep navy. 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal --bg2 #060D2E Cards and panel backgrounds. --bg3 #0A1535 Elevated panels (panel header, seismo bar). --accent (primary) #2563EB All primary CTAs, active states, highlights. --accent2 #3B82F6 Hover states and gradient endpoints. --text #EEEEE6 Primary body text - warm off-white. --muted #5A6272 Secondary text, labels, placeholders. --danger #F43F5E Error states, low scores, risk indicators. --warn #F59E0B Warning states, medium scores. --safe #10B981 Success states, high scores. 
+Instrek Orange #E8602C Instrek brand accent - used on logo only in 
 Magneto. Not used as UI accent. 
  
 9.2  Typography 
@@ -685,55 +685,55 @@ For production: serve the logo from a CDN/static asset server instead of embeddi
 The base64 encoding adds ~1.8MB to the HTML file size. 
  
  
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 
 10.  Changelog & Roadmap 
 10.1  Version History 
 Version Date Changes 
-v0.1 Apr 2026 Initial prototype — 3 industry verticals, 12 questions, basic scoring. 
+v0.1 Apr 2026 Initial prototype - 3 industry verticals, 12 questions, basic scoring. 
 v0.2 Apr 2026 Expanded to 5 industries, 48 questions across 4 pillars, answer 
-options 1–4. 
+options 1-4. 
 v0.3 Apr 2026 Added benchmark dashboard, ROI calculator, testimonials, 
 deliverables sections to landing page. 
-v0.4 Apr 2026 Rebuilt as focused AI Readiness tool — 6 dimensions, 48 
+v0.4 Apr 2026 Rebuilt as focused AI Readiness tool - 6 dimensions, 48 
 questions, full report engine. 
-v1.0 Apr 2026 Final prototype — Instrek questionnaire integrated (7 dimensions, 
+v1.0 Apr 2026 Final prototype - Instrek questionnaire integrated (7 dimensions, 
 22 questions), Instrek logo embedded, LinkedIn blue palette 
 applied. This documentation version. 
  
 10.2  Recommended Production Roadmap 
 Priority Feature Notes 
-P0 — 
+P0 - 
 Critical 
 Backend API + Database Replace browser-only state. Enable lead 
 capture, persistence, analytics. 
-P0 — 
+P0 - 
 Critical 
 Email gate with OTP verification Replace basic validation with real 
 email verification. 
-P1 — High PDF Report Export Puppeteer-based branded PDF for 
+P1 - High PDF Report Export Puppeteer-based branded PDF for 
 download and sharing. 
-P1 — High CRM Integration Auto-push leads to 
+P1 - High CRM Integration Auto-push leads to 
 HubSpot/Salesforce on report unlock. 
-P2 — 
+P2 - 
 Medium 
 Weighted Scoring Engine Activate question-level weight multipliers 
 (Section 3.6). 
-P2 — 
+P2 - 
 Medium 
 Dynamic Roadmap Generation Generate roadmap actions from 
 weakest dimensions (Section 4.6). 
-P2 — 
+P2 - 
 Medium 
 Admin Dashboard Instrek internal view of all assessments, 
 leads, scores, and trends. 
-P3 — Nice LinkedIn Share Card OG image auto-generated with company 
+P3 - Nice LinkedIn Share Card OG image auto-generated with company 
 name + score for social sharing. 
-P3 — Nice Benchmark Data Refresh Pipeline Auto-update 
+P3 - Nice Benchmark Data Refresh Pipeline Auto-update 
 INDUSTRY_BENCHMARKS from real 
 assessment data monthly. 
-INSTREK  |  MAGNETO AI READINESS PLATFORM  —  Developer Technical Documentation 
+INSTREK  |  MAGNETO AI READINESS PLATFORM  -  Developer Technical Documentation 
 This document is maintained by Instrek. For questions on implementation, contact the Instrek product team. 
 All scoring logic described here reflects the v1.0 prototype. Production implementations may deviate from 
-this specification — ensure this document is updated to reflect any such changes. 
-Developer Technical Documentation  v1.0  |  Confidential — Instrek Internal 
+this specification - ensure this document is updated to reflect any such changes. 
+Developer Technical Documentation  v1.0  |  Confidential - Instrek Internal 

@@ -29,9 +29,9 @@ export const WEIGHT = {
 export const getRevMult = (revenueBand) => {
   return {
     "Under ₹50 Cr":      30,
-    "₹50–250 Cr":      100,
-    "₹250–1000 Cr":    300,
-    "₹1000–5000 Cr":  1000,
+    "₹50-250 Cr":      100,
+    "₹250-1000 Cr":    300,
+    "₹1000-5000 Cr":  1000,
     "₹5000 Cr+":        2500,
   }[revenueBand] || 200;
 };

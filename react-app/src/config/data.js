@@ -36,9 +36,9 @@ export const MATURITY_TIERS = [
 
 export const REVENUE_MULTIPLIERS = {
   "Under ₹50 Cr": 30,
-  "₹50–250 Cr": 100,
-  "₹250–1000 Cr": 300,
-  "₹1000–5000 Cr": 1000,
+  "₹50-250 Cr": 100,
+  "₹250-1000 Cr": 300,
+  "₹1000-5000 Cr": 1000,
   "₹5000 Cr+": 2500,
 };
 
@@ -125,7 +125,7 @@ export const CAT_FINDINGS = {
     high:'Strong AI strategy with executive alignment and structured use-case prioritisation. A genuine competitive moat that accelerates all other dimensions.'
   },
   business:{
-    low:'Business functions have not engaged with AI. Process mapping is absent, KPIs are undefined, and IT-business collaboration is minimal — creating an execution gap that strategy alone cannot fix.',
+    low:'Business functions have not engaged with AI. Process mapping is absent, KPIs are undefined, and IT-business collaboration is minimal - creating an execution gap that strategy alone cannot fix.',
     mid:'Partial business unit engagement with AI. KPI definition and cross-functional collaboration need strengthening to ensure AI investments translate into operational value.',
     high:'Strong business unit AI engagement with defined KPIs and collaborative execution models. AI is being pulled by the business, not pushed by IT.'
   },
@@ -135,7 +135,7 @@ export const CAT_FINDINGS = {
     high:'AI-ready data foundation with strong governance, accessibility, and historical depth. A significant structural advantage for AI execution.'
   },
   technology:{
-    low:'Technology gaps — particularly compute, tooling, and integration layers — make AI deployment slow, fragile, and expensive. Infrastructure investment is the critical unlock.',
+    low:'Technology gaps - particularly compute, tooling, and integration layers - make AI deployment slow, fragile, and expensive. Infrastructure investment is the critical unlock.',
     mid:'Core technology capabilities are in place but gaps in scalability, tooling, and API integration are creating bottlenecks that slow AI deployment velocity.',
     high:'Strong technology stack with scalable compute, integrated ML tooling, and flexible API layers. The foundation for rapid AI deployment at enterprise scale.'
   },

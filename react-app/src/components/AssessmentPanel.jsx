@@ -95,7 +95,7 @@ export default function AssessmentPanel({ sessionId, onClose, onComplete }) {
           <div className="live-row">
             <div className="live-cell">
               <div className="live-val" style={{color: liveScore >= 70 ? 'var(--safe)' : liveScore >= 40 ? 'var(--warn)' : 'var(--danger)'}}>
-                {liveScore > 0 ? liveScore+'%' : '—'}
+                {liveScore > 0 ? liveScore+'%' : '-'}
               </div>
               <div className="live-lab">Live Score</div>
             </div>
