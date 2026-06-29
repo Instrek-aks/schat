@@ -11,7 +11,7 @@ export default function HeroSection({ onStartAssessment, onLearnMore }) {
   const radarData = {
     labels: CATEGORIES.map(c => c.shortName),
     datasets: [{
-      label: 'Industry Avg',
+      label: 'Avg',
       data: HERO_VALS,
       borderColor: '#2563eb',
       backgroundColor: 'rgba(37, 99, 235, 0.2)',

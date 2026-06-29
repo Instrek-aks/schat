@@ -1,5 +1,5 @@
 import React from 'react';
-import { CATEGORIES } from '../config/data.js';
+import { CATEGORIES, QUESTIONS } from '../config/data.js';
 
 export default function CategoriesSection({ onStartAssessment }) {
   return (
@@ -7,7 +7,7 @@ export default function CategoriesSection({ onStartAssessment }) {
       <div className="stats-strip reveal">
         {[
           {num:'7', label:'Assessment Dimensions'},
-          {num:'22', label:'Calibrated Questions'},
+          {num:'28', label:'Calibrated Questions'},
           {num:'5', label:'Scoring Levels per Question'},
           {num:'₹180Cr', label:'Avg. Opportunity Identified'},
           {num:'30d', label:'Remediation Sprint'},
@@ -33,7 +33,7 @@ export default function CategoriesSection({ onStartAssessment }) {
               <span className="cat-icon">{cat.icon}</span>
               <div className="cat-name">{cat.name}</div>
               <div className="cat-desc">{cat.desc}</div>
-              <div className="cat-q-count" style={{color: cat.color}}>{[3,3,4,3,3,3,5][i]} questions</div>
+              <div className="cat-q-count" style={{color: cat.color}}>{QUESTIONS[cat.id]?.length || 4} questions</div>
             </div>
           ))}
         </div>

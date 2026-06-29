@@ -86,7 +86,7 @@ export default function IntakeSection({ onLaunch }) {
         >
           LAUNCH FULL ASSESSMENT →
         </button>
-        <div className="intake-note">~8 minutes · 22 questions · Free report</div>
+        <div className="intake-note">~8 minutes · 28 questions · Free report</div>
       </div>
     </section>
   );
