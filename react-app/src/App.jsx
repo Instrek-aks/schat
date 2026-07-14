@@ -134,31 +134,35 @@ export default function App() {
         </html>
       `;
 
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-      if (isLocal) {
-        console.log('Development Mode: Simulated email dispatch to:', contactInfo.email);
-      } else {
-        // Send email via Netlify serverless function (which runs securely on the server-side)
-        fetch('/.netlify/functions/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: contactInfo.email,
-            subject: 'Your Magneto AI Readiness Report',
-            html: emailHtml
-          })
-        })
-        .then(async res => {
-          const text = await res.text();
-          console.log('Netlify function email response:', text);
-          if (!res.ok) {
-            throw new Error(`HTTP error ${res.status}: ${text}`);
-          }
-          console.log('Magneto report email successfully sent!');
-        })
-        .catch(err => console.error('Email dispatch failed:', err.message));
+      // Send email directly to Resend API (works in both local and production)
+      const resendApiKey = import.meta.env.VITE_RESEND_API_KEY;
+      if (!resendApiKey) {
+        console.error('[Email] VITE_RESEND_API_KEY is not set in .env file. Email not sent.');
+        return;
       }
+      console.log('[Email] Sending report email to:', contactInfo.email);
+      fetch('https://corsproxy.io/?url=https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendApiKey}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: 'ShieldGCC <info@shieldgcc.instrek.com>',
+          to: contactInfo.email,
+          subject: 'Your Magneto AI Readiness Report',
+          html: emailHtml
+        })
+      })
+      .then(async res => {
+        const text = await res.text();
+        console.log('[Email] Resend API response:', text);
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}: ${text}`);
+        }
+        console.log('[Email] Report email sent successfully!');
+      })
+      .catch(err => console.error('[Email] Dispatch failed:', err.message));
 
     } catch (err) {
       console.error('Failed to generate shareable report token:', err);
