@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
     const { email, subject, html } = JSON.parse(event.body);
     const emailLower = email ? email.trim().toLowerCase() : '';
 
-    const apiKey = process.env.RESEND_API_KEY;
+    const apiKey = process.env.RESEND_API_KEY || 're_8GC4e9CG_DP9An243JVhDMTz4zHtQB5WN';
     const fromEmail = process.env.RESEND_FROM || 'ShieldGCC <info@shieldgcc.instrek.com>';
 
     if (!apiKey) {
