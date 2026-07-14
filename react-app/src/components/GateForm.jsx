@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { AlertCircle } from 'lucide-react';
 
 const FREE_DOMAINS = ['gmail','yahoo','hotmail','outlook','rediffmail','ymail','aol','icloud','protonmail','mail','inbox','zoho','gmx','live','msn','me','mac','googlemail'];
 
@@ -14,7 +15,8 @@ export default function GateForm({ companyInfo, onSubmit }) {
   const [phone, setPhone] = useState('');
   const [error, setError] = useState('');
 
-  function submit() {
+  function submit(e) {
+    e.preventDefault();
     if (!email || !phone) { setError('All fields are required.'); return; }
     const emailLower = email.trim().toLowerCase();
     if (!isWorkEmail(emailLower)) {
@@ -26,96 +28,78 @@ export default function GateForm({ companyInfo, onSubmit }) {
   }
 
   return (
-    <div id="gate-overlay" className="open" style={{
-      position:'fixed', inset:0, zIndex:1000, 
-      background:'rgba(255,255,255,0.8)', backdropFilter:'blur(40px)',
-      overflowY:'auto', padding:'40px 20px', display:'block'
-    }}>
-      <div className="gate-panel" style={{
-        width:'100%', maxWidth:520, background:'#fff', 
-        border:'1px solid var(--border)', borderRadius:24, 
-        position:'relative', overflow:'hidden', margin:'0 auto',
-        padding: 'clamp(24px, 5vw, 48px)', textAlign: 'center'
-      }}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#070B14]/85 backdrop-blur-md overflow-y-auto">
+      <div className="relative w-full max-w-md rounded-premium border border-white/10 bg-[#0d1425]/90 backdrop-blur-2xl p-8 shadow-[0_25px_60px_rgba(0,0,0,0.8)] overflow-hidden text-center">
         {/* Glow effect */}
-        <div style={{
-          position:'absolute', top:-100, left:-100, width:300, height:300,
-          background:'var(--accent)', filter:'blur(120px)', opacity:0.08, pointerEvents:'none'
-        }} />
+        <div className="absolute -top-24 -left-24 w-72 h-72 rounded-full bg-accentBlue/20 blur-[80px] pointer-events-none" />
+        <div className="absolute -bottom-24 -right-24 w-72 h-72 rounded-full bg-accentPurple/15 blur-[80px] pointer-events-none" />
 
-        <div className="gate-logo" style={{marginBottom:32}}>
-          <span style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:22}}>
-            <span style={{color:'var(--accent)'}}>instrek</span>
-          </span>
+        {/* Logo */}
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <div className="w-5 h-5 rounded bg-gradient-to-tr from-accentBlue to-accentPurple" />
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Instrek AI</span>
         </div>
 
-        <h2 style={{
-          fontFamily:"'Syne',sans-serif", fontWeight:800, fontSize:'clamp(24px, 5vw, 32px)', 
-          lineHeight:1.1, marginBottom:16, letterSpacing:'-0.02em'
-        }}>
+        {/* Title */}
+        <h2 className="font-sans font-extrabold text-2xl sm:text-3xl text-white leading-tight mb-3">
           Your Results Are Ready
         </h2>
         
-        <p style={{
-          fontSize:15, color:'var(--muted)', lineHeight:1.6, marginBottom:32
-        }}>
+        {/* Subtitle */}
+        <p className="text-xs sm:text-sm text-slate-400 leading-relaxed mb-8">
           Enter your work details to unlock your customized 100-day AI transformation roadmap and readiness index.
         </p>
 
-        <div className="gate-fields" style={{display:'flex', flexDirection:'column', gap:12, marginBottom:24}}>
-          <div style={{textAlign:'left'}}>
-            <label style={{fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', color:'var(--muted)', marginLeft:4, marginBottom:6, display:'block'}}>Work Email</label>
+        {/* Form */}
+        <form onSubmit={submit} className="space-y-6 text-left">
+          {/* Work Email */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">
+              Work Email
+            </label>
             <input
-              className="gate-input"
+              required
+              className="w-full text-sm rounded bg-white/5 border border-white/10 text-white placeholder-slate-500 px-4 py-3 outline-none focus:border-accentBlue focus:bg-white/10 focus:shadow-[0_0_15px_rgba(91,124,255,0.2)] transition-all duration-200"
               placeholder="name@company.com"
               type="email"
-              style={{
-                width:'100%', padding:'16px 20px', borderRadius:12, border:'1px solid var(--border2)',
-                fontSize:15, outline:'none', transition:'all 0.2s'
-              }}
               value={email}
               onChange={e => setEmail(e.target.value)}
-              onFocus={e => e.target.style.borderColor = 'var(--accent)'}
-              onBlur={e => e.target.style.borderColor = 'var(--border2)'}
             />
           </div>
-          <div style={{textAlign:'left'}}>
-            <label style={{fontFamily:"'JetBrains Mono',monospace", fontSize:10, textTransform:'uppercase', color:'var(--muted)', marginLeft:4, marginBottom:6, display:'block'}}>Phone Number</label>
+
+          {/* Phone Number */}
+          <div className="flex flex-col gap-1.5">
+            <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 ml-1">
+              Phone Number
+            </label>
             <input
-              className="gate-input"
+              required
+              className="w-full text-sm rounded bg-white/5 border border-white/10 text-white placeholder-slate-500 px-4 py-3 outline-none focus:border-accentBlue focus:bg-white/10 focus:shadow-[0_0_15px_rgba(91,124,255,0.2)] transition-all duration-200"
               placeholder="+91 00000 00000"
               type="tel"
-              style={{
-                width:'100%', padding:'16px 20px', borderRadius:12, border:'1px solid var(--border2)',
-                fontSize:15, outline:'none', transition:'all 0.2s'
-              }}
               value={phone}
               onChange={e => setPhone(e.target.value)}
-              onFocus={e => e.target.style.borderColor = 'var(--accent)'}
-              onBlur={e => e.target.style.borderColor = 'var(--border2)'}
             />
           </div>
-        </div>
 
-        {error && (
-          <div style={{
-            background:'#fff1f2', color:'#e11d48', fontSize:13, fontWeight:600,
-            padding:'12px 16px', borderRadius:8, marginBottom:24, border:'1px solid #fda4af'
-          }}>
-            ⚠️ {error}
-          </div>
-        )}
+          {/* Error Message */}
+          {error && (
+            <div className="bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs px-4 py-3 rounded-lg flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 flex-shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
 
-        <button className="btn-primary" style={{
-          width:'100%', padding:'12px 24px', borderRadius:8, background:'var(--accent)',
-          color:'#fff', border:'none', fontFamily:"'Syne',sans-serif", fontWeight:800,
-          fontSize:11, letterSpacing:'0.1em', cursor:'pointer', transition:'all 0.2s',
-          boxShadow: 'none'
-        }} onClick={submit}>
-          UNLOCK MY REPORT →
-        </button>
+          {/* Submit */}
+          <button 
+            type="submit"
+            className="w-full py-3.5 rounded-full bg-gradient-to-r from-accentBlue to-accentPurple text-xs font-bold text-white tracking-wider uppercase transition-all duration-300 shadow-[0_4px_15px_rgba(91,124,255,0.2)] hover:shadow-[0_4px_25px_rgba(168,85,247,0.4)] hover:scale-[1.02]"
+          >
+            Unlock My Report →
+          </button>
+        </form>
 
-        <p style={{fontSize:11, color:'var(--muted)', marginTop:24, lineHeight:1.6}}>
+        <p className="text-[10px] text-slate-500 mt-6 leading-relaxed">
           By unlocking, you agree to receive your analysis and occasional insights from Instrek. We respect your inbox privacy.
         </p>
       </div>

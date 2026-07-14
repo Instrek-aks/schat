@@ -69,14 +69,15 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
 
   const radarData = {
     labels: CATEGORIES.map(c => c.shortName),
+    disabled: true,
     datasets: [
       {
         label: companyInfo.company || 'Your Score',
         data: catScores,
-        borderColor: '#2563eb',
-        backgroundColor: 'rgba(37,99,235,0.12)',
+        borderColor: '#5B7CFF',
+        backgroundColor: 'rgba(91, 124, 255, 0.15)',
         borderWidth: 3,
-        pointBackgroundColor: '#2563eb',
+        pointBackgroundColor: '#A855F7',
         pointBorderColor: '#fff',
         pointBorderWidth: 2,
         pointRadius: 6,
@@ -84,8 +85,8 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
       {
         label: 'Industry Benchmark',
         data: CATEGORIES.map(c => bench[c.id]),
-        borderColor: 'rgba(0,0,0,0.15)',
-        backgroundColor: 'rgba(0,0,0,0.02)',
+        borderColor: 'rgba(255, 255, 255, 0.25)',
+        backgroundColor: 'rgba(255, 255, 255, 0.03)',
         borderWidth: 1.5,
         borderDash: [5,5],
         pointRadius: 0,
@@ -98,10 +99,12 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
     plugins: {
       legend: { display: false },
       tooltip: { 
-        backgroundColor: '#0f172a',
+        backgroundColor: '#0d1425',
+        borderColor: 'rgba(255,255,255,0.08)',
+        borderWidth: 1,
         padding: 12,
-        titleFont: { size: 13, family: 'Syne' },
-        bodyFont: { size: 12, family: 'DM Sans' },
+        titleFont: { size: 13, family: 'Inter', weight: 'bold' },
+        bodyFont: { size: 12, family: 'Inter' },
         callbacks: { label: ctx => `${ctx.dataset.label}: ${ctx.raw}%` } 
       }
     },
@@ -109,9 +112,9 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
       r: {
         min: 0, max: 100,
         ticks: { display: false },
-        grid: { color: 'rgba(0,0,0,0.05)' },
-        angleLines: { color: 'rgba(0,0,0,0.05)' },
-        pointLabels: { color: '#64748b', font: { family: "'JetBrains Mono',monospace", size: 9, weight: 600 } }
+        grid: { color: 'rgba(255, 255, 255, 0.08)' },
+        angleLines: { color: 'rgba(255, 255, 255, 0.08)' },
+        pointLabels: { color: '#94a3b8', font: { family: "Inter", size: 10, weight: 600 } }
       }
     }
   };

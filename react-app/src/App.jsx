@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import Navigation from './components/Navigation.jsx';
 import HeroSection from './components/HeroSection.jsx';
-import CategoriesSection from './components/CategoriesSection.jsx';
-import IntakeSection from './components/IntakeSection.jsx';
+import TestimonialSection from './components/TestimonialSection.jsx';
+import HowItWorksSection from './components/HowItWorksSection.jsx';
+import DimensionsGridSection from './components/DimensionsGridSection.jsx';
+import StartNowSection from './components/StartNowSection.jsx';
+import Footer from './components/Footer.jsx';
+import IntakeModal from './components/IntakeModal.jsx';
 import AssessmentPanel from './components/AssessmentPanel.jsx';
 import GateForm from './components/GateForm.jsx';
 import ResultsDashboard from './components/ResultsDashboard.jsx';
@@ -16,6 +20,7 @@ export default function App() {
   const [companyInfo, setCompanyInfo] = useState(null);
   const [assessmentAnswers, setAssessmentAnswers] = useState(null);
   const [sessionId, setSessionId] = useState(null);
+  const [isIntakeOpen, setIsIntakeOpen] = useState(false);
 
   // Check URL for report link on mount
   useEffect(() => {
@@ -165,12 +170,12 @@ export default function App() {
     document.getElementById('intake-section')?.scrollIntoView({behavior:'smooth'});
   }
 
-  function scrollToCats() {
-    document.getElementById('cats-section')?.scrollIntoView({behavior:'smooth'});
+  function scrollToDimensions() {
+    document.getElementById('dimensions-section')?.scrollIntoView({behavior:'smooth'});
   }
 
   return (
-    <div className="app-container">
+    <div className="app-container bg-bgDark min-h-screen text-slate-100 font-sans">
       {view === 'loading' && (
         <div style={{ height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--accent)' }}>
           <h2>Loading your report...</h2>
@@ -178,12 +183,39 @@ export default function App() {
       )}
 
       {view === 'home' && (
-        <>
-          <Navigation onStartAssessment={scrollToIntake} />
-          <HeroSection onStartAssessment={scrollToIntake} onLearnMore={scrollToCats} />
-          <CategoriesSection onStartAssessment={scrollToIntake} />
-          <IntakeSection onLaunch={handleLaunchAssessment} />
-        </>
+        <div className="relative overflow-hidden bg-[#070B14]">
+          {/* Background Ambient Glows */}
+          <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
+            {/* Top Left Blue Glow */}
+            <div className="absolute top-[-5%] left-[-15%] w-[60vw] h-[60vw] rounded-full bg-[#5B7CFF]/8 blur-[130px] animate-pulse-slow" />
+            {/* Top Right Purple Glow */}
+            <div className="absolute top-[2%] right-[-15%] w-[65vw] h-[65vw] rounded-full bg-[#A855F7]/8 blur-[140px] animate-pulse-slow" style={{ animationDelay: '3s' }} />
+            {/* Mid Page glow */}
+            <div className="absolute top-[25%] left-[10%] w-[50vw] h-[50vw] rounded-full bg-[#5B7CFF]/3 blur-[120px]" />
+            {/* Quote Card Glow */}
+            <div className="absolute top-[40%] right-[10%] w-[45vw] h-[45vw] rounded-full bg-[#A855F7]/3 blur-[120px]" />
+            {/* Dimensions Section Glow */}
+            <div className="absolute top-[65%] left-[50%] -translate-x-1/2 w-[60vw] h-[60vw] rounded-full bg-[#5B7CFF]/2 blur-[130px]" />
+            {/* Bottom Glow */}
+            <div className="absolute bottom-[2%] left-[50%] -translate-x-1/2 w-[80vw] h-[60vw] rounded-full bg-gradient-to-tr from-[#5B7CFF]/6 to-[#A855F7]/6 blur-[150px]" />
+          </div>
+
+          <Navigation onStartAssessment={() => setIsIntakeOpen(true)} />
+          <HeroSection 
+            onStartAssessment={() => setIsIntakeOpen(true)} 
+            onLearnMore={scrollToDimensions} 
+          />
+          <TestimonialSection onStartAssessment={() => setIsIntakeOpen(true)} />
+          <HowItWorksSection onStartAssessment={() => setIsIntakeOpen(true)} />
+          <DimensionsGridSection onStartAssessment={() => setIsIntakeOpen(true)} />
+          <StartNowSection onStartAssessment={() => setIsIntakeOpen(true)} />
+          <Footer />
+          <IntakeModal 
+            isOpen={isIntakeOpen} 
+            onClose={() => setIsIntakeOpen(false)} 
+            onLaunch={handleLaunchAssessment} 
+          />
+        </div>
       )}
 
       {/* Assessment overlay */}

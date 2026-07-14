@@ -154,18 +154,18 @@ export default function AssessmentPanel({ sessionId, onClose, onComplete }) {
                     className="ans-btn"
                     onClick={() => selectAnswer(opt.score)}
                     style={{
-                      background: isSelected ? 'var(--bg2)' : '#fff',
+                      background: isSelected ? 'var(--bg2)' : 'rgba(255,255,255,0.02)',
                       borderColor: isSelected ? cat.color : 'var(--border)',
                       borderWidth: isSelected ? 2 : 1
                     }}
                   >
                     <span className="ans-badge" style={{
-                      background: isSelected ? cat.color : 'var(--bg2)',
+                      background: isSelected ? cat.color : 'rgba(255,255,255,0.04)',
                       color: isSelected ? '#fff' : ANS_COLORS[i]
                     }}>{ANS_LABELS[i]}</span>
                     <div className="ans-content">
-                      <div className="ans-label" style={{color: isSelected ? 'var(--text)' : '#475569'}}>{opt.label}</div>
-                      {opt.sub && <div className="ans-sub">{opt.sub}</div>}
+                      <div className="ans-label" style={{color: isSelected ? 'var(--text)' : 'var(--muted)'}}>{opt.label}</div>
+                      {opt.sub && <div className="ans-sub" style={{color: 'rgba(255,255,255,0.4)', fontSize: '11px'}}>{opt.sub}</div>}
                     </div>
                   </button>
                 );
