@@ -134,29 +134,20 @@ export default function App() {
         </html>
       `;
 
-      // Send email directly to Resend API (works in both local and production)
-      const resendApiKey = import.meta.env.VITE_RESEND_API_KEY;
-      if (!resendApiKey) {
-        console.error('[Email] VITE_RESEND_API_KEY is not set in .env file. Email not sent.');
-        return;
-      }
+      // Send email via Netlify serverless function (API key stays server-side, never in browser)
       console.log('[Email] Sending report email to:', contactInfo.email);
-      fetch('https://corsproxy.io/?url=https://api.resend.com/emails', {
+      fetch('/.netlify/functions/send-email', {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${resendApiKey}`,
-          'Content-Type': 'application/json'
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          from: 'ShieldGCC <info@shieldgcc.instrek.com>',
-          to: contactInfo.email,
+          email: contactInfo.email,
           subject: 'Your Magneto AI Readiness Report',
           html: emailHtml
         })
       })
       .then(async res => {
         const text = await res.text();
-        console.log('[Email] Resend API response:', text);
+        console.log('[Email] Function response:', text);
         if (!res.ok) {
           throw new Error(`HTTP error ${res.status}: ${text}`);
         }
