@@ -1,0 +1,8 @@
+{
+  "name": "send-email-function",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "resend": "^3.2.0"
+  }
+}
