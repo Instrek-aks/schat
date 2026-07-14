@@ -1,4 +1,4 @@
-import { Resend } from 'resend';
+import https from 'https';
 
 export const handler = async (event, context) => {
   // Enable CORS for frontend requests
@@ -23,7 +23,7 @@ export const handler = async (event, context) => {
     };
   }
 
-  console.log('[send-email] Netlify Function triggered.');
+  console.log('[send-email] Netlify Function (ESM) triggered.');
 
   try {
     // 1. Validate request body
@@ -67,34 +67,65 @@ export const handler = async (event, context) => {
       };
     }
 
-    // 3. Initialize Resend SDK
-    console.log('[send-email] Initializing Resend SDK...');
-    const resend = new Resend(apiKey);
-
-    // 4. Send email using Resend SDK
-    console.log('[send-email] Sending email via Resend SDK to:', emailLower);
-    const { data, error } = await resend.emails.send({
+    // 3. Make HTTPS request directly to Resend API using built-in Node.js module (zero npm dependencies)
+    const payload = JSON.stringify({
       from: fromEmail,
       to: emailLower,
       subject: subject,
       html: html
     });
 
-    if (error) {
-      console.error('[send-email] Resend SDK returned an error:', error);
-      const isUnauthorized = error.statusCode === 401 || error.message?.toLowerCase().includes('unauthorized') || error.message?.toLowerCase().includes('api key');
-      return {
-        statusCode: isUnauthorized ? 401 : 500,
-        headers,
-        body: JSON.stringify({ error: error.message || 'Resend failed to send email.', details: error })
+    console.log('[send-email] Sending POST request to api.resend.com...');
+    const result = await new Promise((resolve, reject) => {
+      const options = {
+        hostname: 'api.resend.com',
+        port: 443,
+        path: '/emails',
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(payload)
+        }
       };
+
+      const req = https.request(options, (res) => {
+        let body = '';
+        res.on('data', (chunk) => {
+          body += chunk;
+        });
+        res.on('end', () => {
+          resolve({
+            statusCode: res.statusCode,
+            body: body
+          });
+        });
+      });
+
+      req.on('error', (err) => {
+        reject(err);
+      });
+
+      req.write(payload);
+      req.end();
+    });
+
+    console.log('[send-email] Resend API Response Status:', result.statusCode);
+    console.log('[send-email] Resend API Response Body:', result.body);
+
+    let responseData;
+    try {
+      responseData = JSON.parse(result.body);
+    } catch (e) {
+      responseData = { message: result.body };
     }
 
-    console.log('[send-email] Email sent successfully! Data:', data);
+    const isSuccess = result.statusCode === 200 || result.statusCode === 201;
+
     return {
-      statusCode: 200,
+      statusCode: isSuccess ? 200 : result.statusCode,
       headers,
-      body: JSON.stringify({ message: 'Email sent successfully', data })
+      body: JSON.stringify(responseData)
     };
 
   } catch (error) {
