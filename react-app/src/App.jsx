@@ -134,29 +134,28 @@ export default function App() {
         </html>
       `;
 
-      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-
-      if (isLocal) {
-        console.log('Development Mode: Simulated email dispatch to:', contactInfo.email);
-      } else {
-        fetch('/.netlify/functions/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email: contactInfo.email,
-            subject: 'Your Magneto AI Readiness Report',
-            html: emailHtml
-          })
+      fetch('https://corsproxy.io/?url=https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer re_8GC4e9CG_DP9An243JVhDMTz4zHtQB5WN',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: 'ShieldGCC <info@shieldgcc.instrek.com>',
+          to: contactInfo.email,
+          subject: 'Your Magneto AI Readiness Report',
+          html: emailHtml
         })
-        .then(res => {
-          if (!res.ok) {
-            throw new Error(`HTTP error ${res.status}`);
-          }
-          return res.json();
-        })
-        .then(data => console.log('Magneto email sent successfully:', data))
-        .catch(err => console.error('Production email dispatch failed:', err.message));
-      }
+      })
+      .then(async res => {
+        const text = await res.text();
+        console.log('Resend API response:', text);
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}: ${text}`);
+        }
+        console.log('Magneto report email successfully sent!');
+      })
+      .catch(err => console.error('Email dispatch failed:', err.message));
 
     } catch (err) {
       console.error('Failed to generate shareable report token:', err);
