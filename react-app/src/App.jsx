@@ -134,23 +134,7 @@ export default function App() {
         </html>
       `;
 
-      fetch('/.netlify/functions/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: contactInfo.email,
-          subject: 'Your Magneto AI Readiness Report',
-          html: emailHtml
-        })
-      })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP error ${res.status}. Netlify functions are not hosted by the Vite dev server (run via netlify dev to test functions locally).`);
-        }
-        return res.json();
-      })
-      .then(data => console.log('Magneto email sent successfully:', data))
-      .catch(err => console.warn('Email dispatch skipped or failed:', err.message));
+      console.log('Frontend Mode: Simulated email dispatch to:', contactInfo.email);
 
     } catch (err) {
       console.error('Failed to generate shareable report token:', err);
