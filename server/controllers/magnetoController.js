@@ -62,11 +62,12 @@ exports.saveAnswer = async (req, res) => {
 exports.emailGate = async (req, res) => {
   try {
     const { sessionId, email, name, answers, overallPct, tier } = req.body;
+    const emailLower = email ? email.trim().toLowerCase() : '';
     const MagnetoAssessment = req.app.get('magnetoAssessmentModel');
 
     // Free provider check (simple version, matching frontend logic)
     const FREE_PROVIDERS = ["gmail", "yahoo", "hotmail", "outlook", "rediffmail", "yopmail"];
-    const domain = email.split("@")[1]?.split(".")[0]?.toLowerCase();
+    const domain = emailLower.split("@")[1]?.split(".")[0]?.toLowerCase();
     if (FREE_PROVIDERS.includes(domain)) {
       return res.status(400).json({ error: "invalid_email", message: "Please enter a valid corporate email address (not Gmail/Yahoo)." });
     }
@@ -78,7 +79,7 @@ exports.emailGate = async (req, res) => {
 
     const reportToken = generateToken();
 
-    assessment.leadInfo = { email, name };
+    assessment.leadInfo = { email: emailLower, name };
     assessment.reportToken = reportToken;
     if (answers) assessment.answers = answers;
     assessment.scores = { overallPct, tier };
@@ -89,8 +90,8 @@ exports.emailGate = async (req, res) => {
 
     // Asynchronously trigger the report email
     sendMagnetoReportEmail(assessment)
-      .then(() => console.log(`[Email] Magneto report email sent to ${email}`))
-      .catch(err => console.error(`[Email] Error sending Magneto email to ${email}:`, err));
+      .then(() => console.log(`[Email] Magneto report email sent to ${emailLower}`))
+      .catch(err => console.error(`[Email] Error sending Magneto email to ${emailLower}:`, err));
 
     res.json({ reportToken });
   } catch (error) {

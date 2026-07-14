@@ -14,7 +14,7 @@ const questions = [
     q: "Do your AI agents in production have their own credentials and audit trails?",
     sub: "Agentic AI acting under human credentials is undetectable when something goes wrong.",
     icon: ["✅","📋","🤖","👻"],
-    opts: ["Yes, full identity management","Partial — some agents are tracked","No, they inherit human credentials","We don't have AI agents yet"],
+    opts: ["Yes, full identity management","Partial - some agents are tracked","No, they inherit human credentials","We don't have AI agents yet"],
     scores: [10, 40, 85, 20]
   },
   {
@@ -28,14 +28,14 @@ const questions = [
     q: "If regulators asked today: where does your India GCC's AI data flow?",
     sub: "The DPDP Act now gives Indian regulators the right to ask exactly this question.",
     icon: ["📁","📊","🤷","🚨"],
-    opts: ["I have a full data flow map","I know roughly, not formally","I'd need weeks to compile it","I don't know and it worries me"],
+    opts: ["I have a data flow map","I know roughly, not formally","I'd need weeks to compile it","I don't know and it worries me"],
     scores: [5, 40, 75, 95]
   }
 ];
 
 const fears = [
   `"If my India team uses ChatGPT to write code, <strong>where does my IP actually go?</strong>"`,
-  `"What if an AI agent makes a <strong>$1M financial error</strong> or creates a backdoor — and I don't find out for weeks?"`,
+  `"What if an AI agent makes a <strong>$1M financial error</strong> or creates a backdoor - and I don't find out for weeks?"`,
   `"Hackers are using AI to find vulnerabilities <strong>faster than we can patch them.</strong> How do we defend against that?"`
 ];
 
@@ -176,16 +176,16 @@ const SecurityRiskEngine = () => {
     let headline, sub, urgency, color;
     if (avg >= 70) {
       headline = 'Critical Exposure Detected';
-      sub = `Your GCC profile shows ${avg > 80 ? 'severe' : 'significant'} exposure across multiple AI security pillars. Based on your answers, IP leakage via unmonitored LLM APIs is your most immediate risk. This is not theoretical — organisations with similar profiles have experienced material breaches.`;
+      sub = `Your GCC profile shows ${avg > 80 ? 'severe' : 'significant'} exposure across multiple AI security pillars. Based on your answers, IP leakage via unmonitored LLM APIs is your most immediate risk. This is not theoretical - organisations with similar profiles have experienced material breaches.`;
       urgency = '⚠ Based on your profile, your GCC has likely already sent proprietary data to unmonitored external AI systems. The window to contain this is now.';
       color = '#FF4C4C';
     } else if (avg >= 45) {
-      headline = 'Moderate Risk — Act Before Audit';
+      headline = 'Moderate Risk - Act Before Audit';
       sub = `Your GCC has partial controls but meaningful gaps. Regulators and auditors are increasingly asking for AI governance documentation. Your current posture would struggle to answer those questions. A structured remediation roadmap would move you from reactive to defensible.`;
       urgency = '⚡ DPDP enforcement is active. Your current AI data flow posture may not withstand regulatory scrutiny.';
       color = '#FFB830';
     } else {
-      headline = 'Strong Foundation — Harden & Scale';
+      headline = 'Strong Foundation - Harden & Scale';
       sub = 'Your GCC has better AI governance than most. As you scale AI deployment and headcount, formalising this posture will be critical. Post-quantum readiness and agentic identity management are the emerging gaps for organisations at your maturity level.';
       urgency = '✓ Your proactive posture puts you ahead. Now is the time to formalise and scale your governance architecture before AI deployment outpaces it.';
       color = '#00FFA3';
@@ -198,11 +198,15 @@ const SecurityRiskEngine = () => {
   const submitForm = () => {
     if (!form.email || !form.role) return;
     
+    const emailLower = form.email.trim().toLowerCase();
+    const updatedForm = { ...form, email: emailLower };
+    setForm(updatedForm);
+    
     const p1Score = results?.pillarScores?.find(p => p.name.includes('Sovereignty'))?.score || 0;
     const p2Score = results?.pillarScores?.find(p => p.name.includes('Accountability'))?.score || 0;
     const p3Score = results?.pillarScores?.find(p => p.name.includes('Quantum'))?.score || 0;
 
-    const username = form.email.split('@')[0];
+    const username = emailLower.split('@')[0];
     const parts = username.split(/[._-]/);
     let firstName = 'GCC';
     let lastName = 'Leader';
@@ -216,7 +220,7 @@ const SecurityRiskEngine = () => {
     const reportPayload = {
       firstName,
       lastName,
-      email: form.email,
+      email: emailLower,
       role: form.role,
       company: form.company || 'ShieldGCC Assessment',
       size: form.size || '500-2000',
@@ -283,14 +287,19 @@ const SecurityRiskEngine = () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: form.email,
+          email: emailLower,
           subject: `ShieldGCC AI Risk Report: ${reportPayload.tier}`,
           html: emailHtml
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}. Netlify functions are not hosted by the Vite dev server (run via netlify dev to test functions locally).`);
+        }
+        return res.json();
+      })
       .then(data => console.log('Email dispatched successfully:', data))
-      .catch(err => console.error('Failed to send email:', err));
+      .catch(err => console.warn('Email dispatch skipped or failed:', err.message));
 
     } catch (err) {
       console.error('Failed to serialize report data:', err);
@@ -641,7 +650,7 @@ const SecurityRiskEngine = () => {
                 </svg>
               </div>
               <h2 className="confirm-headline">Report on its way.<br/>Expect it in 24 hours.</h2>
-              <p className="confirm-sub">Our GCC security architects will review your profile and send a tailored remediation blueprint — covering all three risk pillars your scan flagged.</p>
+              <p className="confirm-sub">Our GCC security architects will review your profile and send a tailored remediation blueprint - covering all three risk pillars your scan flagged.</p>
 
               <div className="confirm-details">
                 <div className="confirm-detail-row"><span className="cd-label">Email</span><span className="cd-val">{form.email}</span></div>

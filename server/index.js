@@ -67,9 +67,11 @@ app.post('/api/shieldgcc/leads', async (req, res) => {
     return res.status(400).json({ error: 'Email is required' });
   }
 
+  const emailLower = email.trim().toLowerCase();
+
   // Extract name from email if not provided
-  if (email && (!firstName || !lastName)) {
-    const username = email.split('@')[0];
+  if (emailLower && (!firstName || !lastName)) {
+    const username = emailLower.split('@')[0];
     const parts = username.split(/[._-]/);
     if (parts.length >= 2) {
       firstName = firstName || (parts[0].charAt(0).toUpperCase() + parts[0].slice(1));
@@ -90,7 +92,7 @@ app.post('/api/shieldgcc/leads', async (req, res) => {
 
   try {
     const newLead = new ShieldGccLead({
-      email,
+      email: emailLower,
       company,
       role,
       size,
@@ -108,8 +110,8 @@ app.post('/api/shieldgcc/leads', async (req, res) => {
 
     // Asynchronously trigger risk report email
     sendRiskReportEmail(savedLead)
-      .then(() => console.log(`[Email] Risk report email sent to ${email}`))
-      .catch(err => console.error(`[Email] Error sending email to ${email}:`, err));
+      .then(() => console.log(`[Email] Risk report email sent to ${emailLower}`))
+      .catch(err => console.error(`[Email] Error sending email to ${emailLower}:`, err));
 
     res.status(201).json({ 
       message: 'Lead captured and saved successfully', 

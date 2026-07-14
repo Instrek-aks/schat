@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your GCC AI Security Risk Report — ShieldGCC</title>
+<title>Your GCC AI Security Risk Report - ShieldGCC</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Epilogue:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -135,9 +135,9 @@ body {
   font-family: var(--mono); font-size: 12px; font-weight: 500; letter-spacing: 0.06em;
   text-transform: uppercase; margin-bottom: 8px;
 }
-.tier-badge.critical { background: rgba(192,57,43,0.25); color: #FF6B6B; border: 1px solid rgba(255,107,107,0.3); }
-.tier-badge.moderate { background: rgba(180,83,9,0.25); color: #FFB830; border: 1px solid rgba(255,184,48,0.3); }
-.tier-badge.strong   { background: rgba(11,110,79,0.25); color: var(--green-hi); border: 1px solid rgba(0,214,143,0.3); }
+.tier-badge.critical { background: rgba(192,57,43,0.25); color: #FF6B6B; border: 1px solid rgba(192,57,43,0.3); }
+.tier-badge.moderate { background: rgba(180,83,9,0.25); color: #FFB830; border: 1px solid rgba(180,83,9,0.3); }
+.tier-badge.strong   { background: rgba(11,110,79,0.25); color: var(--green-hi); border: 1px solid rgba(11,110,79,0.3); }
 .tier-desc { font-size: 13px; color: rgba(255,255,255,0.45); }
 
 /* ── PAPER SECTION ── */
@@ -454,18 +454,18 @@ body {
 </div>
 
 <!-- ══════════════════════════════════════
-     SECTION 1 — EXECUTIVE SUMMARY
+     SECTION 1 - EXECUTIVE SUMMARY
 ══════════════════════════════════════ -->
 <div class="paper-section reveal">
   <div class="page-wrap">
-    <div class="section-eyebrow">01 — Executive Summary</div>
+    <div class="section-eyebrow">01 - Executive Summary</div>
     <h2 class="section-title">The situation your board will ask about next quarter.</h2>
-    <p class="section-body">Based on your self-assessment, your India GCC is operating with significant unmanaged AI risk. The gap is not primarily technical — it is architectural. Your teams have access to AI tools that your governance framework was not designed for, your agents operate without the identity and auditability of a regulated employee, and your cryptographic infrastructure is built for a threat landscape that has already shifted.</p>
+    <p class="section-body">Based on your self-assessment, your India GCC is operating with significant unmanaged AI risk. The gap is not primarily technical - it is architectural. Your teams have access to AI tools that your governance framework was not designed for, your agents operate without the identity and auditability of a regulated employee, and your cryptographic infrastructure is built for a threat landscape that has already shifted.</p>
     <p class="section-body">This is not a future risk. It is a present condition. The DPDP Act has given Indian regulators a mechanism to act. The NIST PQC standards have given your auditors a framework to measure against. And the velocity of agentic AI adoption in GCCs means that every week without governance is a week of compounding exposure.</p>
 
     <div class="pull-quote">
       <div class="pull-quote-text">"The organisations that define AI governance frameworks now will not just avoid the next breach. They will win the talent, the client trust, and the regulatory goodwill that defines who leads in the next decade of GCC-powered enterprise AI."</div>
-      <div class="pull-quote-source">— ShieldGCC Research, April 2026</div>
+      <div class="pull-quote-source">- ShieldGCC Research, April 2026</div>
     </div>
 
     <div class="impact-grid">
@@ -483,19 +483,19 @@ body {
       </div>
       <div class="impact-cell">
         <div class="impact-stat-label">Peer context</div>
-        <div class="impact-stat-val">73% of India GCCs at your AI deployment stage have not completed a formal AI governance architecture. You are in the majority — and that is the risk.</div>
+        <div class="impact-stat-val">73% of India GCCs at your AI deployment stage have not completed a formal AI governance architecture. You are in the majority - and that is the risk.</div>
       </div>
     </div>
   </div>
 </div>
 
 <!-- ══════════════════════════════════════
-     SECTION 2 — THREE PILLARS
+     SECTION 2 - THREE PILLARS
 ══════════════════════════════════════ -->
 <div class="paper-section reveal">
   <div class="page-wrap">
-    <div class="section-eyebrow">02 — Risk Pillar Breakdown</div>
-    <h2 class="section-title">Where your exposure lives — and what it costs if unaddressed.</h2>
+    <div class="section-eyebrow">02 - Risk Pillar Breakdown</div>
+    <h2 class="section-title">Where your exposure lives - and what it costs if unaddressed.</h2>
     <p class="section-body">Your risk profile is mapped across the three AI security pillars that matter most to India GCC executives in 2026. Each pillar below reflects your specific answers, the gap they reveal, and the architectural response that closes it.</p>
 
     <div class="pillar-stack" id="pillar-stack">
@@ -517,7 +517,7 @@ body {
 
           <div class="highlight-box" style="margin-top:20px;">
             <div class="highlight-box-title">What "closing this gap" looks like</div>
-            <div class="highlight-box-body">A Private LLM deployment on your VPC or on-premise gives your developers full GenAI capability with zero data leaving your perimeter. Combined with a Secure RAG architecture, your proprietary codebases and internal documents become the model's knowledge base — not a training leak. DPDP-compliant data flow mapping ensures every AI interaction is auditable and defensible to regulators.</div>
+            <div class="highlight-box-body">A Private LLM deployment on your VPC or on-premise gives your developers full GenAI capability with zero data leaving your perimeter. Combined with a Secure RAG architecture, your proprietary codebases and internal documents become the model's knowledge base - not a training leak. DPDP-compliant data flow mapping ensures every AI interaction is auditable and defensible to regulators.</div>
           </div>
         </div>
       </div>
@@ -530,7 +530,7 @@ body {
             <div class="pillar-name">&#129302; Agentic Accountability</div>
             <div class="pillar-tag moderate" id="p2-tag">{{P2_LABEL}}</div>
           </div>
-          <div class="pillar-fear">"What happens if an autonomous agent makes a $1M financial error or creates a security backdoor — and I don't find out for weeks?"</div>
+          <div class="pillar-fear">"What happens if an autonomous agent makes a $1M financial error or creates a security backdoor - and I don't find out for weeks?"</div>
           <div class="pillar-finding" id="p2-finding">{{P2_FINDING}}</div>
           <div class="pillar-score-row">
             <div class="pillar-score-bar-bg"><div class="pillar-score-bar moderate" id="p2-bar" style="width: {{P2_SCORE}}%"></div></div>
@@ -539,7 +539,7 @@ body {
 
           <div class="highlight-box" style="margin-top:20px;">
             <div class="highlight-box-title">What "closing this gap" looks like</div>
-            <div class="highlight-box-body">Treating AI agents as non-human employees — with their own credentials, scoped permissions, and immutable audit trails — converts an invisible risk into a manageable one. Human-in-the-loop (HITL) checkpoints at financial, security, and data-write actions ensure no agent can exceed a defined blast radius without human approval. An AI Governance framework gives your board a risk register entry with an owner.</div>
+            <div class="highlight-box-body">Treating AI agents as non-human employees - with their own credentials, scoped permissions, and immutable audit trails - converts an invisible risk into a manageable one. Human-in-the-loop (HITL) checkpoints at financial, security, and data-write actions ensure no agent can exceed a defined blast radius without human approval. An AI Governance framework gives your board a risk register entry with an owner.</div>
           </div>
         </div>
       </div>
@@ -561,7 +561,7 @@ body {
 
           <div class="highlight-box" style="margin-top:20px;">
             <div class="highlight-box-title">What "closing this gap" looks like</div>
-            <div class="highlight-box-body">A proactive, self-healing SOC uses AI to detect and auto-remediate threats before they reach human escalation — matching adversarial AI velocity with defensive AI velocity. A Post-Quantum Cryptography readiness assessment maps every RSA and ECC dependency in your GCC environment and produces a NIST PQC-aligned migration roadmap. The organisations that start this migration now will complete it before the quantum threat is realised. Those that wait will not.</div>
+            <div class="highlight-box-body">A proactive, self-healing SOC uses AI to detect and auto-remediate threats before they reach human escalation - matching adversarial AI velocity with defensive AI velocity. A Post-Quantum Cryptography readiness assessment maps every RSA and ECC dependency in your GCC environment and produces a NIST PQC-aligned migration roadmap. The organisations that start this migration now will complete it before the quantum threat is realised. Those that wait will not.</div>
           </div>
         </div>
       </div>
@@ -571,21 +571,21 @@ body {
 </div>
 
 <!-- ══════════════════════════════════════
-     SECTION 3 — REMEDIATION ROADMAP
+     SECTION 3 - REMEDIATION ROADMAP
 ══════════════════════════════════════ -->
 <div class="paper-section reveal" style="background: var(--paper2);">
   <div class="page-wrap">
-    <div class="section-eyebrow">03 — Remediation Roadmap</div>
+    <div class="section-eyebrow">03 - Remediation Roadmap</div>
     <h2 class="section-title">Three horizons. One coherent architecture.</h2>
-    <p class="section-body">Based on your risk profile, we recommend a structured remediation across three time horizons. This is not a linear checklist — these tracks run in parallel, governed by a single AI Security architecture that prevents the point-solution sprawl that most GCCs fall into.</p>
+    <p class="section-body">Based on your risk profile, we recommend a structured remediation across three time horizons. This is not a linear checklist - these tracks run in parallel, governed by a single AI Security architecture that prevents the point-solution sprawl that most GCCs fall into.</p>
 
     <div class="roadmap">
       <div class="roadmap-step">
         <div class="step-dot now">30d</div>
         <div class="step-content">
-          <div class="step-horizon now">Immediate — 0 to 30 days</div>
+          <div class="step-horizon now">Immediate - 0 to 30 days</div>
           <div class="step-title">Contain the bleed: AI data flow audit + shadow AI policy</div>
-          <div class="step-desc">Before any architecture change, you need to know what you are dealing with. A rapid AI data flow audit maps every external LLM API call being made by your India GCC teams — including shadow usage. Simultaneously, a published AI acceptable-use policy with enforcement creates a defensible posture for regulators while architectural controls are being built.</div>
+          <div class="step-desc">Before any architecture change, you need to know what you are dealing with. A rapid AI data flow audit maps every external LLM API call being made by your India GCC teams - including shadow usage. Simultaneously, a published AI acceptable-use policy with enforcement creates a defensible posture for regulators while architectural controls are being built.</div>
           <div class="step-services">
             <span class="step-chip">AI Data Flow Audit</span>
             <span class="step-chip">Shadow AI Detection</span>
@@ -598,9 +598,9 @@ body {
       <div class="roadmap-step">
         <div class="step-dot soon">90d</div>
         <div class="step-content">
-          <div class="step-horizon soon">Short-term — 30 to 90 days</div>
+          <div class="step-horizon soon">Short-term - 30 to 90 days</div>
           <div class="step-title">Build the foundation: Private LLM + Agentic Identity</div>
-          <div class="step-desc">Deploy a Private LLM environment in your VPC or on-premise, with Secure RAG indexing your internal knowledge bases. In parallel, implement agentic identity management — assigning non-human credentials, scoped access controls, and HITL audit checkpoints to every AI agent operating in production. This closes the two highest-velocity risk vectors simultaneously.</div>
+          <div class="step-desc">Deploy a Private LLM environment in your VPC or on-premise, with Secure RAG indexing your internal knowledge bases. In parallel, implement agentic identity management - assigning non-human credentials, scoped access controls, and HITL audit checkpoints to every AI agent operating in production. This closes the two highest-velocity risk vectors simultaneously.</div>
           <div class="step-services">
             <span class="step-chip">Private LLM Deployment</span>
             <span class="step-chip">Secure RAG Architecture</span>
@@ -613,9 +613,9 @@ body {
       <div class="roadmap-step">
         <div class="step-dot plan">12m</div>
         <div class="step-content">
-          <div class="step-horizon plan">Strategic — 90 days to 12 months</div>
+          <div class="step-horizon plan">Strategic - 90 days to 12 months</div>
           <div class="step-title">Future-proof: SOC AI uplift + PQC migration roadmap</div>
-          <div class="step-desc">With the immediate risks contained, the strategic horizon is about asymmetric capability. An AI-powered self-healing SOC shifts your security posture from reactive to proactive. A Post-Quantum Cryptography readiness assessment produces the migration roadmap your board will need — beginning the transition from RSA/ECC to NIST PQC-approved algorithms across your GCC infrastructure before the regulatory mandate arrives.</div>
+          <div class="step-desc">With the immediate risks contained, the strategic horizon is about asymmetric capability. An AI-powered self-healing SOC shifts your security posture from reactive to proactive. A Post-Quantum Cryptography readiness assessment produces the migration roadmap your board will need - beginning the transition from RSA/ECC to NIST PQC-approved algorithms across your GCC infrastructure before the regulatory mandate arrives.</div>
           <div class="step-services">
             <span class="step-chip">AI-Powered SOC</span>
             <span class="step-chip">Self-Healing Infrastructure</span>
@@ -630,13 +630,13 @@ body {
 </div>
 
 <!-- ══════════════════════════════════════
-     SECTION 4 — PEER BENCHMARKS
+     SECTION 4 - PEER BENCHMARKS
 ══════════════════════════════════════ -->
 <div class="paper-section reveal">
   <div class="page-wrap">
-    <div class="section-eyebrow">04 — Peer Intelligence</div>
+    <div class="section-eyebrow">04 - Peer Intelligence</div>
     <h2 class="section-title">Where India GCC executives at your level actually stand.</h2>
-    <p class="section-body">These benchmarks are drawn from ShieldGCC's assessment data across 340 India GCC organisations scanned in Q1 2026. They give you an objective read on how your posture compares — and where the largest competitive differentiation opportunity sits.</p>
+    <p class="section-body">These benchmarks are drawn from ShieldGCC's assessment data across 340 India GCC organisations scanned in Q1 2026. They give you an objective read on how your posture compares - and where the largest competitive differentiation opportunity sits.</p>
 
     <div class="intel-cards" style="margin-bottom: 28px;">
       <div class="intel-card">
@@ -647,7 +647,7 @@ body {
       <div class="intel-card">
         <div class="intel-card-label">GCCs with agentic identity mgmt</div>
         <div class="intel-card-stat">11%</div>
-        <div class="intel-card-desc">Fewer than 1 in 10 GCCs deploying AI agents has implemented dedicated agent credentials. The rest operate with agents inheriting human access — invisible to audit systems.</div>
+        <div class="intel-card-desc">Fewer than 1 in 10 GCCs deploying AI agents has implemented dedicated agent credentials. The rest operate with agents inheriting human access - invisible to audit systems.</div>
       </div>
       <div class="intel-card">
         <div class="intel-card-label">GCCs that have started PQC planning</div>
@@ -699,7 +699,7 @@ body {
           <tr>
             <td><strong>AI-Powered SOC</strong></td>
             <td>33% deployed or piloting</td>
-            <td id="bm-soc">Likely not yet — majority position</td>
+            <td id="bm-soc">Likely not yet - majority position</td>
             <td><div class="bm-bar-bg"><div class="bm-bar" style="width:33%; background: var(--amber);"></div></div></td>
           </tr>
         </tbody>
@@ -709,13 +709,13 @@ body {
 </div>
 
 <!-- ══════════════════════════════════════
-     SECTION 5 — CTA
+     SECTION 5 - CTA
 ══════════════════════════════════════ -->
 <div class="cta-block reveal">
   <div class="page-wrap" style="padding:0;">
     <div class="cta-label">Your Next Step</div>
     <h2 class="cta-headline">This report surfaces the risk.<br><em>A conversation closes it.</em></h2>
-    <p class="cta-sub">Our GCC security architects review a maximum of 8 new organisations per month. A 30-minute strategy call is not a sales call — it is a working session where we map your specific architecture against your highest-priority pillar and give you a concrete, actionable starting point. No commitment required.</p>
+    <p class="cta-sub">Our GCC security architects review a maximum of 8 new organisations per month. A 30-minute strategy call is not a sales call - it is a working session where we map your specific architecture against your highest-priority pillar and give you a concrete, actionable starting point. No commitment required.</p>
 
     <div class="cta-options">
       <a class="cta-option" href="https://calendly.com/shieldgcc/strategy" target="_blank">
@@ -723,7 +723,7 @@ body {
         <div class="cta-option-title">Book a 30-min Strategy Call</div>
         <div class="cta-option-desc">Live session with a GCC security architect. We review your specific pillar profile and recommend a starting architecture. This week's slots are filling.</div>
       </a>
-      <a class="cta-option" href="mailto:strategy@shieldgcc.com?subject=GCC Risk Report — Architecture Review Request" target="_blank">
+      <a class="cta-option" href="mailto:strategy@shieldgcc.com?subject=GCC Risk Report - Architecture Review Request" target="_blank">
         <div class="cta-option-icon">&#9993;&#65039;</div>
         <div class="cta-option-title">Request a Written Architecture Blueprint</div>
         <div class="cta-option-desc">Prefer async? Email us with your report score and we will respond within 24 hours with a written architecture recommendation tailored to your GCC size and sector.</div>
@@ -755,7 +755,7 @@ body {
       <div class="expect-step">
         <div class="expect-num">02</div>
         <div class="expect-title">We map your architecture</div>
-        <div class="expect-desc">We review your risk profile, your current stack, and your timeline. You leave with a concrete starting point — not a pitch deck.</div>
+        <div class="expect-desc">We review your risk profile, your current stack, and your timeline. You leave with a concrete starting point - not a pitch deck.</div>
       </div>
       <div class="expect-step">
         <div class="expect-num">03</div>
@@ -770,7 +770,7 @@ body {
      FOOTER
 ══════════════════════════════════════ -->
 <div class="report-footer">
-  <div class="footer-brand">ShieldGCC &mdash; India GCC AI Security</div>
+  <div class="footer-brand">ShieldGCC - India GCC AI Security</div>
   <div class="footer-links">
     <a class="footer-link" href="#">strategy@shieldgcc.com</a>
     <a class="footer-link" href="#">shieldgcc.com</a>
@@ -795,7 +795,7 @@ const reportData = {
 // ── SCORE TO TIER ──
 function getTier(score) {
   if (score >= 70) return { label: 'Critical Exposure', cls: 'critical', desc: '3 of 3 pillars need immediate attention' };
-  if (score >= 45) return { label: 'Moderate Risk', cls: 'moderate', desc: 'Partial controls — governance gaps remain' };
+  if (score >= 45) return { label: 'Moderate Risk', cls: 'moderate', desc: 'Partial controls - governance gaps remain' };
   return { label: 'Strong Foundation', cls: 'strong', desc: 'Better than 80% of GCC peers' };
 }
 
@@ -808,18 +808,18 @@ function getPillarLabel(score) {
 // Findings text by score band
 const p1Findings = {
   critical: 'Your assessment indicates the majority of your India GCC developers are actively using external GenAI tools with no formal governance, audit trail, or data residency controls. Every API call to an external LLM is a potential IP transfer event. Your organisation\'s source code, internal documentation, and proprietary processes are being ingested by third-party model infrastructure with no visibility into retention or usage policies.',
-  moderate: 'Your assessment indicates partial or informal controls around GenAI tool usage in your India GCC. While some awareness exists, the absence of a formal audit trail means you cannot demonstrate to a regulator or auditor exactly what data has left your perimeter — or prove it hasn\'t. This is a documented but unquantified risk.',
+  moderate: 'Your assessment indicates partial or informal controls around GenAI tool usage in your India GCC. While some awareness exists, the absence of a formal audit trail means you cannot demonstrate to a regulator or auditor exactly what data has left your perimeter - or prove it hasn\'t. This is a documented but unquantified risk.',
   strong:   'Your assessment indicates proactive controls around GenAI tool usage. This is genuinely ahead of the majority of GCC peers. The strategic priority now is formalising and scaling these controls as your AI deployment velocity increases, and ensuring your Private LLM architecture keeps pace with developer demand to prevent shadow AI from re-emerging.'
 };
 
 const p2Findings = {
-  critical: 'Your assessment indicates AI agents operating in your GCC environment are functioning without dedicated identity, scoped permissions, or independent audit trails. When an agent takes an action — modifying data, executing code, triggering a financial transaction — there is no mechanism to attribute that action to a specific agent instance, audit the decision chain, or roll back the consequence. In a regulated environment, this is not a theoretical risk. It is an audit failure waiting to be found.',
-  moderate: 'Your assessment indicates some agents are tracked but the framework is incomplete. Partial coverage is the most dangerous posture: it creates a false sense of governance while leaving the highest-risk agents — those with the broadest access — potentially unmonitored. A complete agentic identity framework needs to cover every agent, not most of them.',
-  strong:   'Your assessment indicates a mature approach to agentic AI governance. As your agent deployment scales, the priority is ensuring your framework grows with it — particularly as newer, more capable agents request broader system access. The edge cases that matter most are the ones your current framework was not designed for yet.'
+  critical: 'Your assessment indicates AI agents operating in your GCC environment are functioning without dedicated identity, scoped permissions, or independent audit trails. When an agent takes an action - modifying data, executing code, triggering a financial transaction - there is no mechanism to attribute that action to a specific agent instance, audit the decision chain, or roll back the consequence. In a regulated environment, this is not a theoretical risk. It is an audit failure waiting to be found.',
+  moderate: 'Your assessment indicates some agents are tracked but the framework is incomplete. Partial coverage is the most dangerous posture: it creates a false sense of governance while leaving the highest-risk agents - those with the broadest access - potentially unmonitored. A complete agentic identity framework needs to cover every agent, not most of them.',
+  strong:   'Your assessment indicates a mature approach to agentic AI governance. As your agent deployment scales, the priority is ensuring your framework grows with it - particularly as newer, more capable agents request broader system access. The edge cases that matter most are the ones your current framework was not designed for yet.'
 };
 
 const p3Findings = {
-  critical: 'Your assessment indicates no formal cryptographic inventory has been conducted and post-quantum readiness is not on your active roadmap. Nation-state actors are currently executing "harvest now, decrypt later" operations — archiving your encrypted data today to decrypt when quantum capability arrives. NIST finalised its Post-Quantum Cryptographic standards in 2024. The migration timeline for large GCC environments is 3-5 years. The organisations that have not started are the ones that will not finish before the threat becomes real.',
+  critical: 'Your assessment indicates no formal cryptographic inventory has been conducted and post-quantum readiness is not on your active roadmap. Nation-state actors are currently executing "harvest now, decrypt later" operations - archiving your encrypted data today to decrypt when quantum capability arrives. NIST finalised its Post-Quantum Cryptographic standards in 2024. The migration timeline for large GCC environments is 3-5 years. The organisations that have not started are the ones that will not finish before the threat becomes real.',
   moderate: 'Your assessment indicates partial awareness of post-quantum risk but no formal migration programme. Knowing the risk exists is not the same as having a plan to address it. A PQC readiness assessment converts your current "known unknown" into a mapped, prioritised, and costed migration roadmap that your board can review and approve.',
   strong:   'Your assessment indicates a proactive posture on post-quantum readiness. This is a significant competitive advantage as regulatory pressure on PQC migration increases. The strategic priority is completing the cryptographic inventory, validating your NIST PQC algorithm selections, and beginning the migration of your highest-sensitivity data stores.'
 };
@@ -855,7 +855,7 @@ function renderReport() {
   // Summary
   const topPillar = d.p1Score >= d.p2Score && d.p1Score >= d.p3Score ? 'AI Sovereignty & Data Leakage' :
                     d.p2Score >= d.p3Score ? 'Agentic Accountability' : 'Post-Quantum Defense';
-  document.getElementById('top-pillar-cell').textContent = topPillar + ' — score ' + Math.max(d.p1Score, d.p2Score, d.p3Score) + '/100. This is where your first 30 days of remediation should be focused.';
+  document.getElementById('top-pillar-cell').textContent = topPillar + ' - score ' + Math.max(d.p1Score, d.p2Score, d.p3Score) + '/100. This is where your first 30 days of remediation should be focused.';
 
   // Pillars
   const p1El = document.getElementById('p1-tag');
@@ -885,10 +885,10 @@ function renderReport() {
   document.getElementById('p3-score').className = 'pillar-score-num ' + p3.cls;
 
   // Benchmarks — based on their answers
-  document.getElementById('bm-policy').textContent = d.p1Score >= 60 ? 'Likely not yet — below peer average' : 'Partially in place — at or above peer average';
-  document.getElementById('bm-llm').textContent    = d.p1Score >= 70 ? 'Not deployed — significant gap vs 19% peer baseline' : 'Partial or exploratory';
-  document.getElementById('bm-agent').textContent  = d.p2Score >= 70 ? 'Not operational — agents inherit human credentials' : d.p2Score >= 45 ? 'Partial — incomplete coverage' : 'Operational — ahead of 89% of peers';
-  document.getElementById('bm-pqc').textContent    = d.p3Score >= 70 ? 'Not started — below the 18% that have begun' : d.p3Score >= 45 ? 'Partially mapped — approaching peer baseline' : 'Assessment complete — ahead of 82% of peers';
+  document.getElementById('bm-policy').textContent = d.p1Score >= 60 ? 'Likely not yet - below peer average' : 'Partially in place - at or above peer average';
+  document.getElementById('bm-llm').textContent    = d.p1Score >= 70 ? 'Not deployed - significant gap vs 19% peer baseline' : 'Partial or exploratory';
+  document.getElementById('bm-agent').textContent  = d.p2Score >= 70 ? 'Not operational - agents inherit human credentials' : d.p2Score >= 45 ? 'Partial - incomplete coverage' : 'Operational - ahead of 89% of peers';
+  document.getElementById('bm-pqc').textContent    = d.p3Score >= 70 ? 'Not started - below the 18% that have begun' : d.p3Score >= 45 ? 'Partially mapped - approaching peer baseline' : 'Assessment complete - ahead of 82% of peers';
 }
 
 // ── SCROLL REVEAL ──
