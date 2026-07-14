@@ -134,7 +134,29 @@ export default function App() {
         </html>
       `;
 
-      console.log('Frontend Mode: Simulated email dispatch to:', contactInfo.email);
+      const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+      if (isLocal) {
+        console.log('Development Mode: Simulated email dispatch to:', contactInfo.email);
+      } else {
+        fetch('/.netlify/functions/send-email', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: contactInfo.email,
+            subject: 'Your Magneto AI Readiness Report',
+            html: emailHtml
+          })
+        })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => console.log('Magneto email sent successfully:', data))
+        .catch(err => console.error('Production email dispatch failed:', err.message));
+      }
 
     } catch (err) {
       console.error('Failed to generate shareable report token:', err);
