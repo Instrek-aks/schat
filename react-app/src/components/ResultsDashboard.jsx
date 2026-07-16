@@ -50,7 +50,7 @@ function ScoreGauge({ pct, color }) {
   return <canvas ref={canvasRef} style={{width:'100%',height:'100%'}} />;
 }
 
-export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
+export default function ResultsDashboard({ answers, companyInfo, onRestart, previewOnly }) {
   const [barsAnimated, setBarsAnimated] = useState(false);
   const { calculateCategoryScores, calculateOverallScore } = useScoring();
   const [isExporting, setIsExporting] = useState(false);
@@ -201,7 +201,8 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
       </div>
 
       <div className="results-body">
-        {/* Hero Section */}
+
+        {/* Hero Section / Score gauge card — always displayed at the top */}
         <div className="score-hero">
           <div className="score-gauge-wrap">
             <ScoreGauge pct={overall} color={scoreColor} />
@@ -233,113 +234,189 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart }) {
           </div>
         </div>
 
-        {/* 01: Strategy Roadmap */}
-        <div className="r-section">
-          <div className="r-section-header">
-            <span className="r-section-num">01</span>
-            <span className="r-section-title">100-Day AI Acceleration Roadmap</span>
-          </div>
-          <div className="roadmap-phases">
-            {phases.map((p,i) => (
-              <div className="phase-card" key={i} style={{'--ph-color':p.ph}}>
-                <div className="phase-label">{p.label}</div>
-                <div className="phase-title">{p.title}</div>
-                <div className="phase-timeline" style={{color:p.ph}}>{p.tl}</div>
-                <div className="phase-items">
-                  {p.items.map((item,j) => (
-                    <div className="phase-item" key={j}>{item}</div>
-                  ))}
-                </div>
-                <div className="phase-impact" style={{background:p.ib,color:p.ic}}>⟶ {p.impact}</div>
-              </div>
-            ))}
-          </div>
-        </div>
+        {previewOnly ? (
+          /* PREVIEW MODE: Confirmation message instructing the user to check their email */
+          <div style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '48px 32px',
+            textAlign: 'center',
+            background: 'var(--bg2)',
+            border: '1px solid var(--border)',
+            borderRadius: '24px',
+            marginTop: '24px',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+          }}>
+            {/* Email Icon */}
+            <div style={{
+              width: 64,
+              height: 64,
+              borderRadius: '50%',
+              background: 'rgba(91,124,255,0.12)',
+              border: '1.5px solid rgba(91,124,255,0.3)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: 28,
+              marginBottom: 20,
+            }}>✉️</div>
 
-        {/* 02: Dimension Breakdown */}
-        <div className="r-section">
-          <div className="r-section-header">
-            <span className="r-section-num">02</span>
-            <span className="r-section-title">Dimension Performance & Benchmarking</span>
-          </div>
-          <div className="results-split">
-            <div className="cat-breakdown-grid">
-              {CATEGORIES.map((cat, i) => {
-                const pct = catScores[i];
-                const t = getTier(pct);
-                return (
-                  <div className="cbd-card" key={cat.id} style={{'--cbd-color': cat.color}}>
-                    <div className="cbd-top">
-                      <div className="cbd-name">{cat.icon} {cat.name}</div>
-                      <div className="cbd-pct" style={{color: cat.color}}>{pct}%</div>
-                    </div>
-                    <div className="cbd-bar-wrap">
-                      <div className="cbd-bar" style={{width: barsAnimated ? pct+'%' : '0%', background: cat.color}} />
-                    </div>
-                    <div className="cbd-tier" style={{background: t.color+'12', color: t.color, border:`1px solid ${t.color}22`}}>{t.name}</div>
-                    <div className="cbd-finding">{t.desc.slice(0, 100)}...</div>
-                  </div>
-                );
-              })}
+            {/* Main Message */}
+            <h3 style={{
+              fontFamily: "'Syne',sans-serif",
+              fontWeight: 800,
+              fontSize: 'clamp(20px, 4vw, 26px)',
+              color: '#ffffff',
+              lineHeight: 1.3,
+              marginBottom: 12,
+            }}>
+              Please check your email to see the full report.
+            </h3>
+
+            {/* Sub-description */}
+            <p style={{
+              fontSize: 14,
+              color: 'var(--muted)',
+              lineHeight: 1.7,
+              maxWidth: 480,
+              marginBottom: 32,
+            }}>
+              Your customized 100-day AI transformation roadmap and capability radar have been sent to{' '}
+              <strong style={{color: '#5B7CFF'}}>{companyInfo.email}</strong>.
+            </p>
+
+            {/* CTAs */}
+            <div style={{display:'flex', flexDirection:'column', gap:12, width:'100%', maxWidth:320}}>
+              <button
+                className="btn-cta"
+                style={{width:'100%', textAlign:'center'}}
+                onClick={() => window.open('https://instrek.com','_blank')}
+              >
+                BOOK A STRATEGY CALL →
+              </button>
+              <button
+                className="btn-restart"
+                style={{width:'100%', padding:'12px 0', borderRadius:8, fontSize:12}}
+                onClick={onRestart}
+              >
+                ↺ START NEW ASSESSMENT
+              </button>
             </div>
-            <div className="radar-card-wrap">
-              <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:18,marginBottom:24}}>AI Capability Radar</div>
-              <div style={{height:300,position:'relative'}}>
-                <Radar data={radarData} options={radarOptions} />
+          </div>
+        ) : (
+          <div className="results-body-inner">
+        
+            {/* 01: Strategy Roadmap */}
+            <div className="r-section">
+              <div className="r-section-header">
+                <span className="r-section-num">01</span>
+                <span className="r-section-title">100-Day AI Acceleration Roadmap</span>
               </div>
-              <div style={{marginTop:24,display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
-                {CATEGORIES.map((cat, i) => (
-                  <div key={i} style={{display:'flex',alignItems:'center',gap:8,fontSize:11}}>
-                    <div style={{width:6,height:6,borderRadius:'50%',background:cat.color}} />
-                    <span style={{color:'var(--muted)'}}>{cat.shortName}</span>
-                    <span style={{marginLeft:'auto',fontWeight:700}}>{catScores[i]}%</span>
+              <div className="roadmap-phases">
+                {phases.map((p,i) => (
+                  <div className="phase-card" key={i} style={{'--ph-color':p.ph}}>
+                    <div className="phase-label">{p.label}</div>
+                    <div className="phase-title">{p.title}</div>
+                    <div className="phase-timeline" style={{color:p.ph}}>{p.tl}</div>
+                    <div className="phase-items">
+                      {p.items.map((item,j) => (
+                        <div className="phase-item" key={j}>{item}</div>
+                      ))}
+                    </div>
+                    <div className="phase-impact" style={{background:p.ib,color:p.ic}}>⟶ {p.impact}</div>
                   </div>
                 ))}
               </div>
             </div>
-          </div>
-        </div>
 
-        {/* 03: Risks & Exposure */}
-        <div className="r-section">
-          <div className="r-section-header">
-            <span className="r-section-num">03</span>
-            <span className="r-section-title">Risk Exposure Analysis</span>
-          </div>
-          <div className="risk-grid">
-            {riskCards.map((r,i) => (
-              <div className="risk-card" key={i} style={{border:`2px solid ${r.bc}`, background:r.bc+'08'}}>
-                <div className="risk-card-type" style={{color:r.bc}}>{r.type.toUpperCase()}</div>
-                <div className="risk-card-title">{r.title}</div>
-                <div className="risk-card-body">{r.body}</div>
-                <div className="risk-card-value" style={{color:r.bc}}>{r.val}</div>
+            {/* 02: Dimension Breakdown */}
+            <div className="r-section">
+              <div className="r-section-header">
+                <span className="r-section-num">02</span>
+                <span className="r-section-title">Dimension Performance & Benchmarking</span>
               </div>
-            ))}
-          </div>
-        </div>
+              <div className="results-split">
+                <div className="cat-breakdown-grid">
+                  {CATEGORIES.map((cat, i) => {
+                    const pct = catScores[i];
+                    const t = getTier(pct);
+                    return (
+                      <div className="cbd-card" key={cat.id} style={{'--cbd-color': cat.color}}>
+                        <div className="cbd-top">
+                          <div className="cbd-name">{cat.icon} {cat.name}</div>
+                          <div className="cbd-pct" style={{color: cat.color}}>{pct}%</div>
+                        </div>
+                        <div className="cbd-bar-wrap">
+                          <div className="cbd-bar" style={{width: barsAnimated ? pct+'%' : '0%', background: cat.color}} />
+                        </div>
+                        <div className="cbd-tier" style={{background: t.color+'12', color: t.color, border:`1px solid ${t.color}22`}}>{t.name}</div>
+                        <div className="cbd-finding">{t.desc.slice(0, 100)}...</div>
+                      </div>
+                    );
+                  })}
+                </div>
+                <div className="radar-card-wrap">
+                  <div style={{fontFamily:"'Syne',sans-serif",fontWeight:800,fontSize:18,marginBottom:24}}>AI Capability Radar</div>
+                  <div style={{height:300,position:'relative'}}>
+                    <Radar data={radarData} options={radarOptions} />
+                  </div>
+                  <div style={{marginTop:24,display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+                    {CATEGORIES.map((cat, i) => (
+                      <div key={i} style={{display:'flex',alignItems:'center',gap:8,fontSize:11}}>
+                        <div style={{width:6,height:6,borderRadius:'50%',background:cat.color}} />
+                        <span style={{color:'var(--muted)'}}>{cat.shortName}</span>
+                        <span style={{marginLeft:'auto',fontWeight:700}}>{catScores[i]}%</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
 
-        {/* Final Sprint CTA */}
-        <div className="sprint-cta">
-          <div>
-            <div className="sprint-cta-logo">
-              <img src="/logo.png" alt="Instrek" className="logo-img-inv" />
+            {/* 03: Risks & Exposure */}
+            <div className="r-section">
+              <div className="r-section-header">
+                <span className="r-section-num">03</span>
+                <span className="r-section-title">Risk Exposure Analysis</span>
+              </div>
+              <div className="risk-grid">
+                {riskCards.map((r,i) => (
+                  <div className="risk-card" key={i} style={{border:`2px solid ${r.bc}`, background:r.bc+'08'}}>
+                    <div className="risk-card-type" style={{color:r.bc}}>{r.type.toUpperCase()}</div>
+                    <div className="risk-card-title">{r.title}</div>
+                    <div className="risk-card-body">{r.body}</div>
+                    <div className="risk-card-value" style={{color:r.bc}}>{r.val}</div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="sprint-cta-title">
-              {overall}% - YOUR PATH TO AI LEADERSHIP
+
+            {/* Final Sprint CTA */}
+            <div className="sprint-cta">
+              <div>
+                <div className="sprint-cta-logo">
+                  <img src="/logo.png" alt="Instrek" className="logo-img-inv" />
+                </div>
+                <div className="sprint-cta-title">
+                  {overall}% - YOUR PATH TO AI LEADERSHIP
+                </div>
+                <div className="sprint-cta-body">
+                  Instrek has identified critical gaps across {weakNames}. Our 30-Day AI Acceleration Sprint delivers a prioritised roadmap, data architecture review, and governance framework - with a guaranteed path to your next maturity tier. Let's talk this week.
+                </div>
+              </div>
+              <button className="btn-cta" onClick={() => window.open('https://instrek.com','_blank')}>
+                BOOK A STRATEGY CALL →
+              </button>
             </div>
-            <div className="sprint-cta-body">
-              Instrek has identified critical gaps across {weakNames}. Our 30-Day AI Acceleration Sprint delivers a prioritised roadmap, data architecture review, and governance framework - with a guaranteed path to your next maturity tier. Let's talk this week.
+
+            <div className="results-footer">
+              <div>Copyright 2026 Instrek Technologies</div>
+              <button className="btn-restart" onClick={onRestart}>↺ START NEW ASSESSMENT</button>
             </div>
           </div>
-          <button className="btn-cta" onClick={() => window.open('https://instrek.com','_blank')}>
-            BOOK A STRATEGY CALL →
-          </button>
-        </div>
-
-        <div className="results-footer">
-          <div>© 2025 Instrek. AI Readiness Platform v2.8 - Confidential</div>
-          <button className="btn-restart" onClick={onRestart}>↺ START NEW ASSESSMENT</button>
-        </div>
+        )}
       </div>
     </div>
   );

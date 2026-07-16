@@ -12,7 +12,7 @@ export default function AssessmentPanel({ sessionId, onClose, onComplete }) {
   const [answers, setAnswers] = useState(() => {
     if (sessionId) {
       try {
-        const saved = localStorage.getItem(`magneto_answers_${sessionId}`);
+        const saved = localStorage.getItem(`instrek_answers_${sessionId}`);
         if (saved) return JSON.parse(saved);
       } catch (e) {
         console.error('Failed to parse saved answers from localStorage:', e);
@@ -40,7 +40,7 @@ export default function AssessmentPanel({ sessionId, onClose, onComplete }) {
     
     if (sessionId) {
       try {
-        localStorage.setItem(`magneto_answers_${sessionId}`, JSON.stringify(nextAnswers));
+        localStorage.setItem(`instrek_answers_${sessionId}`, JSON.stringify(nextAnswers));
       } catch (err) {
         console.error('Failed to save answers to localStorage:', err);
       }

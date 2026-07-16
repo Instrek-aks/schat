@@ -21,12 +21,13 @@ export default function App() {
   const [assessmentAnswers, setAssessmentAnswers] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [isIntakeOpen, setIsIntakeOpen] = useState(false);
+  const [previewOnly, setPreviewOnly] = useState(false);
 
   // Check URL for report link on mount
   useEffect(() => {
     const path = window.location.pathname;
     if (path.startsWith('/report/')) {
-      const token = path.split('/')[2];
+      const token = path.substring('/report/'.length);
       if (token) {
         fetchReport(token);
       }
@@ -35,21 +36,24 @@ export default function App() {
 
   async function fetchReport(token) {
     try {
-      // Decode Base64 token in client
-      const decoded = JSON.parse(decodeURIComponent(escape(window.atob(token))));
+      // Decode URL-safe Base64 token → restore standard Base64 → parse JSON
+      const standardB64 = token.replace(/-/g, '+').replace(/_/g, '/');
+      const decoded = JSON.parse(decodeURIComponent(escape(window.atob(standardB64))));
       setCompanyInfo(decoded.companyInfo);
       setAssessmentAnswers(decoded.answers);
+      setPreviewOnly(false);
       setView('results');
     } catch (err) {
       console.error('Error decoding report token client-side:', err);
       // Fallback: try calling backend in case it's an old DB-based token
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
       try {
-        const res = await fetch(`${apiUrl}/api/magneto/report/${token}`);
+        const res = await fetch(`${apiUrl}/api/instrek/report/${token}`);
         if (res.ok) {
           const data = await res.json();
           setCompanyInfo(data.companyInfo);
           setAssessmentAnswers(data.answers);
+          setPreviewOnly(false);
           setView('results');
         } else {
           setView('home');
@@ -65,7 +69,7 @@ export default function App() {
     setCompanyInfo(info);
     
     // Generate a unique client-side session ID
-    const clientSessionId = 'magneto_' + Math.random().toString(36).substring(2, 11);
+    const clientSessionId = 'instrek_' + Math.random().toString(36).substring(2, 11);
     setSessionId(clientSessionId);
 
     setView('assessment');
@@ -82,6 +86,7 @@ export default function App() {
     const updatedContactInfo = { ...contactInfo, email: emailLower };
     const fullInfo = { ...companyInfo, ...updatedContactInfo };
     setCompanyInfo(fullInfo);
+    setPreviewOnly(true);
     setView('results');
     document.body.style.overflow = 'auto';
 
@@ -93,11 +98,14 @@ export default function App() {
     };
 
     try {
-      // Encode report payload into a Base64 string
-      const token = window.btoa(unescape(encodeURIComponent(JSON.stringify(reportPayload))));
-      // Update browser URL history state to point to /report/<token>
+      // Encode as URL-safe Base64: replace + → - and / → _ so token has no URL path separators
+      const token = window.btoa(unescape(encodeURIComponent(JSON.stringify(reportPayload))))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=+$/, '');
+      // Push /report URL so email link refresh works correctly
       window.history.pushState({}, '', `/report/${token}`);
-      localStorage.setItem('magneto_report_token', token);
+      localStorage.setItem('instrek_report_token', token);
 
       const shareableLink = `${window.location.origin}/report/${token}`;
 
@@ -118,9 +126,9 @@ export default function App() {
         </head>
         <body>
           <div class="container">
-            <div class="header">Instrek Magneto</div>
+            <div class="header">Instrek AI Readiness Report</div>
             <p style="color: #A0AEC0; font-size: 15px;">Hi ${contactInfo.name || 'Leader'},</p>
-            <p style="color: #A0AEC0; font-size: 15px; line-height: 1.6;">Thank you for completing the Magneto AI Readiness Assessment for <strong>${fullInfo.company || 'your organisation'}</strong>. Your custom AI transformation roadmap is ready.</p>
+            <p style="color: #A0AEC0; font-size: 15px; line-height: 1.6;">Thank you for completing the Instrek AI Readiness Assessment for <strong>${fullInfo.company || 'your organisation'}</strong>. Your custom AI transformation roadmap is ready.</p>
             <div class="score-card">
               <div class="score-title">AI Readiness Assessment</div>
               <p style="color: #00FFA3; font-size: 18px; font-weight: bold; margin-top: 10px;">Report Generated Successfully</p>
@@ -141,7 +149,7 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: contactInfo.email,
-          subject: 'Your Magneto AI Readiness Report',
+          subject: 'Your Instrek AI Readiness Report',
           html: emailHtml
         })
       })
@@ -241,6 +249,7 @@ export default function App() {
           answers={assessmentAnswers}
           companyInfo={companyInfo}
           onRestart={handleRestart}
+          previewOnly={previewOnly}
         />
       )}
     </div>
