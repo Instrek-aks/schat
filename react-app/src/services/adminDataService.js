@@ -113,6 +113,65 @@ export const adminDataService = {
     return allLeads;
   },
 
+  // Async method to fetch live data from backend API with fallback to localStorage
+  async fetchLiveMergedLeads() {
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    try {
+      const res = await fetch(`${apiUrl}/api/admin/leads`);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.leads)) {
+          const localLeads = this.getMergedLeads();
+          const map = new Map();
+
+          data.leads.forEach(l => {
+            if (l.email) map.set(l.email.toLowerCase().trim(), l);
+          });
+
+          localLeads.forEach(l => {
+            if (!l.email) return;
+            const key = l.email.toLowerCase().trim();
+            if (!map.has(key)) {
+              map.set(key, l);
+            } else {
+              // Merge if local has additional data
+              const existing = map.get(key);
+              if (l.magneto?.completed) existing.magneto = { ...existing.magneto, ...l.magneto };
+              if (l.gcc?.completed) existing.gcc = { ...existing.gcc, ...l.gcc };
+            }
+          });
+
+          const merged = Array.from(map.values());
+          merged.forEach(l => {
+            l.filledBoth = Boolean(l.magneto?.completed && l.gcc?.completed);
+          });
+
+          const both = merged.filter(l => l.filledBoth);
+          const magnetoCount = merged.filter(l => l.magneto?.completed).length;
+          const gccCount = merged.filter(l => l.gcc?.completed).length;
+
+          return {
+            success: true,
+            leads: merged,
+            summary: {
+              totalBoth: both.length,
+              totalMagneto: magnetoCount,
+              totalGcc: gccCount,
+              totalUnique: merged.length,
+              conversionRate: merged.length > 0 ? Math.round((both.length / merged.length) * 100) : 0
+            }
+          };
+        }
+      }
+    } catch (err) {
+      console.warn('Backend admin fetch failed, using client storage:', err);
+    }
+
+    const localLeads = this.getMergedLeads();
+    const summary = this.getSummaryMetrics();
+    return { success: false, leads: localLeads, summary };
+  },
+
   // Calculate summary metrics
   getSummaryMetrics() {
     const leads = this.getMergedLeads();

@@ -17,16 +17,52 @@ export default function AdminPanel({ onBack }) {
     gccScore: 74
   });
 
-  // Load leads and metrics on mount and tab change
+  // Load leads and metrics on mount and listen to storage events
   useEffect(() => {
     loadData();
+    const handleStorage = () => loadData();
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
-  function loadData() {
-    const allLeads = adminDataService.getMergedLeads();
-    const summary = adminDataService.getSummaryMetrics();
+  async function loadData() {
+    const { leads: allLeads, summary } = await adminDataService.fetchLiveMergedLeads();
     setLeads(allLeads);
     setMetrics(summary);
+  }
+
+  function handleRecordSubmission(e) {
+    e.preventDefault();
+    if (!newLeadForm.email || !newLeadForm.company) {
+      alert('Corporate Email and Company Name are required.');
+      return;
+    }
+
+    const emailLower = newLeadForm.email.trim().toLowerCase();
+
+    // Record AI Readiness submission
+    adminDataService.saveAiReadinessSubmission({
+      email: emailLower,
+      name: newLeadForm.name || 'Respondent',
+      company: newLeadForm.company || 'Enterprise',
+      role: newLeadForm.role || 'Executive Leader',
+      overallPct: newLeadForm.aiScore || 84,
+      tier: 'Leader'
+    });
+
+    // Record GCC submission
+    adminDataService.saveGccSubmission({
+      email: emailLower,
+      name: newLeadForm.name || 'Respondent',
+      company: newLeadForm.company || 'Enterprise',
+      role: newLeadForm.role || 'Executive Leader',
+      riskScore: newLeadForm.gccScore || 72,
+      tier: 'High Risk'
+    });
+
+    setIsAddModalOpen(false);
+    setNewLeadForm({ name: '', email: '', company: '', role: '', aiScore: 84, gccScore: 72 });
+    loadData();
   }
 
   // Filter leads according to active tab & search term

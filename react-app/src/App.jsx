@@ -94,8 +94,9 @@ export default function App() {
     setView('results');
     document.body.style.overflow = 'auto';
 
-    // Client-side submission recording for Admin Panel
-    adminDataService.saveAiReadinessSubmission({
+    // Client-side & Backend submission recording for Admin Panel
+    const magnetoPayload = {
+      sessionId: sessionId || 'session_' + Date.now(),
       email: emailLower,
       name: updatedContactInfo.name || 'Leader',
       company: fullInfo.company || 'Enterprise',
@@ -104,7 +105,24 @@ export default function App() {
       revenue: fullInfo.revenue || 'N/A',
       overallPct: 84,
       tier: 'Leader'
-    });
+    };
+
+    adminDataService.saveAiReadinessSubmission(magnetoPayload);
+
+    // POST to backend MongoDB database
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    fetch(`${apiUrl}/api/magneto/gate`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId: magnetoPayload.sessionId,
+        email: emailLower,
+        name: magnetoPayload.name,
+        answers: assessmentAnswers,
+        overallPct: magnetoPayload.overallPct,
+        tier: magnetoPayload.tier
+      })
+    }).catch(err => console.warn('Backend Magneto submission POST offline:', err));
 
     // Construct the full report payload
     const reportPayload = {

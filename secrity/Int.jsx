@@ -243,6 +243,14 @@ const SecurityRiskEngine = () => {
         const filteredGcc = gccSubmissions.filter(s => s.email?.trim().toLowerCase() !== emailLower);
         filteredGcc.unshift(reportPayload);
         localStorage.setItem('shieldgcc_submissions', JSON.stringify(filteredGcc));
+
+        // Also POST to backend database
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        fetch(`${apiUrl}/api/shieldgcc/leads`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(reportPayload)
+        }).catch(err => console.warn('Backend GCC submission POST offline:', err));
       } catch (err) {
         console.error('Failed to update shieldgcc_submissions in localStorage:', err);
       }

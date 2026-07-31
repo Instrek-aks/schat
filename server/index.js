@@ -7,6 +7,7 @@ const messageModelFactory = require('./models/Message');
 const shieldGccLeadModelFactory = require('./models/ShieldGccLead');
 const magnetoAssessmentModelFactory = require('./models/MagnetoAssessment');
 const magnetoRoutes = require('./routes/magnetoRoutes');
+const adminRoutes = require('./routes/adminRoutes');
 const { sendRiskReportEmail } = require('./utils/emailService');
 
 dotenv.config();
@@ -58,6 +59,9 @@ app.use('/api/chat', chatRoutes);
 
 // --- MAGNETO ROUTES ---
 app.use('/api/magneto', magnetoRoutes);
+
+// --- ADMIN ROUTES ---
+app.use('/api/admin', adminRoutes);
 
 // Endpoint to capture ShieldGCC risk scan leads
 app.post('/api/shieldgcc/leads', async (req, res) => {
