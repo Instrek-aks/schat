@@ -54,80 +54,16 @@ const SecurityRiskEngine = () => {
   const [errorReport, setErrorReport] = useState(null);
   const [createdLeadId, setCreatedLeadId] = useState(null);
 
-  // Check for leadId, report query parameter, or saved report on load
+  // On page load/refresh, clear report parameters and redirect to home hero screen
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const reportData = params.get('report') || params.get('importGcc');
     if (reportData) {
-      setLoadingReport(true);
-      try {
-        let cleanToken = reportData.split('/')[0].split('?')[0].split('#')[0];
-        let standardB64 = cleanToken.replace(/-/g, '+').replace(/_/g, '/');
-        while (standardB64.length % 4 !== 0) {
-          standardB64 += '=';
-        }
-        let decoded;
-        try {
-          decoded = JSON.parse(decodeURIComponent(escape(window.atob(standardB64))));
-        } catch(e) {
-          decoded = JSON.parse(window.atob(standardB64));
-        }
-        setReportLead(decoded);
-        setScreen('report');
-        localStorage.setItem('shieldgcc_active_report', JSON.stringify(decoded));
-      } catch (err) {
-        console.error('Failed to parse report parameter', err);
-        const savedReport = localStorage.getItem('shieldgcc_active_report');
-        if (savedReport) {
-          try {
-            const parsed = JSON.parse(savedReport);
-            if (parsed.email || parsed.riskScore) {
-              setReportLead(parsed);
-              setScreen('report');
-            }
-          } catch(e) {}
-        }
-      }
-      setLoadingReport(false);
-    } else {
-      const savedReport = localStorage.getItem('shieldgcc_active_report');
-      if (savedReport) {
-        try {
-          const parsed = JSON.parse(savedReport);
-          if (parsed.email || parsed.riskScore) {
-            setReportLead(parsed);
-            setScreen('report');
-            return;
-          }
-        } catch (e) {}
-      }
-
-      const leadId = params.get('leadId');
-      if (leadId) {
-        setLoadingReport(true);
-        const apiUrl = import.meta.env.VITE_API_URL;
-        if (apiUrl) {
-          fetch(`${apiUrl}/api/shieldgcc/leads/${leadId}`)
-            .then(res => {
-              if (!res.ok) throw new Error('Lead report not found');
-              return res.json();
-            })
-            .then(data => {
-              setReportLead(data);
-              setScreen('report');
-              localStorage.setItem('shieldgcc_active_report', JSON.stringify(data));
-              setLoadingReport(false);
-            })
-            .catch(err => {
-              console.error(err);
-              setErrorReport('Could not retrieve risk report. It may have expired or does not exist.');
-              setLoadingReport(false);
-            });
-        } else {
-          setLoadingReport(false);
-        }
-      }
+      window.history.replaceState({}, '', window.location.pathname);
     }
+    localStorage.removeItem('shieldgcc_active_report');
+    setScreen('hero');
+    setReportLead(null);
   }, []);
 
   // Fear rotation
