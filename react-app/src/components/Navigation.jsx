@@ -15,12 +15,12 @@ export default function Navigation({ onStartAssessment, onOpenAdmin }) {
           </span>
         </div>
 
-        {/* CTA Buttons */}
-        <div className="flex items-center gap-2.5">
+        {/* CTA Buttons - Hidden on small mobile screens */}
+        <div className="hidden sm:flex items-center gap-2.5">
           {onOpenAdmin && (
             <button
               onClick={onOpenAdmin}
-              className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-[11px] sm:text-[12.5px] font-semibold text-slate-200 transition-all flex items-center gap-1.5"
+              className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/15 text-[11px] sm:text-[12.5px] font-semibold text-slate-200 transition-all flex items-center gap-1.5 whitespace-nowrap"
             >
               <span>⚙️</span> Admin Panel
             </button>
@@ -28,7 +28,7 @@ export default function Navigation({ onStartAssessment, onOpenAdmin }) {
 
           <button 
             onClick={onStartAssessment}
-            className="relative group overflow-hidden px-3.5 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3 rounded-full bg-gradient-to-r from-accentBlue to-accentPurple text-[11px] sm:text-[12.5px] md:text-[14px] font-bold text-white tracking-wide shadow-[0_8px_24px_rgba(88,110,247,0.35)] hover:shadow-[0_12px_32px_rgba(88,110,247,0.5)] transition-all duration-300 hover:scale-[1.02] flex-shrink-0"
+            className="relative group overflow-hidden px-3.5 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3 rounded-full bg-gradient-to-r from-accentBlue to-accentPurple text-[11px] sm:text-[12.5px] md:text-[14px] font-bold text-white tracking-wide shadow-[0_8px_24px_rgba(88,110,247,0.35)] hover:shadow-[0_12px_32px_rgba(88,110,247,0.5)] transition-all duration-300 hover:scale-[1.02] flex-shrink-0 whitespace-nowrap"
           >
             <span className="relative z-10 flex items-center gap-1">
               Begin assessment <span className="group-hover:translate-x-1 transition-transform">→</span>
