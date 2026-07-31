@@ -87,8 +87,11 @@ export default function App() {
 
   async function fetchReport(token) {
     try {
-      // Decode URL-safe Base64 token → restore standard Base64 → parse JSON
-      const standardB64 = token.replace(/-/g, '+').replace(/_/g, '/');
+      // Restore Base64 padding & convert URL-safe Base64 → standard Base64 → parse JSON
+      let standardB64 = token.replace(/-/g, '+').replace(/_/g, '/');
+      while (standardB64.length % 4 !== 0) {
+        standardB64 += '=';
+      }
       const decoded = JSON.parse(decodeURIComponent(escape(window.atob(standardB64))));
       setCompanyInfo(decoded.companyInfo);
       setAssessmentAnswers(decoded.answers);

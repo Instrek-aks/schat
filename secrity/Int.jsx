@@ -61,7 +61,11 @@ const SecurityRiskEngine = () => {
     if (reportData) {
       setLoadingReport(true);
       try {
-        const decoded = JSON.parse(decodeURIComponent(escape(window.atob(reportData.replace(/-/g, '+').replace(/_/g, '/')))));
+        let b64 = reportData.replace(/-/g, '+').replace(/_/g, '/');
+        while (b64.length % 4 !== 0) {
+          b64 += '=';
+        }
+        const decoded = JSON.parse(decodeURIComponent(escape(window.atob(b64))));
         setReportLead(decoded);
         setScreen('report');
         localStorage.setItem('shieldgcc_active_report', JSON.stringify(decoded));
