@@ -14,9 +14,50 @@ const SEED_EMAILS = [
   'marcus.vance@cloudnexus.io'
 ];
 
+// BroadcastChannel for cross-port real-time synchronization between secrity and react-app
+try {
+  const channel = new BroadcastChannel('shieldgcc_channel');
+  channel.onmessage = (event) => {
+    if (event.data?.type === 'GCC_LEAD_SUBMITTED' && event.data?.payload) {
+      adminDataService.saveGccSubmission(event.data.payload);
+      window.dispatchEvent(new Event('storage'));
+    }
+  };
+} catch (e) {}
+
 export const adminDataService = {
   // Read raw submissions from localStorage (ONLY real submissions, excluding old seed data)
   getRawSubmissions() {
+    // Check URL parameters for imported GCC or Magneto reports
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const importGcc = urlParams.get('importGcc') || urlParams.get('report');
+      if (importGcc) {
+        try {
+          const decodedStr = decodeURIComponent(escape(window.atob(importGcc.replace(/-/g, '+').replace(/_/g, '/'))));
+          const parsed = JSON.parse(decodedStr);
+          if (parsed.email) {
+            if (parsed.riskScore !== undefined || parsed.p1Score !== undefined) {
+              this.saveGccSubmission(parsed);
+            } else if (parsed.companyInfo) {
+              this.saveAiReadinessSubmission({
+                email: parsed.companyInfo.email,
+                name: parsed.companyInfo.name,
+                company: parsed.companyInfo.company,
+                role: parsed.companyInfo.role,
+                size: parsed.companyInfo.size,
+                revenue: parsed.companyInfo.revenue,
+                overallPct: 84,
+                tier: 'Leader'
+              });
+            }
+          }
+        } catch (e) {
+          // Silent catch for non-matching tokens
+        }
+      }
+    } catch (e) {}
+
     try {
       const magnetoRaw = localStorage.getItem(STORES.MAGNETO);
       const gccRaw = localStorage.getItem(STORES.GCC);
@@ -113,58 +154,59 @@ export const adminDataService = {
     return allLeads;
   },
 
-  // Async method to fetch live data from backend API with fallback to localStorage
+  // Async method to fetch merged leads (pure frontend mode by default, or API if VITE_API_URL is defined)
   async fetchLiveMergedLeads() {
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    try {
-      const res = await fetch(`${apiUrl}/api/admin/leads`);
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && Array.isArray(data.leads)) {
-          const localLeads = this.getMergedLeads();
-          const map = new Map();
+    const apiUrl = import.meta.env.VITE_API_URL;
+    if (apiUrl) {
+      try {
+        const res = await fetch(`${apiUrl}/api/admin/leads`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && Array.isArray(data.leads)) {
+            const localLeads = this.getMergedLeads();
+            const map = new Map();
 
-          data.leads.forEach(l => {
-            if (l.email) map.set(l.email.toLowerCase().trim(), l);
-          });
+            data.leads.forEach(l => {
+              if (l.email) map.set(l.email.toLowerCase().trim(), l);
+            });
 
-          localLeads.forEach(l => {
-            if (!l.email) return;
-            const key = l.email.toLowerCase().trim();
-            if (!map.has(key)) {
-              map.set(key, l);
-            } else {
-              // Merge if local has additional data
-              const existing = map.get(key);
-              if (l.magneto?.completed) existing.magneto = { ...existing.magneto, ...l.magneto };
-              if (l.gcc?.completed) existing.gcc = { ...existing.gcc, ...l.gcc };
-            }
-          });
+            localLeads.forEach(l => {
+              if (!l.email) return;
+              const key = l.email.toLowerCase().trim();
+              if (!map.has(key)) {
+                map.set(key, l);
+              } else {
+                const existing = map.get(key);
+                if (l.magneto?.completed) existing.magneto = { ...existing.magneto, ...l.magneto };
+                if (l.gcc?.completed) existing.gcc = { ...existing.gcc, ...l.gcc };
+              }
+            });
 
-          const merged = Array.from(map.values());
-          merged.forEach(l => {
-            l.filledBoth = Boolean(l.magneto?.completed && l.gcc?.completed);
-          });
+            const merged = Array.from(map.values());
+            merged.forEach(l => {
+              l.filledBoth = Boolean(l.magneto?.completed && l.gcc?.completed);
+            });
 
-          const both = merged.filter(l => l.filledBoth);
-          const magnetoCount = merged.filter(l => l.magneto?.completed).length;
-          const gccCount = merged.filter(l => l.gcc?.completed).length;
+            const both = merged.filter(l => l.filledBoth);
+            const magnetoCount = merged.filter(l => l.magneto?.completed).length;
+            const gccCount = merged.filter(l => l.gcc?.completed).length;
 
-          return {
-            success: true,
-            leads: merged,
-            summary: {
-              totalBoth: both.length,
-              totalMagneto: magnetoCount,
-              totalGcc: gccCount,
-              totalUnique: merged.length,
-              conversionRate: merged.length > 0 ? Math.round((both.length / merged.length) * 100) : 0
-            }
-          };
+            return {
+              success: true,
+              leads: merged,
+              summary: {
+                totalBoth: both.length,
+                totalMagneto: magnetoCount,
+                totalGcc: gccCount,
+                totalUnique: merged.length,
+                conversionRate: merged.length > 0 ? Math.round((both.length / merged.length) * 100) : 0
+              }
+            };
+          }
         }
+      } catch (err) {
+        // Silent fallback to client storage
       }
-    } catch (err) {
-      console.warn('Backend admin fetch failed, using client storage:', err);
     }
 
     const localLeads = this.getMergedLeads();

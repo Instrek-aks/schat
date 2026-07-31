@@ -50,22 +50,21 @@ export default function App() {
     } catch (err) {
       console.error('Error decoding report token client-side:', err);
       // Fallback: try calling backend in case it's an old DB-based token
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      try {
-        const res = await fetch(`${apiUrl}/api/instrek/report/${token}`);
-        if (res.ok) {
-          const data = await res.json();
-          setCompanyInfo(data.companyInfo);
-          setAssessmentAnswers(data.answers);
-          setPreviewOnly(false);
-          setView('results');
-        } else {
-          setView('home');
-        }
-      } catch (e) {
-        console.error('Fallback report fetch failed:', e);
-        setView('home');
+      const apiUrl = import.meta.env.VITE_API_URL;
+      if (apiUrl) {
+        try {
+          const res = await fetch(`${apiUrl}/api/instrek/report/${token}`);
+          if (res.ok) {
+            const data = await res.json();
+            setCompanyInfo(data.companyInfo);
+            setAssessmentAnswers(data.answers);
+            setPreviewOnly(false);
+            setView('results');
+            return;
+          }
+        } catch (e) {}
       }
+      setView('home');
     }
   }
 
@@ -109,20 +108,22 @@ export default function App() {
 
     adminDataService.saveAiReadinessSubmission(magnetoPayload);
 
-    // POST to backend MongoDB database
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    fetch(`${apiUrl}/api/magneto/gate`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        sessionId: magnetoPayload.sessionId,
-        email: emailLower,
-        name: magnetoPayload.name,
-        answers: assessmentAnswers,
-        overallPct: magnetoPayload.overallPct,
-        tier: magnetoPayload.tier
-      })
-    }).catch(err => console.warn('Backend Magneto submission POST offline:', err));
+    // POST to backend MongoDB database if API URL is configured
+    const apiUrl = import.meta.env.VITE_API_URL;
+    if (apiUrl) {
+      fetch(`${apiUrl}/api/magneto/gate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          sessionId: magnetoPayload.sessionId,
+          email: emailLower,
+          name: magnetoPayload.name,
+          answers: assessmentAnswers,
+          overallPct: magnetoPayload.overallPct,
+          tier: magnetoPayload.tier
+        })
+      }).catch(() => {});
+    }
 
     // Construct the full report payload
     const reportPayload = {

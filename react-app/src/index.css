@@ -678,6 +678,22 @@ h2 {
   display: none;
 }
 
+/* Global Utility to completely hide scrollbars */
+.scrollbar-none,
+.no-scrollbar,
+[class*="overflow-"] {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-none::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar,
+[class*="overflow-"]::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
 .cat-nav-btn {
   font-family: 'JetBrains Mono', monospace;
   font-size: 10px;

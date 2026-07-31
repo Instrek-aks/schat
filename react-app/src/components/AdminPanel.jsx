@@ -7,14 +7,16 @@ export default function AdminPanel({ onBack }) {
   const [leads, setLeads] = useState([]);
   const [metrics, setMetrics] = useState({ totalBoth: 0, totalMagneto: 0, totalGcc: 0, totalUnique: 0, conversionRate: 0 });
   const [selectedLead, setSelectedLead] = useState(null);
-  const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [newLeadForm, setNewLeadForm] = useState({
-    name: '',
+  const [isRecordModalOpen, setIsRecordModalOpen] = useState(false);
+  const [recordGccForm, setRecordGccForm] = useState({
     email: '',
+    name: '',
     company: '',
     role: '',
-    aiScore: 82,
-    gccScore: 74
+    riskScore: 72,
+    p1Score: 75,
+    p2Score: 68,
+    p3Score: 72
   });
 
   // Load leads and metrics on mount and listen to storage events
@@ -29,6 +31,34 @@ export default function AdminPanel({ onBack }) {
     const { leads: allLeads, summary } = await adminDataService.fetchLiveMergedLeads();
     setLeads(allLeads);
     setMetrics(summary);
+  }
+
+  function handleRecordGccSubmit(e) {
+    e.preventDefault();
+    if (!recordGccForm.email) {
+      alert('Corporate Email is required.');
+      return;
+    }
+
+    const emailLower = recordGccForm.email.trim().toLowerCase();
+    const payload = {
+      email: emailLower,
+      firstName: recordGccForm.name.split(' ')[0] || 'Leader',
+      lastName: recordGccForm.name.split(' ')[1] || '',
+      company: recordGccForm.company || 'Enterprise',
+      role: recordGccForm.role || 'Executive',
+      riskScore: recordGccForm.riskScore,
+      tier: recordGccForm.riskScore >= 70 ? 'Critical Exposure' : recordGccForm.riskScore >= 45 ? 'Moderate Risk' : 'Strong Foundation',
+      p1Score: recordGccForm.p1Score,
+      p2Score: recordGccForm.p2Score,
+      p3Score: recordGccForm.p3Score,
+      completedAt: new Date().toISOString()
+    };
+
+    adminDataService.saveGccSubmission(payload);
+    setIsRecordModalOpen(false);
+    setRecordGccForm({ email: '', name: '', company: '', role: '', riskScore: 72, p1Score: 75, p2Score: 68, p3Score: 72 });
+    loadData();
   }
 
   function handleRecordSubmission(e) {
@@ -132,6 +162,13 @@ export default function AdminPanel({ onBack }) {
                 <span>←</span> Exit Admin
               </button>
             )}
+
+            <button
+              onClick={() => setIsRecordModalOpen(true)}
+              className="px-3.5 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-xs sm:text-sm font-semibold text-purple-300 transition-all flex items-center gap-1.5"
+            >
+              <span>🛡️</span> Record GCC Scan
+            </button>
 
             <button
               onClick={handleExportCsv}
@@ -353,17 +390,17 @@ export default function AdminPanel({ onBack }) {
               </button>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse">
+            <div className="overflow-x-auto scrollbar-none">
+              <table className="w-full text-left border-collapse min-w-[1050px]">
                 <thead>
-                  <tr className="border-b border-white/10 bg-[#070A16] text-[11px] font-bold text-slate-400 uppercase tracking-wider">
-                    <th className="py-4 px-5">Person / Mail</th>
-                    <th className="py-4 px-5">Company Name</th>
-                    <th className="py-4 px-5">Role & Size</th>
-                    <th className="py-4 px-5">AI Readiness</th>
-                    <th className="py-4 px-5">GCC Risk Scan</th>
-                    <th className="py-4 px-5">Form Status</th>
-                    <th className="py-4 px-5 text-right">Actions</th>
+                  <tr className="border-b border-white/10 bg-[#070A16] text-[11px] font-bold text-slate-400 uppercase tracking-wider whitespace-nowrap">
+                    <th className="py-4 px-5 min-w-[240px]">Person / Mail</th>
+                    <th className="py-4 px-5 min-w-[190px]">Company Name</th>
+                    <th className="py-4 px-5 min-w-[190px]">Role & Size</th>
+                    <th className="py-4 px-5 min-w-[160px]">AI Readiness</th>
+                    <th className="py-4 px-5 min-w-[160px]">GCC Risk Scan</th>
+                    <th className="py-4 px-5 min-w-[170px]">Form Status</th>
+                    <th className="py-4 px-5 min-w-[120px] text-right">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5 text-xs">
@@ -374,45 +411,45 @@ export default function AdminPanel({ onBack }) {
                     >
                       
                       {/* Person & Mail */}
-                      <td className="py-4 px-5">
+                      <td className="py-4 px-5 whitespace-nowrap">
                         <div className="flex items-center gap-3">
-                          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white text-xs shadow-md">
+                          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-600 to-purple-600 flex items-center justify-center font-bold text-white text-xs shadow-md flex-shrink-0">
                             {lead.name ? lead.name.charAt(0).toUpperCase() : 'U'}
                           </div>
-                          <div>
-                            <div className="font-bold text-white group-hover:text-blue-300 transition-colors">
+                          <div className="overflow-hidden">
+                            <div className="font-bold text-white group-hover:text-blue-300 transition-colors whitespace-nowrap">
                               {lead.name}
                             </div>
-                            <div className="text-blue-400 font-mono text-[11px] flex items-center gap-1">
-                              <span>{lead.email}</span>
+                            <div className="text-blue-400 font-mono text-[11px] whitespace-nowrap">
+                              {lead.email}
                             </div>
                           </div>
                         </div>
                       </td>
 
                       {/* Company Name */}
-                      <td className="py-4 px-5">
-                        <div className="font-bold text-slate-100 text-sm">{lead.company}</div>
-                        <div className="text-slate-400 text-[11px]">{lead.revenue || 'Enterprise'}</div>
+                      <td className="py-4 px-5 whitespace-nowrap">
+                        <div className="font-bold text-slate-100 text-sm whitespace-nowrap">{lead.company}</div>
+                        <div className="text-slate-400 text-[11px] whitespace-nowrap">{lead.revenue || 'Enterprise'}</div>
                       </td>
 
                       {/* Role & Size */}
-                      <td className="py-4 px-5">
-                        <div className="text-slate-200 font-medium">{lead.role}</div>
-                        <div className="text-slate-400 text-[11px]">Size: {lead.size}</div>
+                      <td className="py-4 px-5 whitespace-nowrap">
+                        <div className="text-slate-200 font-medium whitespace-nowrap">{lead.role}</div>
+                        <div className="text-slate-400 text-[11px] whitespace-nowrap">Size: {lead.size}</div>
                       </td>
 
                       {/* AI Readiness Score */}
-                      <td className="py-4 px-5">
+                      <td className="py-4 px-5 whitespace-nowrap">
                         {lead.magneto?.completed ? (
                           <div className="space-y-1">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 whitespace-nowrap">
                               <span className="font-bold text-emerald-400 text-sm">{lead.magneto.overallPct}%</span>
-                              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 whitespace-nowrap">
                                 {lead.magneto.tier}
                               </span>
                             </div>
-                            <div className="text-[10px] text-slate-400">
+                            <div className="text-[10px] text-slate-400 whitespace-nowrap">
                               {new Date(lead.magneto.completedAt).toLocaleDateString()}
                             </div>
                           </div>
@@ -422,16 +459,16 @@ export default function AdminPanel({ onBack }) {
                       </td>
 
                       {/* GCC Risk Score */}
-                      <td className="py-4 px-5">
+                      <td className="py-4 px-5 whitespace-nowrap">
                         {lead.gcc?.completed ? (
                           <div className="space-y-1">
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-2 whitespace-nowrap">
                               <span className="font-bold text-amber-400 text-sm">{lead.gcc.riskScore}/100</span>
-                              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-300 border border-amber-500/20 whitespace-nowrap">
                                 {lead.gcc.tier}
                               </span>
                             </div>
-                            <div className="text-[10px] text-slate-400">
+                            <div className="text-[10px] text-slate-400 whitespace-nowrap">
                               {new Date(lead.gcc.completedAt).toLocaleDateString()}
                             </div>
                           </div>
@@ -441,28 +478,28 @@ export default function AdminPanel({ onBack }) {
                       </td>
 
                       {/* Form Completion Status Badge */}
-                      <td className="py-4 px-5">
+                      <td className="py-4 px-5 whitespace-nowrap">
                         {lead.filledBoth ? (
-                          <span className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-500/40 font-bold text-[10px] tracking-wide inline-flex items-center gap-1.5 shadow-sm">
-                            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse" />
+                          <span className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-500/20 to-purple-500/20 text-blue-300 border border-blue-500/40 font-bold text-[10px] tracking-wide inline-flex items-center gap-1.5 shadow-sm whitespace-nowrap">
+                            <span className="w-2 h-2 rounded-full bg-blue-400 animate-pulse flex-shrink-0" />
                             BOTH FORMS FILLED
                           </span>
                         ) : lead.magneto?.completed ? (
-                          <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 text-[10px] font-medium">
+                          <span className="px-2.5 py-1 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/30 text-[10px] font-medium whitespace-nowrap">
                             AI Readiness Only
                           </span>
                         ) : (
-                          <span className="px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30 text-[10px] font-medium">
+                          <span className="px-2.5 py-1 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/30 text-[10px] font-medium whitespace-nowrap">
                             GCC Scan Only
                           </span>
                         )}
                       </td>
 
                       {/* Actions */}
-                      <td className="py-4 px-5 text-right">
+                      <td className="py-4 px-5 text-right whitespace-nowrap">
                         <button
                           onClick={() => setSelectedLead(lead)}
-                          className="px-3 py-1.5 rounded-lg bg-white/5 hover:bg-blue-600/30 hover:text-white border border-white/10 text-slate-300 transition-all font-semibold text-[11px]"
+                          className="px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-blue-600/30 hover:text-white border border-white/10 text-slate-300 transition-all font-semibold text-[11px] whitespace-nowrap"
                         >
                           View Profile
                         </button>
@@ -597,46 +634,45 @@ export default function AdminPanel({ onBack }) {
         </div>
       )}
 
-      {/* ADD TEST DUAL LEAD MODAL */}
-      {isAddModalOpen && (
+      {/* RECORD GCC SCAN MODAL */}
+      {isRecordModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="bg-[#0A0E22] border border-white/15 rounded-3xl max-w-md w-full p-6 sm:p-8 space-y-5 shadow-2xl relative">
             <button
-              onClick={() => setIsAddModalOpen(false)}
+              onClick={() => setIsRecordModalOpen(false)}
               className="absolute top-6 right-6 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center font-bold text-sm"
             >
               ✕
             </button>
 
             <div>
-              <h3 className="text-lg font-black text-white">Add Test Lead (Both Forms)</h3>
+              <h3 className="text-lg font-black text-white">Record GCC Risk Scan Submission</h3>
               <p className="text-xs text-slate-400 mt-1">
-                Simulate a respondent who has completed both AI Readiness & GCC forms.
+                Enter details to manually pair or record a GCC Risk Scan for an email address.
               </p>
             </div>
 
-            <form onSubmit={handleAddLeadSubmit} className="space-y-4 text-xs">
+            <form onSubmit={handleRecordGccSubmit} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Full Name</label>
+                <label className="block text-slate-300 mb-1 font-semibold">Respondent Corporate Email</label>
                 <input
-                  type="text"
+                  type="email"
                   required
-                  placeholder="e.g. Vikram Mehta"
-                  value={newLeadForm.name}
-                  onChange={e => setNewLeadForm({ ...newLeadForm, name: e.target.value })}
-                  className="w-full bg-[#050811] border border-white/10 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
+                  placeholder="e.g. respondent@company.com"
+                  value={recordGccForm.email}
+                  onChange={e => setRecordGccForm({ ...recordGccForm, email: e.target.value })}
+                  className="w-full bg-[#050811] border border-white/10 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Corporate Email Address</label>
+                <label className="block text-slate-300 mb-1 font-semibold">Respondent Full Name</label>
                 <input
-                  type="email"
-                  required
-                  placeholder="e.g. vikram.m@techcorp.com"
-                  value={newLeadForm.email}
-                  onChange={e => setNewLeadForm({ ...newLeadForm, email: e.target.value })}
-                  className="w-full bg-[#050811] border border-white/10 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
+                  type="text"
+                  placeholder="e.g. Vikram Mehta"
+                  value={recordGccForm.name}
+                  onChange={e => setRecordGccForm({ ...recordGccForm, name: e.target.value })}
+                  className="w-full bg-[#050811] border border-white/10 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
                 />
               </div>
 
@@ -644,46 +680,45 @@ export default function AdminPanel({ onBack }) {
                 <label className="block text-slate-300 mb-1 font-semibold">Company Name</label>
                 <input
                   type="text"
-                  required
-                  placeholder="e.g. TechCorp Solutions"
-                  value={newLeadForm.company}
-                  onChange={e => setNewLeadForm({ ...newLeadForm, company: e.target.value })}
-                  className="w-full bg-[#050811] border border-white/10 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
+                  placeholder="e.g. TechCorp GCC"
+                  value={recordGccForm.company}
+                  onChange={e => setRecordGccForm({ ...recordGccForm, company: e.target.value })}
+                  className="w-full bg-[#050811] border border-white/10 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 mb-1 font-semibold">Role / Designation</label>
+                <label className="block text-slate-300 mb-1 font-semibold">Role / Title</label>
                 <input
                   type="text"
-                  placeholder="e.g. Chief Information Officer"
-                  value={newLeadForm.role}
-                  onChange={e => setNewLeadForm({ ...newLeadForm, role: e.target.value })}
-                  className="w-full bg-[#050811] border border-white/10 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
+                  placeholder="e.g. VP of Security"
+                  value={recordGccForm.role}
+                  onChange={e => setRecordGccForm({ ...recordGccForm, role: e.target.value })}
+                  className="w-full bg-[#050811] border border-white/10 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-3 pt-2">
+              <div className="grid grid-cols-2 gap-3 pt-1">
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">AI Score (%)</label>
+                  <label className="block text-slate-300 mb-1 font-semibold">Risk Score (1-100)</label>
                   <input
                     type="number"
                     min="1"
                     max="100"
-                    value={newLeadForm.aiScore}
-                    onChange={e => setNewLeadForm({ ...newLeadForm, aiScore: parseInt(e.target.value) || 80 })}
-                    className="w-full bg-[#050811] border border-white/10 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
+                    value={recordGccForm.riskScore}
+                    onChange={e => setRecordGccForm({ ...recordGccForm, riskScore: parseInt(e.target.value) || 70 })}
+                    className="w-full bg-[#050811] border border-white/10 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 mb-1 font-semibold">GCC Risk Score</label>
+                  <label className="block text-slate-300 mb-1 font-semibold">P1 IP Risk</label>
                   <input
                     type="number"
                     min="1"
                     max="100"
-                    value={newLeadForm.gccScore}
-                    onChange={e => setNewLeadForm({ ...newLeadForm, gccScore: parseInt(e.target.value) || 75 })}
-                    className="w-full bg-[#050811] border border-white/10 focus:border-blue-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
+                    value={recordGccForm.p1Score}
+                    onChange={e => setRecordGccForm({ ...recordGccForm, p1Score: parseInt(e.target.value) || 75 })}
+                    className="w-full bg-[#050811] border border-white/10 focus:border-purple-500 rounded-xl px-3.5 py-2.5 text-white outline-none"
                   />
                 </div>
               </div>
@@ -691,16 +726,16 @@ export default function AdminPanel({ onBack }) {
               <div className="pt-3 flex gap-3">
                 <button
                   type="button"
-                  onClick={() => setIsAddModalOpen(false)}
+                  onClick={() => setIsRecordModalOpen(false)}
                   className="w-1/2 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold shadow-lg"
+                  className="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold shadow-lg"
                 >
-                  Save Lead
+                  Save GCC Lead
                 </button>
               </div>
             </form>

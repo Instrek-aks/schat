@@ -346,3 +346,17 @@
 .confirm-detail-row .cd-val { color: var(--text); font-weight: 500; }
 .confirm-back { padding: 12px 28px; border-radius: 12px; border: 0.5px solid var(--border); background: transparent; color: var(--text-sec); font-size: 14px; cursor: pointer; transition: all 0.15s; }
 .confirm-back:hover { border-color: var(--border-accent); color: var(--green); }
+
+/* Global Utility to completely hide scrollbars */
+::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+* {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}

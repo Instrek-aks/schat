@@ -244,13 +244,21 @@ const SecurityRiskEngine = () => {
         filteredGcc.unshift(reportPayload);
         localStorage.setItem('shieldgcc_submissions', JSON.stringify(filteredGcc));
 
-        // Also POST to backend database
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-        fetch(`${apiUrl}/api/shieldgcc/leads`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(reportPayload)
-        }).catch(err => console.warn('Backend GCC submission POST offline:', err));
+        // Real-time BroadcastChannel sync to Admin Panel across ports
+        try {
+          const channel = new BroadcastChannel('shieldgcc_channel');
+          channel.postMessage({ type: 'GCC_LEAD_SUBMITTED', payload: reportPayload });
+        } catch (e) {}
+
+        // POST to backend database if API URL is configured
+        const apiUrl = import.meta.env.VITE_API_URL;
+        if (apiUrl) {
+          fetch(`${apiUrl}/api/shieldgcc/leads`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(reportPayload)
+          }).catch(() => {});
+        }
       } catch (err) {
         console.error('Failed to update shieldgcc_submissions in localStorage:', err);
       }
@@ -695,6 +703,16 @@ const SecurityRiskEngine = () => {
                     style={{ marginBottom: '16px', width: '100%' }}
                   >
                     View My Live Risk Report →
+                  </button>
+                  <button
+                    className="cta-ghost"
+                    onClick={() => {
+                      const adminUrl = `http://localhost:5173/admin?importGcc=${createdLeadId}`;
+                      window.open(adminUrl, '_blank');
+                    }}
+                    style={{ marginBottom: '16px', width: '100%', border: '1px solid rgba(59,130,246,0.5)', color: '#60A5FA', background: 'rgba(59,130,246,0.15)', fontWeight: 'bold' }}
+                  >
+                    ⚙️ View in Admin Panel →
                   </button>
                   <button
                     className="cta-ghost"
