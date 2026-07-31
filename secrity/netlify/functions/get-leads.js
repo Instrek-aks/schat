@@ -42,22 +42,6 @@ export const handler = async (event) => {
     let magnetoDocs = await magnetoCol.find({}).toArray();
     let gccDocs = await gccCol.find({}).toArray();
 
-    // Auto-create database & initial records in MongoDB Atlas if empty
-    if (magnetoDocs.length === 0 && gccDocs.length === 0) {
-      await magnetoCol.insertOne({
-        sessionId: 'init_seed',
-        email: 'system.init@aiassest.org',
-        name: 'System Init',
-        company: 'AI Readiness System',
-        role: 'System',
-        size: '1-10',
-        revenue: 'N/A',
-        overallPct: 100,
-        tier: 'Leader',
-        completedAt: new Date()
-      });
-      magnetoDocs = await magnetoCol.find({}).toArray();
-    }
 
     const map = new Map();
 

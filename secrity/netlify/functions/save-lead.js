@@ -50,45 +50,33 @@ export const handler = async (event) => {
 
     if (data.riskScore !== undefined || data.p1Score !== undefined) {
       const gccCol = db.collection('gccleads');
-      await gccCol.updateOne(
-        { email: emailLower },
-        {
-          $set: {
-            email: emailLower,
-            name: data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim() || 'Respondent',
-            company: data.company || 'Enterprise',
-            role: data.role || 'Executive',
-            size: data.size || '500-2000',
-            riskScore: data.riskScore || 72,
-            tier: data.tier || 'High Risk',
-            p1Score: data.p1Score || 75,
-            p2Score: data.p2Score || 68,
-            p3Score: data.p3Score || 72,
-            completedAt: data.completedAt || new Date()
-          }
-        },
-        { upsert: true }
-      );
+      await gccCol.insertOne({
+        email: emailLower,
+        name: data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim() || null,
+        company: data.company || null,
+        role: data.role || null,
+        size: data.size || null,
+        riskScore: data.riskScore !== undefined ? data.riskScore : null,
+        tier: data.tier || null,
+        p1Score: data.p1Score !== undefined ? data.p1Score : null,
+        p2Score: data.p2Score !== undefined ? data.p2Score : null,
+        p3Score: data.p3Score !== undefined ? data.p3Score : null,
+        completedAt: data.completedAt ? new Date(data.completedAt) : new Date()
+      });
     } else {
       const magnetoCol = db.collection('magnetoleads');
-      await magnetoCol.updateOne(
-        { email: emailLower },
-        {
-          $set: {
-            sessionId: data.sessionId || 'session_' + Date.now(),
-            email: emailLower,
-            name: data.name || 'Leader',
-            company: data.company || 'Enterprise',
-            role: data.role || 'Executive',
-            size: data.size || '100-500',
-            revenue: data.revenue || 'N/A',
-            overallPct: data.overallPct || 84,
-            tier: data.tier || 'Leader',
-            completedAt: data.completedAt || new Date()
-          }
-        },
-        { upsert: true }
-      );
+      await magnetoCol.insertOne({
+        sessionId: data.sessionId || 'session_' + Date.now(),
+        email: emailLower,
+        name: data.name || null,
+        company: data.company || null,
+        role: data.role || null,
+        size: data.size || null,
+        revenue: data.revenue || null,
+        overallPct: data.overallPct !== undefined ? data.overallPct : null,
+        tier: data.tier || null,
+        completedAt: data.completedAt ? new Date(data.completedAt) : new Date()
+      });
     }
 
     return {
