@@ -61,17 +61,32 @@ const SecurityRiskEngine = () => {
     if (reportData) {
       setLoadingReport(true);
       try {
-        let b64 = reportData.replace(/-/g, '+').replace(/_/g, '/');
-        while (b64.length % 4 !== 0) {
-          b64 += '=';
+        let cleanToken = reportData.split('/')[0].split('?')[0].split('#')[0];
+        let standardB64 = cleanToken.replace(/-/g, '+').replace(/_/g, '/');
+        while (standardB64.length % 4 !== 0) {
+          standardB64 += '=';
         }
-        const decoded = JSON.parse(decodeURIComponent(escape(window.atob(b64))));
+        let decoded;
+        try {
+          decoded = JSON.parse(decodeURIComponent(escape(window.atob(standardB64))));
+        } catch(e) {
+          decoded = JSON.parse(window.atob(standardB64));
+        }
         setReportLead(decoded);
         setScreen('report');
         localStorage.setItem('shieldgcc_active_report', JSON.stringify(decoded));
       } catch (err) {
         console.error('Failed to parse report parameter', err);
-        setErrorReport('Could not decode this risk report link. The URL may be corrupted.');
+        const savedReport = localStorage.getItem('shieldgcc_active_report');
+        if (savedReport) {
+          try {
+            const parsed = JSON.parse(savedReport);
+            if (parsed.email || parsed.riskScore) {
+              setReportLead(parsed);
+              setScreen('report');
+            }
+          } catch(e) {}
+        }
       }
       setLoadingReport(false);
     } else {

@@ -85,14 +85,34 @@ export default function App() {
     }
   }, []);
 
-  async function fetchReport(token) {
+function decodeReportToken(rawToken) {
+  if (!rawToken) return null;
+  try {
+    let cleanToken = rawToken.split('/')[0].split('?')[0].split('#')[0];
+    let standardB64 = cleanToken.replace(/-/g, '+').replace(/_/g, '/');
+    while (standardB64.length % 4 !== 0) {
+      standardB64 += '=';
+    }
+    const decodedStr = decodeURIComponent(escape(window.atob(standardB64)));
+    return JSON.parse(decodedStr);
+  } catch (e) {
     try {
-      // Restore Base64 padding & convert URL-safe Base64 → standard Base64 → parse JSON
-      let standardB64 = token.replace(/-/g, '+').replace(/_/g, '/');
+      let cleanToken = rawToken.split('/')[0].split('?')[0].split('#')[0];
+      let standardB64 = cleanToken.replace(/-/g, '+').replace(/_/g, '/');
       while (standardB64.length % 4 !== 0) {
         standardB64 += '=';
       }
-      const decoded = JSON.parse(decodeURIComponent(escape(window.atob(standardB64))));
+      return JSON.parse(window.atob(standardB64));
+    } catch (e2) {
+      return null;
+    }
+  }
+}
+
+  async function fetchReport(token) {
+    // 1. Try decoding token directly
+    const decoded = decodeReportToken(token);
+    if (decoded && decoded.companyInfo && decoded.answers) {
       setCompanyInfo(decoded.companyInfo);
       setAssessmentAnswers(decoded.answers);
       setPreviewOnly(false);
@@ -102,14 +122,32 @@ export default function App() {
         answers: decoded.answers,
         token
       }));
-    } catch (err) {
-      console.error('Error decoding report token client-side:', err);
-      const apiUrl = import.meta.env.VITE_API_URL;
-      if (apiUrl) {
-        try {
-          const res = await fetch(`${apiUrl}/api/instrek/report/${token}`);
-          if (res.ok) {
-            const data = await res.json();
+      return;
+    }
+
+    // 2. Check localStorage backup before giving up
+    const savedReport = localStorage.getItem('instrek_active_report_data');
+    if (savedReport) {
+      try {
+        const parsed = JSON.parse(savedReport);
+        if (parsed.companyInfo && parsed.answers) {
+          setCompanyInfo(parsed.companyInfo);
+          setAssessmentAnswers(parsed.answers);
+          setPreviewOnly(false);
+          setView('results');
+          return;
+        }
+      } catch (e) {}
+    }
+
+    // 3. Optional backend fallback
+    const apiUrl = import.meta.env.VITE_API_URL;
+    if (apiUrl) {
+      try {
+        const res = await fetch(`${apiUrl}/api/instrek/report/${token}`);
+        if (res.ok) {
+          const data = await res.json();
+          if (data.companyInfo && data.answers) {
             setCompanyInfo(data.companyInfo);
             setAssessmentAnswers(data.answers);
             setPreviewOnly(false);
@@ -121,25 +159,11 @@ export default function App() {
             }));
             return;
           }
-        } catch (e) {}
-      }
-
-      // Check if we have localStorage backup before returning home
-      const savedReport = localStorage.getItem('instrek_active_report_data');
-      if (savedReport) {
-        try {
-          const parsed = JSON.parse(savedReport);
-          if (parsed.companyInfo && parsed.answers) {
-            setCompanyInfo(parsed.companyInfo);
-            setAssessmentAnswers(parsed.answers);
-            setPreviewOnly(false);
-            setView('results');
-            return;
-          }
-        } catch (e) {}
-      }
-      setView('home');
+        }
+      } catch (e) {}
     }
+
+    setView('home');
   }
 
   function handleLaunchAssessment(info) {
