@@ -1,10 +1,13 @@
 import { MongoClient } from 'mongodb';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://abcd:abcd@cluster0.fsxomwi.mongodb.net/aiassest?appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI;
 
 let cachedClient = null;
 
 async function getDatabase() {
+  if (!MONGODB_URI) {
+    throw new Error('MONGODB_URI environment variable is not defined');
+  }
   if (!cachedClient) {
     cachedClient = new MongoClient(MONGODB_URI, {
       serverSelectionTimeoutMS: 3000,
