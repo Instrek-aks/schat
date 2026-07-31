@@ -124,14 +124,15 @@ export const adminDataService = {
   // Get cross-referenced merged leads matched by Email for real respondents
   getMergedLeads() {
     const { magnetoSubmissions, gccSubmissions } = this.getRawSubmissions();
-    const leadsMap = new Map();
+    const leads = [];
 
     // Process Real Magneto Submissions
     magnetoSubmissions.forEach(sub => {
       if (!sub.email) return;
       const emailKey = sub.email.trim().toLowerCase();
 
-      leadsMap.set(emailKey, {
+      leads.push({
+        _id: sub._id || sub.sessionId || `magneto_${Date.now()}_${Math.random()}`,
         email: emailKey,
         name: sub.name || sub.leadInfo?.name || 'N/A',
         company: sub.company || sub.companyInfo?.company || 'N/A',
@@ -145,58 +146,50 @@ export const adminDataService = {
           dimensionScores: sub.dimensionScores || {},
           completedAt: sub.completedAt || sub.createdAt || new Date().toISOString()
         },
-        gcc: { completed: false }
+        gcc: { completed: false },
+        filledBoth: false
       });
     });
 
-    // Process & Match Real GCC Submissions
+    // Process Real GCC Submissions
     gccSubmissions.forEach(sub => {
       if (!sub.email) return;
       const emailKey = sub.email.trim().toLowerCase();
-      const existing = leadsMap.get(emailKey);
-
-      const gccData = {
-        completed: true,
-        riskScore: sub.riskScore || 0,
-        tier: sub.tier || 'N/A',
-        p1Score: sub.p1Score || 0,
-        p2Score: sub.p2Score || 0,
-        p3Score: sub.p3Score || 0,
-        completedAt: sub.completedAt || sub.timestamp || sub.createdAt || new Date().toISOString()
-      };
 
       const fullName = sub.firstName 
         ? `${sub.firstName} ${sub.lastName || ''}`.trim() 
         : (sub.name || 'N/A');
 
-      if (existing) {
-        existing.gcc = gccData;
-        if (existing.name === 'N/A' && fullName !== 'N/A') existing.name = fullName;
-        if (existing.company === 'N/A' && sub.company) existing.company = sub.company;
-        if (existing.role === 'N/A' && sub.role) existing.role = sub.role;
-        if (existing.size === 'N/A' && sub.size) existing.size = sub.size;
-      } else {
-        leadsMap.set(emailKey, {
-          email: emailKey,
-          name: fullName,
-          company: sub.company || 'N/A',
-          role: sub.role || 'N/A',
-          size: sub.size || 'N/A',
-          revenue: 'N/A',
-          magneto: { completed: false },
-          gcc: gccData
-        });
-      }
+      leads.push({
+        _id: sub._id || `gcc_${Date.now()}_${Math.random()}`,
+        email: emailKey,
+        name: fullName,
+        company: sub.company || 'N/A',
+        role: sub.role || 'N/A',
+        size: sub.size || 'N/A',
+        revenue: 'N/A',
+        magneto: { completed: false },
+        gcc: {
+          completed: true,
+          riskScore: sub.riskScore || 0,
+          tier: sub.tier || 'N/A',
+          p1Score: sub.p1Score || 0,
+          p2Score: sub.p2Score || 0,
+          p3Score: sub.p3Score || 0,
+          completedAt: sub.completedAt || sub.timestamp || sub.createdAt || new Date().toISOString()
+        },
+        filledBoth: false
+      });
     });
 
-    const allLeads = Array.from(leadsMap.values());
-
-    // Flag whether person filled BOTH forms
-    allLeads.forEach(lead => {
-      lead.filledBoth = Boolean(lead.magneto?.completed && lead.gcc?.completed);
+    // Sort by completedAt descending
+    leads.sort((a, b) => {
+      const dateA = new Date(a.magneto?.completed ? a.magneto.completedAt : a.gcc.completedAt);
+      const dateB = new Date(b.magneto?.completed ? b.magneto.completedAt : b.gcc.completedAt);
+      return dateB - dateA;
     });
 
-    return allLeads;
+    return leads;
   },
 
   // Async method to fetch merged leads from Cloud Database (Netlify function / API) with fallback to localStorage

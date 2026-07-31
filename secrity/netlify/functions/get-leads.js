@@ -43,12 +43,13 @@ export const handler = async (event) => {
     let gccDocs = await gccCol.find({}).toArray();
 
 
-    const map = new Map();
+    const leads = [];
 
     magnetoDocs.forEach(sub => {
       if (!sub.email) return;
       const key = sub.email.trim().toLowerCase();
-      map.set(key, {
+      leads.push({
+        _id: sub._id,
         email: key,
         name: sub.name || 'N/A',
         company: sub.company || 'N/A',
@@ -61,53 +62,45 @@ export const handler = async (event) => {
           tier: sub.tier || 'Leader',
           completedAt: sub.completedAt || new Date()
         },
-        gcc: { completed: false }
+        gcc: { completed: false },
+        filledBoth: false
       });
     });
 
     gccDocs.forEach(sub => {
       if (!sub.email) return;
       const key = sub.email.trim().toLowerCase();
-      const existing = map.get(key);
-
-      const gccData = {
-        completed: true,
-        riskScore: sub.riskScore || 72,
-        tier: sub.tier || 'High Risk',
-        p1Score: sub.p1Score || 75,
-        p2Score: sub.p2Score || 68,
-        p3Score: sub.p3Score || 72,
-        completedAt: sub.completedAt || new Date()
-      };
-
       const fullName = sub.name || `${sub.firstName || ''} ${sub.lastName || ''}`.trim() || 'N/A';
 
-      if (existing) {
-        existing.gcc = gccData;
-        if (existing.name === 'N/A' && fullName !== 'N/A') existing.name = fullName;
-        if (existing.company === 'N/A' && sub.company) existing.company = sub.company;
-        if (existing.role === 'N/A' && sub.role) existing.role = sub.role;
-        if (existing.size === 'N/A' && sub.size) existing.size = sub.size;
-      } else {
-        map.set(key, {
-          email: key,
-          name: fullName,
-          company: sub.company || 'N/A',
-          role: sub.role || 'N/A',
-          size: sub.size || 'N/A',
-          revenue: 'N/A',
-          magneto: { completed: false },
-          gcc: gccData
-        });
-      }
+      leads.push({
+        _id: sub._id,
+        email: key,
+        name: fullName,
+        company: sub.company || 'N/A',
+        role: sub.role || 'N/A',
+        size: sub.size || 'N/A',
+        revenue: 'N/A',
+        magneto: { completed: false },
+        gcc: {
+          completed: true,
+          riskScore: sub.riskScore || 72,
+          tier: sub.tier || 'High Risk',
+          p1Score: sub.p1Score || 75,
+          p2Score: sub.p2Score || 68,
+          p3Score: sub.p3Score || 72,
+          completedAt: sub.completedAt || new Date()
+        },
+        filledBoth: false
+      });
     });
 
-    const leads = Array.from(map.values());
-    leads.forEach(l => {
-      l.filledBoth = Boolean(l.magneto?.completed && l.gcc?.completed);
+    // Sort by completedAt descending
+    leads.sort((a, b) => {
+      const dateA = new Date(a.magneto?.completed ? a.magneto.completedAt : a.gcc.completedAt);
+      const dateB = new Date(b.magneto?.completed ? b.magneto.completedAt : b.gcc.completedAt);
+      return dateB - dateA;
     });
 
-    const both = leads.filter(l => l.filledBoth);
     const magnetoCount = leads.filter(l => l.magneto?.completed).length;
     const gccCount = leads.filter(l => l.gcc?.completed).length;
 

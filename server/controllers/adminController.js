@@ -14,7 +14,7 @@ exports.getAllLeads = async (req, res) => {
       ShieldGccLead.find({}).sort({ createdAt: -1 })
     ]);
 
-    const leadsMap = new Map();
+    const leads = [];
 
     // Process Magneto Assessments
     magnetoDocs.forEach(doc => {
@@ -22,7 +22,8 @@ exports.getAllLeads = async (req, res) => {
       if (!email) return;
       const emailKey = email.trim().toLowerCase();
 
-      leadsMap.set(emailKey, {
+      leads.push({
+        _id: doc._id,
         email: emailKey,
         name: doc.leadInfo?.name || 'N/A',
         company: doc.companyInfo?.company || 'N/A',
@@ -36,69 +37,62 @@ exports.getAllLeads = async (req, res) => {
           dimensionScores: doc.scores?.dimensionScores || {},
           completedAt: doc.completedAt || doc.createdAt
         },
-        gcc: { completed: false }
+        gcc: { completed: false },
+        filledBoth: false
       });
     });
 
-    // Process & Pair GCC Leads
+    // Process GCC Leads
     gccDocs.forEach(doc => {
       if (!doc.email) return;
       const emailKey = doc.email.trim().toLowerCase();
-      const existing = leadsMap.get(emailKey);
 
       const fullName = doc.firstName 
         ? `${doc.firstName} ${doc.lastName || ''}`.trim() 
         : 'N/A';
 
-      const gccData = {
-        completed: true,
-        riskScore: doc.riskScore || 0,
-        tier: doc.tier || 'N/A',
-        p1Score: doc.p1Score || 0,
-        p2Score: doc.p2Score || 0,
-        p3Score: doc.p3Score || 0,
-        completedAt: doc.createdAt || doc.timestamp
-      };
-
-      if (existing) {
-        existing.gcc = gccData;
-        if (existing.name === 'N/A' && fullName !== 'N/A') existing.name = fullName;
-        if (existing.company === 'N/A' && doc.company) existing.company = doc.company;
-        if (existing.role === 'N/A' && doc.role) existing.role = doc.role;
-        if (existing.size === 'N/A' && doc.size) existing.size = doc.size;
-      } else {
-        leadsMap.set(emailKey, {
-          email: emailKey,
-          name: fullName,
-          company: doc.company || 'N/A',
-          role: doc.role || 'N/A',
-          size: doc.size || 'N/A',
-          revenue: 'N/A',
-          magneto: { completed: false },
-          gcc: gccData
-        });
-      }
+      leads.push({
+        _id: doc._id,
+        email: emailKey,
+        name: fullName,
+        company: doc.company || 'N/A',
+        role: doc.role || 'N/A',
+        size: doc.size || 'N/A',
+        revenue: 'N/A',
+        magneto: { completed: false },
+        gcc: {
+          completed: true,
+          riskScore: doc.riskScore || 0,
+          tier: doc.tier || 'N/A',
+          p1Score: doc.p1Score || 0,
+          p2Score: doc.p2Score || 0,
+          p3Score: doc.p3Score || 0,
+          completedAt: doc.createdAt || doc.timestamp
+        },
+        filledBoth: false
+      });
     });
 
-    const allLeads = Array.from(leadsMap.values());
-    allLeads.forEach(lead => {
-      lead.filledBoth = Boolean(lead.magneto?.completed && lead.gcc?.completed);
+    // Sort by completedAt descending
+    leads.sort((a, b) => {
+      const dateA = new Date(a.magneto?.completed ? a.magneto.completedAt : a.gcc.completedAt);
+      const dateB = new Date(b.magneto?.completed ? b.magneto.completedAt : b.gcc.completedAt);
+      return dateB - dateA;
     });
 
-    const both = allLeads.filter(l => l.filledBoth);
-    const magnetoCount = allLeads.filter(l => l.magneto?.completed).length;
-    const gccCount = allLeads.filter(l => l.gcc?.completed).length;
+    const magnetoCount = leads.filter(l => l.magneto?.completed).length;
+    const gccCount = leads.filter(l => l.gcc?.completed).length;
 
     res.json({
       success: true,
       summary: {
-        totalBoth: both.length,
+        totalBoth: 0,
         totalMagneto: magnetoCount,
         totalGcc: gccCount,
-        totalUnique: allLeads.length,
-        conversionRate: allLeads.length > 0 ? Math.round((both.length / allLeads.length) * 100) : 0
+        totalUnique: leads.length,
+        conversionRate: 0
       },
-      leads: allLeads
+      leads
     });
 
   } catch (error) {
