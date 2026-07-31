@@ -1,54 +1,19 @@
-import mongoose from 'mongoose';
+import { MongoClient } from 'mongodb';
 
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ch:Charu%40004@cluster0.fsxomwi.mongodb.net/aiassest?retryWrites=true&w=majority&appName=Cluster0';
 
-let isConnected = false;
+let cachedClient = null;
 
-async function connectToDatabase() {
-  if (isConnected && mongoose.connection.readyState === 1) return;
-  try {
-    await mongoose.connect(MONGODB_URI, {
-      serverSelectionTimeoutMS: 3500,
-      connectTimeoutMS: 3500
+async function getDatabase() {
+  if (!cachedClient) {
+    cachedClient = new MongoClient(MONGODB_URI, {
+      serverSelectionTimeoutMS: 3000,
+      connectTimeoutMS: 3000
     });
-    isConnected = true;
-  } catch (err) {
-    console.error('MongoDB connection error in get-leads Function:', err);
-    throw err;
+    await cachedClient.connect();
   }
+  return cachedClient.db('aiassest');
 }
-
-const magnetoSchema = new mongoose.Schema({
-  sessionId: String,
-  email: String,
-  name: String,
-  company: String,
-  role: String,
-  size: String,
-  revenue: String,
-  overallPct: Number,
-  tier: String,
-  completedAt: Date
-});
-
-const gccSchema = new mongoose.Schema({
-  email: String,
-  name: String,
-  firstName: String,
-  lastName: String,
-  company: String,
-  role: String,
-  size: String,
-  riskScore: Number,
-  tier: String,
-  p1Score: Number,
-  p2Score: Number,
-  p3Score: Number,
-  completedAt: Date
-});
-
-const MagnetoLead = mongoose.models.MagnetoLead || mongoose.model('MagnetoLead', magnetoSchema);
-const GccLead = mongoose.models.GccLead || mongoose.model('GccLead', gccSchema);
 
 export const handler = async (event) => {
   const headers = {
@@ -57,13 +22,17 @@ export const handler = async (event) => {
     'Access-Control-Allow-Methods': 'GET, OPTIONS'
   };
 
-  if (event.httpMethod === 'OPTIONS') return { statusCode: 200, headers };
+  if (event.httpMethod === 'OPTIONS') {
+    return { statusCode: 200, headers, body: '' };
+  }
 
   try {
-    await connectToDatabase();
+    const db = await getDatabase();
+    const magnetoCol = db.collection('magnetoleads');
+    const gccCol = db.collection('gccleads');
 
-    const magnetoDocs = await MagnetoLead.find({}).lean();
-    const gccDocs = await GccLead.find({}).lean();
+    const magnetoDocs = await magnetoCol.find({}).toArray();
+    const gccDocs = await gccCol.find({}).toArray();
 
     const map = new Map();
 
@@ -149,7 +118,7 @@ export const handler = async (event) => {
       })
     };
   } catch (err) {
-    console.error('Failed to get leads from MongoDB:', err);
+    console.error('get-leads Netlify function error:', err);
     return {
       statusCode: 200,
       headers,
