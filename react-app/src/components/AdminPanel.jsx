@@ -95,6 +95,71 @@ export default function AdminPanel({ onBack }) {
     loadData();
   }
 
+  function handlePopulateDemo() {
+    const demoLeads = [
+      {
+        name: 'Vikram Mehta',
+        email: 'vikram.mehta@techcorp.com',
+        company: 'TechCorp GCC India',
+        role: 'VP of Engineering',
+        size: '500-2000',
+        revenue: '100Cr - 500Cr',
+        aiScore: 84,
+        gccScore: 78
+      },
+      {
+        name: 'Ananya Deshmukh',
+        email: 'ananya.d@cybervertex.io',
+        company: 'CyberVertex Global',
+        role: 'Chief Information Security Officer',
+        size: '1000+',
+        revenue: '500Cr+',
+        aiScore: 92,
+        gccScore: 42
+      },
+      {
+        name: 'Rohan Kapoor',
+        email: 'r.kapoor@fintechscale.in',
+        company: 'FinTechScale Solutions',
+        role: 'Head of Cloud & Security',
+        size: '200-500',
+        revenue: '50Cr - 100Cr',
+        aiScore: 76,
+        gccScore: 85
+      }
+    ];
+
+    demoLeads.forEach(lead => {
+      adminDataService.saveAiReadinessSubmission({
+        email: lead.email,
+        name: lead.name,
+        company: lead.company,
+        role: lead.role,
+        size: lead.size,
+        revenue: lead.revenue,
+        overallPct: lead.aiScore,
+        tier: lead.aiScore >= 80 ? 'Leader' : 'Adopter'
+      });
+
+      adminDataService.saveGccSubmission({
+        email: lead.email,
+        name: lead.name,
+        company: lead.company,
+        role: lead.role,
+        size: lead.size,
+        riskScore: lead.gccScore,
+        tier: lead.gccScore >= 70 ? 'Critical Exposure' : 'Moderate Risk',
+        p1Score: lead.gccScore,
+        p2Score: lead.gccScore - 5,
+        p3Score: lead.gccScore + 3
+      });
+    });
+
+    setTimeout(() => {
+      loadData();
+    }, 500);
+  }
+
   // Filter leads according to active tab & search term
   const filteredLeads = leads.filter(lead => {
     // Tab filter
@@ -376,18 +441,26 @@ export default function AdminPanel({ onBack }) {
         {/* DATA TABLE */}
         <div className="bg-[#0A0E1F]/70 border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
           {filteredLeads.length === 0 ? (
-            <div className="p-12 text-center space-y-3">
+            <div className="p-12 text-center space-y-4">
               <div className="text-4xl">📭</div>
               <h3 className="text-base font-bold text-white">No Live Submissions Recorded Yet</h3>
               <p className="text-xs text-slate-400 max-w-md mx-auto">
-                No real respondents have submitted form responses matching this filter yet. When users fill out the AI Readiness Assessment or Shield GCC Risk Scan, their entries will automatically populate here.
+                No real respondents have submitted form responses matching this filter yet. When users fill out the AI Readiness Assessment or Shield GCC Risk Scan on your live site, their entries will automatically populate here and in your MongoDB database.
               </p>
-              <button
-                onClick={() => { setActiveTab('all'); setSearchTerm(''); }}
-                className="px-4 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/30 text-xs font-semibold"
-              >
-                Clear Search & Filters
-              </button>
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <button
+                  onClick={handlePopulateDemo}
+                  className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-500 hover:to-purple-500 text-white font-bold text-xs shadow-lg transition-all"
+                >
+                  ⚡ Populate Test Respondent Data
+                </button>
+                <button
+                  onClick={() => setIsRecordModalOpen(true)}
+                  className="px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 border border-white/10 text-xs font-semibold"
+                >
+                  🛡️ Record GCC Scan Manually
+                </button>
+              </div>
             </div>
           ) : (
             <div className="overflow-x-auto scrollbar-none">
