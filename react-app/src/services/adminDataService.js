@@ -199,12 +199,16 @@ export const adminDataService = {
     return allLeads;
   },
 
-  // Async method to fetch merged leads (pure frontend mode by default, or API if VITE_API_URL is defined)
+  // Async method to fetch merged leads from Cloud Database (Netlify function / API) with fallback to localStorage
   async fetchLiveMergedLeads() {
-    const apiUrl = import.meta.env.VITE_API_URL;
-    if (apiUrl) {
+    const endpoints = [
+      import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/admin/leads` : null,
+      '/.netlify/functions/get-leads'
+    ].filter(Boolean);
+
+    for (const url of endpoints) {
       try {
-        const res = await fetch(`${apiUrl}/api/admin/leads`);
+        const res = await fetch(url);
         if (res.ok) {
           const data = await res.json();
           if (data.success && Array.isArray(data.leads)) {
@@ -250,7 +254,7 @@ export const adminDataService = {
           }
         }
       } catch (err) {
-        // Silent fallback to client storage
+        // Continue to next endpoint or fallback
       }
     }
 
@@ -293,6 +297,13 @@ export const adminDataService = {
       });
 
       localStorage.setItem(STORES.MAGNETO, JSON.stringify(updated));
+
+      // Post to Netlify Function Cloud DB in background for live site
+      fetch('/.netlify/functions/save-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submission)
+      }).catch(() => {});
     } catch (err) {
       console.error('Failed to save real AI Readiness submission:', err);
     }
@@ -309,10 +320,17 @@ export const adminDataService = {
       updated.unshift({
         ...submission,
         email: emailLower,
-        completedAt: new Date().toISOString()
+        completedAt: submission.completedAt || new Date().toISOString()
       });
 
       localStorage.setItem(STORES.GCC, JSON.stringify(updated));
+
+      // Post to Netlify Function Cloud DB in background for live site
+      fetch('/.netlify/functions/save-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submission)
+      }).catch(() => {});
     } catch (err) {
       console.error('Failed to save real GCC submission:', err);
     }

@@ -179,22 +179,19 @@ export default function App() {
 
     adminDataService.saveAiReadinessSubmission(magnetoPayload);
 
-    // POST to backend MongoDB database if API URL is configured
-    const apiUrl = import.meta.env.VITE_API_URL;
-    if (apiUrl) {
-      fetch(`${apiUrl}/api/magneto/gate`, {
+    // POST to Cloud DB for live site
+    const endpoints = [
+      import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/magneto/gate` : null,
+      '/.netlify/functions/save-lead'
+    ].filter(Boolean);
+
+    endpoints.forEach(url => {
+      fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          sessionId: magnetoPayload.sessionId,
-          email: emailLower,
-          name: magnetoPayload.name,
-          answers: assessmentAnswers,
-          overallPct: magnetoPayload.overallPct,
-          tier: magnetoPayload.tier
-        })
+        body: JSON.stringify(magnetoPayload)
       }).catch(() => {});
-    }
+    });
 
     // Construct the full report payload
     const reportPayload = {

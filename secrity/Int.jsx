@@ -269,15 +269,19 @@ const SecurityRiskEngine = () => {
           channel.postMessage({ type: 'GCC_LEAD_SUBMITTED', payload: reportPayload });
         } catch (e) {}
 
-        // POST to backend database if API URL is configured
-        const apiUrl = import.meta.env.VITE_API_URL;
-        if (apiUrl) {
-          fetch(`${apiUrl}/api/shieldgcc/leads`, {
+        // POST to Netlify Function Cloud DB for live site
+        const endpoints = [
+          import.meta.env.VITE_API_URL ? `${import.meta.env.VITE_API_URL}/api/shieldgcc/leads` : null,
+          '/.netlify/functions/save-lead'
+        ].filter(Boolean);
+
+        endpoints.forEach(url => {
+          fetch(url, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(reportPayload)
           }).catch(() => {});
-        }
+        });
       } catch (err) {
         console.error('Failed to update shieldgcc_submissions in localStorage:', err);
       }
