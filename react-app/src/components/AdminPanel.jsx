@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { adminDataService } from '../services/adminDataService';
 
 export default function AdminPanel({ onBack }) {
-  const [activeTab, setActiveTab] = useState('both'); // 'both' | 'magneto' | 'gcc' | 'all'
+  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'both' | 'magneto' | 'gcc'
   const [searchTerm, setSearchTerm] = useState('');
   const [leads, setLeads] = useState([]);
   const [metrics, setMetrics] = useState({ totalBoth: 0, totalMagneto: 0, totalGcc: 0, totalUnique: 0, conversionRate: 0 });
@@ -292,14 +292,14 @@ export default function AdminPanel({ onBack }) {
             {/* Filter Tabs */}
             <div className="flex items-center gap-1 bg-[#050811] p-1.5 rounded-xl border border-white/10 overflow-x-auto scrollbar-none">
               <button
-                onClick={() => setActiveTab('both')}
+                onClick={() => setActiveTab('all')}
                 className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                  activeTab === 'both'
-                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
+                  activeTab === 'all'
+                    ? 'bg-blue-600 text-white shadow-md'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                Filled Both Forms ({metrics.totalBoth})
+                All Submissions ({metrics.totalUnique})
               </button>
 
               <button
@@ -325,14 +325,14 @@ export default function AdminPanel({ onBack }) {
               </button>
 
               <button
-                onClick={() => setActiveTab('all')}
+                onClick={() => setActiveTab('both')}
                 className={`px-3.5 py-2 rounded-lg text-xs font-bold transition-all whitespace-nowrap ${
-                  activeTab === 'all'
-                    ? 'bg-slate-700 text-white shadow-md'
+                  activeTab === 'both'
+                    ? 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-md'
                     : 'text-slate-400 hover:text-white hover:bg-white/5'
                 }`}
               >
-                All Submissions ({metrics.totalUnique})
+                Filled Both Forms ({metrics.totalBoth})
               </button>
             </div>
 

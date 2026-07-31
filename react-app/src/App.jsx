@@ -14,26 +14,73 @@ import ResultsDashboard from './components/ResultsDashboard.jsx';
 import AdminPanel from './components/AdminPanel.jsx';
 import { adminDataService } from './services/adminDataService.js';
 
-// View states: 'home' | 'assessment' | 'gate' | 'results' | 'admin'
+// View states: 'home' | 'assessment' | 'gate' | 'results' | 'admin' | 'loading'
 export default function App() {
   const [view, setView] = useState(() => {
-    if (window.location.pathname === '/admin' || window.location.search.includes('admin')) return 'admin';
-    if (window.location.pathname.startsWith('/report/')) return 'loading';
+    const path = window.location.pathname;
+    const search = window.location.search;
+    if (path === '/admin' || search.includes('admin')) return 'admin';
+    if (path.startsWith('/report/') || search.includes('report=')) return 'loading';
+
+    // Check if user refreshed while looking at a saved report
+    const savedReport = localStorage.getItem('instrek_active_report_data');
+    if (savedReport) {
+      try {
+        const parsed = JSON.parse(savedReport);
+        if (parsed.companyInfo && parsed.answers) {
+          return 'results';
+        }
+      } catch (e) {}
+    }
     return 'home';
   });
-  const [companyInfo, setCompanyInfo] = useState(null);
-  const [assessmentAnswers, setAssessmentAnswers] = useState(null);
+  const [companyInfo, setCompanyInfo] = useState(() => {
+    try {
+      const saved = localStorage.getItem('instrek_active_report_data');
+      return saved ? JSON.parse(saved).companyInfo : null;
+    } catch (e) { return null; }
+  });
+  const [assessmentAnswers, setAssessmentAnswers] = useState(() => {
+    try {
+      const saved = localStorage.getItem('instrek_active_report_data');
+      return saved ? JSON.parse(saved).answers : null;
+    } catch (e) { return null; }
+  });
   const [sessionId, setSessionId] = useState(null);
   const [isIntakeOpen, setIsIntakeOpen] = useState(false);
   const [previewOnly, setPreviewOnly] = useState(false);
 
-  // Check URL for report link on mount
+  // Check URL for report link on mount or restore from localStorage
   useEffect(() => {
     const path = window.location.pathname;
+    const search = window.location.search;
+
+    if (path === '/admin' || search.includes('admin')) {
+      setView('admin');
+      return;
+    }
+
+    let token = null;
     if (path.startsWith('/report/')) {
-      const token = path.substring('/report/'.length);
-      if (token) {
-        fetchReport(token);
+      token = path.substring('/report/'.length);
+    } else if (search.includes('report=')) {
+      token = new URLSearchParams(search).get('report');
+    }
+
+    if (token) {
+      fetchReport(token);
+    } else {
+      const savedReport = localStorage.getItem('instrek_active_report_data');
+      if (savedReport) {
+        try {
+          const parsed = JSON.parse(savedReport);
+          if (parsed.companyInfo && parsed.answers) {
+            setCompanyInfo(parsed.companyInfo);
+            setAssessmentAnswers(parsed.answers);
+            setPreviewOnly(false);
+            setView('results');
+          }
+        } catch (e) {}
       }
     }
   }, []);
@@ -47,9 +94,13 @@ export default function App() {
       setAssessmentAnswers(decoded.answers);
       setPreviewOnly(false);
       setView('results');
+      localStorage.setItem('instrek_active_report_data', JSON.stringify({
+        companyInfo: decoded.companyInfo,
+        answers: decoded.answers,
+        token
+      }));
     } catch (err) {
       console.error('Error decoding report token client-side:', err);
-      // Fallback: try calling backend in case it's an old DB-based token
       const apiUrl = import.meta.env.VITE_API_URL;
       if (apiUrl) {
         try {
@@ -58,6 +109,26 @@ export default function App() {
             const data = await res.json();
             setCompanyInfo(data.companyInfo);
             setAssessmentAnswers(data.answers);
+            setPreviewOnly(false);
+            setView('results');
+            localStorage.setItem('instrek_active_report_data', JSON.stringify({
+              companyInfo: data.companyInfo,
+              answers: data.answers,
+              token
+            }));
+            return;
+          }
+        } catch (e) {}
+      }
+
+      // Check if we have localStorage backup before returning home
+      const savedReport = localStorage.getItem('instrek_active_report_data');
+      if (savedReport) {
+        try {
+          const parsed = JSON.parse(savedReport);
+          if (parsed.companyInfo && parsed.answers) {
+            setCompanyInfo(parsed.companyInfo);
+            setAssessmentAnswers(parsed.answers);
             setPreviewOnly(false);
             setView('results');
             return;
@@ -141,6 +212,11 @@ export default function App() {
       // Push /report URL so email link refresh works correctly
       window.history.pushState({}, '', `/report/${token}`);
       localStorage.setItem('instrek_report_token', token);
+      localStorage.setItem('instrek_active_report_data', JSON.stringify({
+        companyInfo: fullInfo,
+        answers: assessmentAnswers,
+        token
+      }));
 
       const shareableLink = `${window.location.origin}/report/${token}`;
 
@@ -204,6 +280,10 @@ export default function App() {
   }
 
   function handleRestart() {
+    localStorage.removeItem('instrek_active_report_data');
+    if (window.location.pathname.startsWith('/report/')) {
+      window.history.pushState({}, '', '/');
+    }
     setView('home');
     setCompanyInfo(null);
     setAssessmentAnswers(null);

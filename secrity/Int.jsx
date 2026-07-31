@@ -54,41 +54,59 @@ const SecurityRiskEngine = () => {
   const [errorReport, setErrorReport] = useState(null);
   const [createdLeadId, setCreatedLeadId] = useState(null);
 
-  // Check for leadId or report query parameter on load
+  // Check for leadId, report query parameter, or saved report on load
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const reportData = params.get('report');
+    const reportData = params.get('report') || params.get('importGcc');
     if (reportData) {
       setLoadingReport(true);
       try {
-        const decoded = JSON.parse(decodeURIComponent(escape(window.atob(reportData))));
+        const decoded = JSON.parse(decodeURIComponent(escape(window.atob(reportData.replace(/-/g, '+').replace(/_/g, '/')))));
         setReportLead(decoded);
         setScreen('report');
+        localStorage.setItem('shieldgcc_active_report', JSON.stringify(decoded));
       } catch (err) {
         console.error('Failed to parse report parameter', err);
         setErrorReport('Could not decode this risk report link. The URL may be corrupted.');
       }
       setLoadingReport(false);
     } else {
+      const savedReport = localStorage.getItem('shieldgcc_active_report');
+      if (savedReport) {
+        try {
+          const parsed = JSON.parse(savedReport);
+          if (parsed.email || parsed.riskScore) {
+            setReportLead(parsed);
+            setScreen('report');
+            return;
+          }
+        } catch (e) {}
+      }
+
       const leadId = params.get('leadId');
       if (leadId) {
         setLoadingReport(true);
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-        fetch(`${apiUrl}/api/shieldgcc/leads/${leadId}`)
-          .then(res => {
-            if (!res.ok) throw new Error('Lead report not found');
-            return res.json();
-          })
-          .then(data => {
-            setReportLead(data);
-            setScreen('report');
-            setLoadingReport(false);
-          })
-          .catch(err => {
-            console.error(err);
-            setErrorReport('Could not retrieve risk report. It may have expired or does not exist.');
-            setLoadingReport(false);
-          });
+        const apiUrl = import.meta.env.VITE_API_URL;
+        if (apiUrl) {
+          fetch(`${apiUrl}/api/shieldgcc/leads/${leadId}`)
+            .then(res => {
+              if (!res.ok) throw new Error('Lead report not found');
+              return res.json();
+            })
+            .then(data => {
+              setReportLead(data);
+              setScreen('report');
+              localStorage.setItem('shieldgcc_active_report', JSON.stringify(data));
+              setLoadingReport(false);
+            })
+            .catch(err => {
+              console.error(err);
+              setErrorReport('Could not retrieve risk report. It may have expired or does not exist.');
+              setLoadingReport(false);
+            });
+        } else {
+          setLoadingReport(false);
+        }
       }
     }
   }, []);
@@ -235,6 +253,7 @@ const SecurityRiskEngine = () => {
     try {
       const encodedData = window.btoa(unescape(encodeURIComponent(JSON.stringify(reportPayload))));
       localStorage.setItem('shieldgcc_lead_report', encodedData);
+      localStorage.setItem('shieldgcc_active_report', JSON.stringify(reportPayload));
 
       // Save submission to client storage for Admin Panel matching
       try {

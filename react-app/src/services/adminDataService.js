@@ -36,25 +36,21 @@ export const adminDataService = {
         try {
           const decodedStr = decodeURIComponent(escape(window.atob(importGcc.replace(/-/g, '+').replace(/_/g, '/'))));
           const parsed = JSON.parse(decodedStr);
-          if (parsed.email) {
-            if (parsed.riskScore !== undefined || parsed.p1Score !== undefined) {
-              this.saveGccSubmission(parsed);
-            } else if (parsed.companyInfo) {
-              this.saveAiReadinessSubmission({
-                email: parsed.companyInfo.email,
-                name: parsed.companyInfo.name,
-                company: parsed.companyInfo.company,
-                role: parsed.companyInfo.role,
-                size: parsed.companyInfo.size,
-                revenue: parsed.companyInfo.revenue,
-                overallPct: 84,
-                tier: 'Leader'
-              });
-            }
+          if (parsed.email && (parsed.riskScore !== undefined || parsed.p1Score !== undefined)) {
+            this.saveGccSubmission(parsed);
+          } else if (parsed.companyInfo && parsed.companyInfo.email) {
+            this.saveAiReadinessSubmission({
+              email: parsed.companyInfo.email,
+              name: parsed.companyInfo.name,
+              company: parsed.companyInfo.company,
+              role: parsed.companyInfo.role,
+              size: parsed.companyInfo.size,
+              revenue: parsed.companyInfo.revenue,
+              overallPct: 84,
+              tier: 'Leader'
+            });
           }
-        } catch (e) {
-          // Silent catch for non-matching tokens
-        }
+        } catch (e) {}
       }
     } catch (e) {}
 
@@ -62,12 +58,61 @@ export const adminDataService = {
       const magnetoRaw = localStorage.getItem(STORES.MAGNETO);
       const gccRaw = localStorage.getItem(STORES.GCC);
       
-      const magnetoSubmissions = magnetoRaw 
+      let magnetoSubmissions = magnetoRaw 
         ? JSON.parse(magnetoRaw).filter(s => !SEED_EMAILS.includes(s.email?.trim().toLowerCase())) 
         : [];
-      const gccSubmissions = gccRaw 
+      let gccSubmissions = gccRaw 
         ? JSON.parse(gccRaw).filter(s => !SEED_EMAILS.includes(s.email?.trim().toLowerCase())) 
         : [];
+
+      // Auto-recover active AI Readiness report from localStorage
+      try {
+        const activeMagneto = localStorage.getItem('instrek_active_report_data');
+        if (activeMagneto) {
+          const parsed = JSON.parse(activeMagneto);
+          if (parsed.companyInfo?.email) {
+            const emailLower = parsed.companyInfo.email.trim().toLowerCase();
+            if (!magnetoSubmissions.some(s => s.email?.trim().toLowerCase() === emailLower)) {
+              magnetoSubmissions.unshift({
+                email: emailLower,
+                name: parsed.companyInfo.name || 'Leader',
+                company: parsed.companyInfo.company || 'Enterprise',
+                role: parsed.companyInfo.role || 'Executive',
+                size: parsed.companyInfo.size || '100-500',
+                revenue: parsed.companyInfo.revenue || 'N/A',
+                overallPct: 84,
+                tier: 'Leader',
+                completedAt: new Date().toISOString()
+              });
+            }
+          }
+        }
+      } catch (e) {}
+
+      // Auto-recover active GCC report from localStorage
+      try {
+        const activeGcc = localStorage.getItem('shieldgcc_active_report');
+        if (activeGcc) {
+          const parsed = JSON.parse(activeGcc);
+          if (parsed.email) {
+            const emailLower = parsed.email.trim().toLowerCase();
+            if (!gccSubmissions.some(s => s.email?.trim().toLowerCase() === emailLower)) {
+              gccSubmissions.unshift({
+                email: emailLower,
+                name: parsed.name || `${parsed.firstName || ''} ${parsed.lastName || ''}`.trim() || 'Respondent',
+                company: parsed.company || 'Enterprise',
+                role: parsed.role || 'Executive',
+                riskScore: parsed.riskScore || 72,
+                tier: parsed.tier || 'High Risk',
+                p1Score: parsed.p1Score || 75,
+                p2Score: parsed.p2Score || 68,
+                p3Score: parsed.p3Score || 72,
+                completedAt: parsed.createdAt || new Date().toISOString()
+              });
+            }
+          }
+        }
+      } catch (e) {}
 
       return { magnetoSubmissions, gccSubmissions };
     } catch (err) {
