@@ -1,13 +1,16 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ch:charu@cluster0.fsxomwi.mongodb.net/schat?appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ch:Charu%40004@cluster0.fsxomwi.mongodb.net/aiassest?retryWrites=true&w=majority&appName=Cluster0';
 
 let isConnected = false;
 
 async function connectToDatabase() {
   if (isConnected && mongoose.connection.readyState === 1) return;
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGODB_URI, {
+      serverSelectionTimeoutMS: 3500,
+      connectTimeoutMS: 3500
+    });
     isConnected = true;
   } catch (err) {
     console.error('MongoDB connection error in get-leads Function:', err);
@@ -148,9 +151,15 @@ export const handler = async (event) => {
   } catch (err) {
     console.error('Failed to get leads from MongoDB:', err);
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers,
-      body: JSON.stringify({ success: false, error: err.message, leads: [], summary: { totalBoth: 0, totalMagneto: 0, totalGcc: 0, totalUnique: 0, conversionRate: 0 } })
+      body: JSON.stringify({
+        success: false,
+        offline: true,
+        error: err.message,
+        leads: [],
+        summary: { totalBoth: 0, totalMagneto: 0, totalGcc: 0, totalUnique: 0, conversionRate: 0 }
+      })
     };
   }
 };
