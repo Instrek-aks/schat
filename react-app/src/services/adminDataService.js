@@ -1,0 +1,228 @@
+// Client-side data management service for REAL form submissions (Only users who give assignment/assessment)
+
+const STORES = {
+  MAGNETO: 'instrek_magneto_submissions',
+  GCC: 'shieldgcc_submissions'
+};
+
+const SEED_EMAILS = [
+  'sarah.chen@cybervertex.io',
+  'rajesh.patel@apexfintech.com',
+  'elena.rostova@globaldata.org',
+  'david.miller@horizonhealth.med',
+  'priya.sharma@techvision.in',
+  'marcus.vance@cloudnexus.io'
+];
+
+export const adminDataService = {
+  // Read raw submissions from localStorage (ONLY real submissions, excluding old seed data)
+  getRawSubmissions() {
+    try {
+      const magnetoRaw = localStorage.getItem(STORES.MAGNETO);
+      const gccRaw = localStorage.getItem(STORES.GCC);
+      
+      const magnetoSubmissions = magnetoRaw 
+        ? JSON.parse(magnetoRaw).filter(s => !SEED_EMAILS.includes(s.email?.trim().toLowerCase())) 
+        : [];
+      const gccSubmissions = gccRaw 
+        ? JSON.parse(gccRaw).filter(s => !SEED_EMAILS.includes(s.email?.trim().toLowerCase())) 
+        : [];
+
+      return { magnetoSubmissions, gccSubmissions };
+    } catch (err) {
+      console.error('Error reading real submissions from localStorage:', err);
+      return { magnetoSubmissions: [], gccSubmissions: [] };
+    }
+  },
+
+  // Get cross-referenced merged leads matched by Email for real respondents
+  getMergedLeads() {
+    const { magnetoSubmissions, gccSubmissions } = this.getRawSubmissions();
+    const leadsMap = new Map();
+
+    // Process Real Magneto Submissions
+    magnetoSubmissions.forEach(sub => {
+      if (!sub.email) return;
+      const emailKey = sub.email.trim().toLowerCase();
+
+      leadsMap.set(emailKey, {
+        email: emailKey,
+        name: sub.name || sub.leadInfo?.name || 'N/A',
+        company: sub.company || sub.companyInfo?.company || 'N/A',
+        role: sub.role || sub.companyInfo?.role || 'N/A',
+        size: sub.size || sub.companyInfo?.size || 'N/A',
+        revenue: sub.revenue || sub.companyInfo?.revenue || 'N/A',
+        magneto: {
+          completed: true,
+          overallPct: sub.overallPct || sub.scores?.overallPct || 0,
+          tier: sub.tier || sub.scores?.tier || 'N/A',
+          dimensionScores: sub.dimensionScores || {},
+          completedAt: sub.completedAt || sub.createdAt || new Date().toISOString()
+        },
+        gcc: { completed: false }
+      });
+    });
+
+    // Process & Match Real GCC Submissions
+    gccSubmissions.forEach(sub => {
+      if (!sub.email) return;
+      const emailKey = sub.email.trim().toLowerCase();
+      const existing = leadsMap.get(emailKey);
+
+      const gccData = {
+        completed: true,
+        riskScore: sub.riskScore || 0,
+        tier: sub.tier || 'N/A',
+        p1Score: sub.p1Score || 0,
+        p2Score: sub.p2Score || 0,
+        p3Score: sub.p3Score || 0,
+        completedAt: sub.completedAt || sub.timestamp || sub.createdAt || new Date().toISOString()
+      };
+
+      const fullName = sub.firstName 
+        ? `${sub.firstName} ${sub.lastName || ''}`.trim() 
+        : (sub.name || 'N/A');
+
+      if (existing) {
+        existing.gcc = gccData;
+        if (existing.name === 'N/A' && fullName !== 'N/A') existing.name = fullName;
+        if (existing.company === 'N/A' && sub.company) existing.company = sub.company;
+        if (existing.role === 'N/A' && sub.role) existing.role = sub.role;
+        if (existing.size === 'N/A' && sub.size) existing.size = sub.size;
+      } else {
+        leadsMap.set(emailKey, {
+          email: emailKey,
+          name: fullName,
+          company: sub.company || 'N/A',
+          role: sub.role || 'N/A',
+          size: sub.size || 'N/A',
+          revenue: 'N/A',
+          magneto: { completed: false },
+          gcc: gccData
+        });
+      }
+    });
+
+    const allLeads = Array.from(leadsMap.values());
+
+    // Flag whether person filled BOTH forms
+    allLeads.forEach(lead => {
+      lead.filledBoth = Boolean(lead.magneto?.completed && lead.gcc?.completed);
+    });
+
+    return allLeads;
+  },
+
+  // Calculate summary metrics
+  getSummaryMetrics() {
+    const leads = this.getMergedLeads();
+    const both = leads.filter(l => l.filledBoth);
+    const magnetoCount = leads.filter(l => l.magneto?.completed).length;
+    const gccCount = leads.filter(l => l.gcc?.completed).length;
+    const totalUnique = leads.length;
+
+    const conversionRate = totalUnique > 0 ? Math.round((both.length / totalUnique) * 100) : 0;
+
+    return {
+      totalBoth: both.length,
+      totalMagneto: magnetoCount,
+      totalGcc: gccCount,
+      totalUnique,
+      conversionRate
+    };
+  },
+
+  // Save a new real AI Readiness submission when user submits form
+  saveAiReadinessSubmission(submission) {
+    if (!submission.email) return;
+    try {
+      const { magnetoSubmissions } = this.getRawSubmissions();
+      const emailLower = submission.email.trim().toLowerCase();
+      
+      const updated = magnetoSubmissions.filter(s => s.email?.trim().toLowerCase() !== emailLower);
+      updated.unshift({
+        ...submission,
+        email: emailLower,
+        completedAt: new Date().toISOString()
+      });
+
+      localStorage.setItem(STORES.MAGNETO, JSON.stringify(updated));
+    } catch (err) {
+      console.error('Failed to save real AI Readiness submission:', err);
+    }
+  },
+
+  // Save a new real GCC Risk Scan submission when user submits form
+  saveGccSubmission(submission) {
+    if (!submission.email) return;
+    try {
+      const { gccSubmissions } = this.getRawSubmissions();
+      const emailLower = submission.email.trim().toLowerCase();
+
+      const updated = gccSubmissions.filter(s => s.email?.trim().toLowerCase() !== emailLower);
+      updated.unshift({
+        ...submission,
+        email: emailLower,
+        completedAt: new Date().toISOString()
+      });
+
+      localStorage.setItem(STORES.GCC, JSON.stringify(updated));
+    } catch (err) {
+      console.error('Failed to save real GCC submission:', err);
+    }
+  },
+
+  // Clear all submissions
+  clearAllSubmissions() {
+    localStorage.removeItem(STORES.MAGNETO);
+    localStorage.removeItem(STORES.GCC);
+  },
+
+  // Export dataset to CSV
+  exportToCsv(leads, filterType = 'both') {
+    const headers = [
+      'Email',
+      'Name',
+      'Company Name',
+      'Role',
+      'Company Size',
+      'Filled Both Forms',
+      'AI Readiness Completed',
+      'AI Readiness Score (%)',
+      'AI Readiness Tier',
+      'AI Readiness Date',
+      'GCC Risk Completed',
+      'GCC Risk Score',
+      'GCC Risk Tier',
+      'GCC Risk Date'
+    ];
+
+    const rows = leads.map(lead => [
+      `"${lead.email || ''}"`,
+      `"${lead.name || ''}"`,
+      `"${lead.company || ''}"`,
+      `"${lead.role || ''}"`,
+      `"${lead.size || ''}"`,
+      lead.filledBoth ? 'YES' : 'NO',
+      lead.magneto?.completed ? 'YES' : 'NO',
+      lead.magneto?.completed ? lead.magneto.overallPct : 'N/A',
+      `"${lead.magneto?.completed ? lead.magneto.tier : 'N/A'}"`,
+      `"${lead.magneto?.completed ? new Date(lead.magneto.completedAt).toLocaleDateString() : 'N/A'}"`,
+      lead.gcc?.completed ? 'YES' : 'NO',
+      lead.gcc?.completed ? lead.gcc.riskScore : 'N/A',
+      `"${lead.gcc?.completed ? lead.gcc.tier : 'N/A'}"`,
+      `"${lead.gcc?.completed ? new Date(lead.gcc.completedAt).toLocaleDateString() : 'N/A'}"`
+    ]);
+
+    const csvContent = 'data:text/csv;charset=utf-8,' 
+      + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement('a');
+    link.setAttribute('href', encodedUri);
+    link.setAttribute('download', `real_submissions_${filterType}_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+};

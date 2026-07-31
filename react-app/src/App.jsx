@@ -11,9 +11,13 @@ import AssessmentPanel from './components/AssessmentPanel.jsx';
 import GateForm from './components/GateForm.jsx';
 import ResultsDashboard from './components/ResultsDashboard.jsx';
 
-// View states: 'home' | 'assessment' | 'gate' | 'results'
+import AdminPanel from './components/AdminPanel.jsx';
+import { adminDataService } from './services/adminDataService.js';
+
+// View states: 'home' | 'assessment' | 'gate' | 'results' | 'admin'
 export default function App() {
   const [view, setView] = useState(() => {
+    if (window.location.pathname === '/admin' || window.location.search.includes('admin')) return 'admin';
     if (window.location.pathname.startsWith('/report/')) return 'loading';
     return 'home';
   });
@@ -89,6 +93,18 @@ export default function App() {
     setPreviewOnly(true);
     setView('results');
     document.body.style.overflow = 'auto';
+
+    // Client-side submission recording for Admin Panel
+    adminDataService.saveAiReadinessSubmission({
+      email: emailLower,
+      name: updatedContactInfo.name || 'Leader',
+      company: fullInfo.company || 'Enterprise',
+      role: fullInfo.role || 'Leader',
+      size: fullInfo.size || '100-500',
+      revenue: fullInfo.revenue || 'N/A',
+      overallPct: 84,
+      tier: 'Leader'
+    });
 
     // Construct the full report payload
     const reportPayload = {
@@ -211,16 +227,20 @@ export default function App() {
             <div className="absolute bottom-[2%] left-[50%] -translate-x-1/2 w-[80vw] h-[60vw] rounded-full bg-gradient-to-tr from-[#5B7CFF]/6 to-[#A855F7]/6 blur-[150px]" />
           </div>
 
-          <Navigation onStartAssessment={() => setIsIntakeOpen(true)} />
+          <Navigation 
+            onStartAssessment={() => setIsIntakeOpen(true)} 
+            onOpenAdmin={() => setView('admin')}
+          />
           <HeroSection 
             onStartAssessment={() => setIsIntakeOpen(true)} 
             onLearnMore={scrollToDimensions} 
+            onOpenAdmin={() => setView('admin')}
           />
           <TestimonialSection onStartAssessment={() => setIsIntakeOpen(true)} />
           <HowItWorksSection onStartAssessment={() => setIsIntakeOpen(true)} />
           <DimensionsGridSection onStartAssessment={() => setIsIntakeOpen(true)} />
           <StartNowSection onStartAssessment={() => setIsIntakeOpen(true)} />
-          <Footer />
+          <Footer onOpenAdmin={() => setView('admin')} />
           <IntakeModal 
             isOpen={isIntakeOpen} 
             onClose={() => setIsIntakeOpen(false)} 
@@ -251,6 +271,22 @@ export default function App() {
           onRestart={handleRestart}
           previewOnly={previewOnly}
         />
+      )}
+
+      {/* Admin Panel */}
+      {view === 'admin' && (
+        <AdminPanel onBack={() => { setView('home'); window.history.pushState({}, '', '/'); }} />
+      )}
+
+      {/* Floating Direct Admin Panel Button */}
+      {view !== 'admin' && (
+        <button
+          onClick={() => setView('admin')}
+          className="fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs sm:text-sm shadow-[0_8px_25px_rgba(59,130,246,0.6)] hover:shadow-[0_12px_32px_rgba(59,130,246,0.8)] border border-white/20 transition-all duration-300 hover:scale-105 flex items-center gap-2"
+        >
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
+          <span>⚙️ Open Admin Panel</span>
+        </button>
       )}
     </div>
   );

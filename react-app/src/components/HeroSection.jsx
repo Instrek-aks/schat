@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-export default function HeroSection({ onStartAssessment, onLearnMore }) {
+export default function HeroSection({ onStartAssessment, onLearnMore, onOpenAdmin }) {
   // Circular gauge config
   const pct = 68;
   const radius = 46;
@@ -47,18 +47,28 @@ export default function HeroSection({ onStartAssessment, onLearnMore }) {
           </p>
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-[12px] sm:gap-[14px] w-full sm:w-auto">
+          <div className="flex flex-wrap gap-[12px] sm:gap-[14px] w-full sm:w-auto">
             <button 
               onClick={onStartAssessment}
-              className="group btn btn-primary px-5 py-3 sm:px-[30px] sm:py-[15px] text-xs sm:text-[15px] font-bold text-white tracking-wide shadow-[0_8px_24px_rgba(88,110,247,0.35)] hover:shadow-[0_12px_32px_rgba(88,110,247,0.5)] rounded-full transition-all duration-300 hover:scale-[1.02] w-full sm:w-auto whitespace-nowrap"
+              className="group btn btn-primary px-5 py-3 sm:px-[26px] sm:py-[14px] text-xs sm:text-[14px] font-bold text-white tracking-wide shadow-[0_8px_24px_rgba(88,110,247,0.35)] hover:shadow-[0_12px_32px_rgba(88,110,247,0.5)] rounded-full transition-all duration-300 hover:scale-[1.02] whitespace-nowrap"
             >
               Begin assessment <span className="inline-block group-hover:translate-x-1 transition-transform ml-1.5">→</span>
             </button>
+
+            {onOpenAdmin && (
+              <button 
+                onClick={onOpenAdmin}
+                className="px-5 py-3 sm:px-[26px] sm:py-[14px] text-xs sm:text-[14px] font-bold text-blue-300 bg-blue-600/20 hover:bg-blue-600/35 border border-blue-500/40 rounded-full transition-all duration-300 shadow-[0_4px_20px_rgba(59,130,246,0.2)] hover:scale-[1.02] whitespace-nowrap flex items-center gap-2"
+              >
+                <span>⚙️</span> Admin Panel (Both Forms Data)
+              </button>
+            )}
+
             <button 
               onClick={onLearnMore}
-              className="btn btn-ghost px-5 py-3 sm:px-[30px] sm:py-[15px] text-xs sm:text-[15px] font-bold text-[#F3F5F9] border border-white/16 bg-white/3.5 rounded-full hover:bg-white/6 transition-all duration-300 w-full sm:w-auto whitespace-nowrap"
+              className="btn btn-ghost px-5 py-3 sm:px-[24px] sm:py-[14px] text-xs sm:text-[14px] font-semibold text-[#A7B2C4] border border-white/16 bg-white/3.5 rounded-full hover:bg-white/6 transition-all duration-300 whitespace-nowrap"
             >
-              See the seven dimensions
+              See dimensions
             </button>
           </div>
         </motion.div>

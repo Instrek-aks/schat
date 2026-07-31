@@ -235,6 +235,18 @@ const SecurityRiskEngine = () => {
     try {
       const encodedData = window.btoa(unescape(encodeURIComponent(JSON.stringify(reportPayload))));
       localStorage.setItem('shieldgcc_lead_report', encodedData);
+
+      // Save submission to client storage for Admin Panel matching
+      try {
+        const gccSubmissionsRaw = localStorage.getItem('shieldgcc_submissions');
+        const gccSubmissions = gccSubmissionsRaw ? JSON.parse(gccSubmissionsRaw) : [];
+        const filteredGcc = gccSubmissions.filter(s => s.email?.trim().toLowerCase() !== emailLower);
+        filteredGcc.unshift(reportPayload);
+        localStorage.setItem('shieldgcc_submissions', JSON.stringify(filteredGcc));
+      } catch (err) {
+        console.error('Failed to update shieldgcc_submissions in localStorage:', err);
+      }
+
       setCreatedLeadId(encodedData);
 
       const shareableLink = `${window.location.origin}${window.location.pathname}?report=${encodedData}`;
