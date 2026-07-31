@@ -1,6 +1,6 @@
 import { MongoClient } from 'mongodb';
 
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://ch:Charu%40004@cluster0.fsxomwi.mongodb.net/aiassest?retryWrites=true&w=majority&appName=Cluster0';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://abcd:abcd@cluster0.fsxomwi.mongodb.net/aiassest?appName=Cluster0';
 
 let cachedClient = null;
 
@@ -10,7 +10,12 @@ async function getDatabase() {
       serverSelectionTimeoutMS: 3000,
       connectTimeoutMS: 3000
     });
-    await cachedClient.connect();
+    try {
+      await cachedClient.connect();
+    } catch (err) {
+      cachedClient = null;
+      throw err;
+    }
   }
   return cachedClient.db('aiassest');
 }
