@@ -21,7 +21,7 @@ export default function Navigation({ onStartAssessment }) {
           className="relative group overflow-hidden px-3.5 py-1.5 sm:px-4 sm:py-2 md:px-6 md:py-3 rounded-full bg-gradient-to-r from-accentBlue to-accentPurple text-[11px] sm:text-[12.5px] md:text-[14px] font-bold text-white tracking-wide shadow-[0_8px_24px_rgba(88,110,247,0.35)] hover:shadow-[0_12px_32px_rgba(88,110,247,0.5)] transition-all duration-300 hover:scale-[1.02] flex-shrink-0"
         >
           <span className="relative z-10 flex items-center gap-1">
-            Register interest <span className="group-hover:translate-x-1 transition-transform">→</span>
+            Begin assessment <span className="group-hover:translate-x-1 transition-transform">→</span>
           </span>
           <div className="absolute inset-0 bg-gradient-to-r from-accentPurple to-accentBlue opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </button>
