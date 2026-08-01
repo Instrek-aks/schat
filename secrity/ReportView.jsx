@@ -40,7 +40,7 @@ function getPillarLabel(score) {
 const ReportView = ({ lead }) => {
   const [gaugeWidth, setGaugeWidth] = useState('0%');
   const params = new URLSearchParams(window.location.search);
-  const isFromEmail = params.get('source') === 'email' || params.has('leadId');
+  const isFromEmail = true;
 
   useEffect(() => {
     // Animate score gauge bar on load
@@ -446,13 +446,13 @@ const ReportView = ({ lead }) => {
         <div className="cover-content">
           <div className="cover-logo">
             <div className="cover-logo-mark">
-              <img src="/log.png" alt="ShieldGCC Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
+              <img src="/log.png" alt="Instrek Technology Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
             </div>
-            <div className="cover-logo-text">ShieldGCC</div>
+            <div className="cover-logo-text">Instrek Technology</div>
           </div>
           <div className="cover-eyebrow">Confidential Risk Assessment Report</div>
-          <h1 className="cover-headline">Your GCC carries <em>three open wounds</em> that your AI roadmap hasn't closed.</h1>
-          <p className="cover-sub">This report maps your India GCC's AI security exposure across the three pillars that regulators, auditors, and adversaries are already prioritising. It is based on your responses to the ShieldGCC risk scan.</p>
+          <h1 className="cover-headline">Your organisation carries <em>three open wounds</em> that your AI roadmap hasn't closed.</h1>
+          <p className="cover-sub">This report maps your organization's AI security exposure across the three pillars that regulators, auditors, and adversaries are already prioritising. It is based on your responses to the Instrek Technology risk scan.</p>
           
           <div className="cover-meta">
             <div className="cover-meta-item">
@@ -501,7 +501,7 @@ const ReportView = ({ lead }) => {
         <div className="page-wrap" style={{ marginTop: '20px', marginBottom: '40px', padding: '0 20px' }}>
           <div style={{ padding: '24px', background: 'rgba(0, 214, 143, 0.08)', border: '1px dashed rgba(0, 214, 143, 0.25)', borderRadius: '12px', textAlign: 'center' }}>
             <p style={{ margin: 0, fontSize: '15px', color: '#00FFA3', fontWeight: 'bold' }}>
-              📧 We have sent the full board-ready GCC Risk Report to your email: {lead.email}
+              📧 We have sent the full board-ready Instrek Technology Risk Report to your email: {lead.email}
             </p>
             <p style={{ margin: '8px 0 0 0', fontSize: '13.5px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.5' }}>
               Please check your inbox (including spam folder) and click the link to view the complete detailed analysis, cryptographic audit maps, compliance readiness levels, and custom remediation roadmaps.
@@ -517,12 +517,12 @@ const ReportView = ({ lead }) => {
         <div className="page-wrap" style={{ paddingBottom: 0 }}>
           <div className="section-eyebrow">01 - Executive Summary</div>
           <h2 className="section-title">The situation your board will ask about next quarter.</h2>
-          <p className="section-body">Based on your self-assessment, your India GCC is operating with significant unmanaged AI risk. The gap is not primarily technical - it is architectural. Your teams have access to AI tools that your governance framework was not designed for, your agents operate without the identity and auditability of a regulated employee, and your cryptographic infrastructure is built for a threat landscape that has already shifted.</p>
-          <p className="section-body">This is not a future risk. It is a present condition. The DPDP Act has given Indian regulators a mechanism to act. The NIST PQC standards have given your auditors a framework to measure against. And the velocity of agentic AI adoption in GCCs means that every week without governance is a week of compounding exposure.</p>
+          <p className="section-body">Based on your self-assessment, your organization is operating with significant unmanaged AI risk. The gap is not primarily technical - it is architectural. Your teams have access to AI tools that your governance framework was not designed for, your agents operate without the identity and auditability of a regulated employee, and your cryptographic infrastructure is built for a threat landscape that has already shifted.</p>
+          <p className="section-body">This is not a future risk. It is a present condition. The DPDP Act has given Indian regulators a mechanism to act. The NIST PQC standards have given your auditors a framework to measure against. And the velocity of agentic AI adoption in organizations means that every week without governance is a week of compounding exposure.</p>
 
           <div className="pull-quote">
-            <div className="pull-quote-text">"The organisations that define AI governance frameworks now will not just avoid the next breach. They will win the talent, the client trust, and the regulatory goodwill that defines who leads in the next decade of GCC-powered enterprise AI."</div>
-            <div className="pull-quote-source">- ShieldGCC Research, April 2026</div>
+            <div className="pull-quote-text">"The organisations that define AI governance frameworks now will not just avoid the next breach. They will win the talent, the client trust, and the regulatory goodwill that defines who leads in the next decade of enterprise AI."</div>
+            <div className="pull-quote-source">- Instrek Technology Research, April 2026</div>
           </div>
 
           <div className="impact-grid">
@@ -540,7 +540,7 @@ const ReportView = ({ lead }) => {
             </div>
             <div className="impact-cell">
               <div className="impact-stat-label">Peer context</div>
-              <div className="impact-stat-val">73% of India GCCs at your AI deployment stage have not completed a formal AI governance architecture. You are in the majority - and that is the risk.</div>
+              <div className="impact-stat-val">73% of organizations at your AI deployment stage have not completed a formal AI governance architecture. You are in the majority - and that is the risk.</div>
             </div>
           </div>
         </div>
@@ -551,7 +551,7 @@ const ReportView = ({ lead }) => {
         <div className="page-wrap" style={{ paddingBottom: 0 }}>
           <div className="section-eyebrow">02 - Risk Pillar Breakdown</div>
           <h2 className="section-title">Where your exposure lives - and what it costs if unaddressed.</h2>
-          <p className="section-body">Your risk profile is mapped across the three AI security pillars that matter most to India GCC executives in 2026. Each pillar below reflects your specific answers, the gap they reveal, and the architectural response that closes it.</p>
+          <p className="section-body">Your risk profile is mapped across the three AI security pillars that matter most to executives in 2026. Each pillar below reflects your specific answers, the gap they reveal, and the architectural response that closes it.</p>
 
           <div className="pillar-stack">
             {/* PILLAR 1 — AI SOVEREIGNTY */}
@@ -624,7 +624,7 @@ const ReportView = ({ lead }) => {
 
                 <div className="highlight-box" style={{ marginTop: '20px' }}>
                   <div className="highlight-box-title">What "closing this gap" looks like</div>
-                  <div className="highlight-box-body">A proactive, self-healing SOC uses AI to detect and auto-remediate threats before they reach human escalation - matching adversarial AI velocity with defensive AI velocity. A Post-Quantum Cryptography readiness assessment maps every RSA and ECC dependency in your GCC environment and produces a NIST PQC-aligned migration roadmap. The organisations that start this migration now will complete it before the quantum threat is realised. Those that wait will not.</div>
+                  <div className="highlight-box-body">A proactive, self-healing SOC uses AI to detect and auto-remediate threats before they reach human escalation - matching adversarial AI velocity with defensive AI velocity. A Post-Quantum Cryptography readiness assessment maps every RSA and ECC dependency in your environment and produces a NIST PQC-aligned migration roadmap. The organisations that start this migration now will complete it before the quantum threat is realised. Those that wait will not.</div>
                 </div>
               </div>
             </div>
@@ -637,7 +637,7 @@ const ReportView = ({ lead }) => {
         <div className="page-wrap" style={{ paddingBottom: 0 }}>
           <div className="section-eyebrow">03 - Remediation Roadmap</div>
           <h2 className="section-title">Three horizons. One coherent architecture.</h2>
-          <p className="section-body">Based on your risk profile, we recommend a structured remediation across three time horizons. This is not a linear checklist - these tracks run in parallel, governed by a single AI Security architecture that prevents the point-solution sprawl that most GCCs fall into.</p>
+          <p className="section-body">Based on your risk profile, we recommend a structured remediation across three time horizons. This is not a linear checklist - these tracks run in parallel, governed by a single AI Security architecture that prevents the point-solution sprawl that most organizations fall into.</p>
 
           <div className="roadmap">
             <div className="roadmap-step">
@@ -645,7 +645,7 @@ const ReportView = ({ lead }) => {
               <div className="step-content">
                 <div className="step-horizon now">Immediate - 0 to 30 days</div>
                 <div className="step-title">Contain the bleed: AI data flow audit + shadow AI policy</div>
-                <div className="step-desc">Before any architecture change, you need to know what you are dealing with. A rapid AI data flow audit maps every external LLM API call being made by your India GCC teams - including shadow usage. Simultaneously, a published AI acceptable-use policy with enforcement creates a defensible posture for regulators while architectural controls are being built.</div>
+                <div className="step-desc">Before any architecture change, you need to know what you are dealing with. A rapid AI data flow audit maps every external LLM API call being made by your teams - including shadow usage. Simultaneously, a published AI acceptable-use policy with enforcement creates a defensible posture for regulators while architectural controls are being built.</div>
                 <div className="step-services">
                   <span className="step-chip">AI Data Flow Audit</span>
                   <span className="step-chip">Shadow AI Detection</span>
@@ -675,7 +675,7 @@ const ReportView = ({ lead }) => {
               <div className="step-content">
                 <div className="step-horizon plan">Strategic - 90 days to 12 months</div>
                 <div className="step-title">Future-proof: SOC AI uplift + PQC migration roadmap</div>
-                <div className="step-desc">With the immediate risks contained, the strategic horizon is about asymmetric capability. An AI-powered self-healing SOC shifts your security posture from reactive to proactive. A Post-Quantum Cryptography readiness assessment produces the migration roadmap your board will need - beginning the transition from RSA/ECC to NIST PQC-approved algorithms across your GCC infrastructure before the regulatory mandate arrives.</div>
+                <div className="step-desc">With the immediate risks contained, the strategic horizon is about asymmetric capability. An AI-powered self-healing SOC shifts your security posture from reactive to proactive. A Post-Quantum Cryptography readiness assessment produces the migration roadmap your board will need - beginning the transition from RSA/ECC to NIST PQC-approved algorithms across your infrastructure before the regulatory mandate arrives.</div>
                 <div className="step-services">
                   <span className="step-chip">AI-Powered SOC</span>
                   <span className="step-chip">Self-Healing Infrastructure</span>
@@ -693,29 +693,29 @@ const ReportView = ({ lead }) => {
       <div className="paper-section">
         <div className="page-wrap" style={{ paddingBottom: 0 }}>
           <div className="section-eyebrow">04 - Peer Intelligence</div>
-          <h2 className="section-title">Where India GCC executives at your level actually stand.</h2>
-          <p className="section-body">These benchmarks are drawn from ShieldGCC's assessment data across 340 India GCC organisations scanned in Q1 2026. They give you an objective read on how your posture compares - and where the largest competitive differentiation opportunity sits.</p>
+          <h2 className="section-title">Where executives at your level actually stand.</h2>
+          <p className="section-body">These benchmarks are drawn from Instrek Technology's assessment data across 340 organisations scanned in Q1 2026. They give you an objective read on how your posture compares - and where the largest competitive differentiation opportunity sits.</p>
 
           <div className="intel-cards" style={{ marginBottom: '28px' }}>
             <div className="intel-card">
-              <div className="intel-card-label">GCCs with formal AI governance</div>
+              <div className="intel-card-label">Organizations with formal AI governance</div>
               <div className="intel-card-stat">27%</div>
-              <div className="intel-card-desc">Only 1 in 4 India GCCs has a documented AI governance framework with an assigned owner. The other 73% rely on informal policies that would not survive an audit.</div>
+              <div className="intel-card-desc">Only 1 in 4 organizations has a documented AI governance framework with an assigned owner. The other 73% rely on informal policies that would not survive an audit.</div>
             </div>
             <div className="intel-card">
-              <div className="intel-card-label">GCCs with agentic identity mgmt</div>
+              <div className="intel-card-label">Organizations with agentic identity mgmt</div>
               <div className="intel-card-stat">11%</div>
-              <div className="intel-card-desc">Fewer than 1 in 10 GCCs deploying AI agents has implemented dedicated agent credentials. The rest operate with agents inheriting human access - invisible to audit systems.</div>
+              <div className="intel-card-desc">Fewer than 1 in 10 organizations deploying AI agents has implemented dedicated agent credentials. The rest operate with agents inheriting human access - invisible to audit systems.</div>
             </div>
             <div className="intel-card">
-              <div className="intel-card-label">GCCs that have started PQC planning</div>
+              <div className="intel-card-label">Organizations that have started PQC planning</div>
               <div className="intel-card-stat">18%</div>
               <div className="intel-card-desc">Post-quantum migration is a multi-year programme. The 18% that started in 2025-26 will complete ahead of the regulatory mandate. The majority will not.</div>
             </div>
             <div className="intel-card">
               <div className="intel-card-label">Avg time to detect shadow AI usage</div>
               <div className="intel-card-stat">94 days</div>
-              <div className="intel-card-desc">The median GCC takes over 90 days to detect that developers have introduced an unauthorised AI tool. In that window, the IP damage is already done.</div>
+              <div className="intel-card-desc">The median organization takes over 90 days to detect that developers have introduced an unauthorised AI tool. In that window, the IP damage is already done.</div>
             </div>
           </div>
 
@@ -724,7 +724,7 @@ const ReportView = ({ lead }) => {
               <thead>
                 <tr>
                   <th>Capability</th>
-                  <th>GCC Peer Average</th>
+                  <th>Peer Average</th>
                   <th>Your Status</th>
                   <th>Maturity</th>
                 </tr>
@@ -771,42 +771,42 @@ const ReportView = ({ lead }) => {
         <div className="page-wrap" style={{ padding: 0 }}>
           <div className="cta-label">Your Next Step</div>
           <h2 className="cta-headline">This report surfaces the risk.<br/><em>A conversation closes it.</em></h2>
-          <p className="cta-sub">Our GCC security architects review a maximum of 8 new organisations per month. A 30-minute strategy call is not a sales call - it is a working session where we map your specific architecture against your highest-priority pillar and give you a concrete, actionable starting point. No commitment required.</p>
+          <p className="cta-sub">Our security architects review a maximum of 8 new organisations per month. A 30-minute strategy call is not a sales call - it is a working session where we map your specific architecture against your highest-priority pillar and give you a concrete, actionable starting point. No commitment required.</p>
 
           <div className="cta-options">
-            <a className="cta-option" href="https://calendly.com/shieldgcc/strategy" target="_blank" rel="noreferrer">
+            <a className="cta-option" href="https://calendly.com/instrek/strategy" target="_blank" rel="noreferrer">
               <div className="cta-option-icon">📅</div>
               <div className="cta-option-title">Book a 30-min Strategy Call</div>
-              <div className="cta-option-desc">Live session with a GCC security architect. We review your specific pillar profile and recommend a starting architecture. This week's slots are filling.</div>
+              <div className="cta-option-desc">Live session with a security architect. We review your specific pillar profile and recommend a starting architecture. This week's slots are filling.</div>
             </a>
-            <a className="cta-option" href={`mailto:strategy@shieldgcc.com?subject=GCC Risk Report - Architecture Review Request for ${encodeURIComponent(lead.company || '')}`} target="_blank" rel="noreferrer">
+            <a className="cta-option" href={`mailto:strategy@instrek.com?subject=Instrek Technology Risk Report - Architecture Review Request for ${encodeURIComponent(lead.company || '')}`} target="_blank" rel="noreferrer">
               <div className="cta-option-icon">✉️</div>
               <div className="cta-option-title">Request a Written Architecture Blueprint</div>
-              <div className="cta-option-desc">Prefer async? Email us with your report score and we will respond within 24 hours with a written architecture recommendation tailored to your GCC size and sector.</div>
+              <div className="cta-option-desc">Prefer async? Email us with your report score and we will respond within 24 hours with a written architecture recommendation tailored to your organization size and sector.</div>
             </a>
             <a className="cta-option" href="#" onClick={(e) => { e.preventDefault(); alert("Preparing framework download..."); }}>
               <div className="cta-option-icon">📄</div>
-              <div className="cta-option-title">Download the Full GCC AI Risk Framework</div>
+              <div className="cta-option-title">Download the Full AI Risk Framework</div>
               <div className="cta-option-desc">Our 40-page technical framework covers all three pillars with architecture diagrams, vendor evaluation criteria, and implementation checklists for each.</div>
             </a>
             <a className="cta-option" href="#" onClick={(e) => { e.preventDefault(); alert("Report link copied to clipboard! Share it with your team."); navigator.clipboard.writeText(window.location.href); }}>
               <div className="cta-option-icon">👥</div>
               <div className="cta-option-title">Share This Report With Your Team</div>
-              <div className="cta-option-desc">Forward this report link to your CISO, CTO, or GCC head. A shared risk view accelerates internal alignment and shortens the path to a governance decision.</div>
+              <div className="cta-option-desc">Forward this report link to your CISO, CTO, or technology head. A shared risk view accelerates internal alignment and shortens the path to a governance decision.</div>
             </a>
           </div>
 
-          <a className="cta-primary-btn" href="https://calendly.com/shieldgcc/strategy" target="_blank" rel="noreferrer">Book My Strategy Call →</a>
+          <a className="cta-primary-btn" href="https://calendly.com/instrek/strategy" target="_blank" rel="noreferrer">Book My Strategy Call →</a>
 
           <div className="cta-urgency">
-            <div className="cta-urgency-text">⚠️ We reviewed 340 GCC risk profiles in Q1 2026. The organisations that acted on their highest-risk pillar within 30 days of assessment reduced their measured exposure by an average of 61%. The ones that filed this report and moved on did not. The window to act before your next board AI risk review is now.</div>
+            <div className="cta-urgency-text">⚠️ We reviewed 340 risk profiles in Q1 2026. The organisations that acted on their highest-risk pillar within 30 days of assessment reduced their measured exposure by an average of 61%. The ones that filed this report and moved on did not. The window to act before your next board AI risk review is now.</div>
           </div>
 
           <div className="expect-steps" style={{ marginTop: '40px' }}>
             <div className="expect-step">
               <div className="expect-num">01</div>
               <div className="expect-title">You book the call</div>
-              <div className="expect-desc">A 30-minute slot with a GCC security architect. Bring your biggest question. We bring the answers.</div>
+              <div className="expect-desc">A 30-minute slot with a security architect. Bring your biggest question. We bring the answers.</div>
             </div>
             <div className="expect-step">
               <div className="expect-num">02</div>
@@ -824,13 +824,13 @@ const ReportView = ({ lead }) => {
 
           {/* ── FOOTER ── */}
           <div className="report-footer">
-            <div className="footer-brand">ShieldGCC - India GCC AI Security</div>
+            <div className="footer-brand">Instrek Technology - AI Security</div>
             <div className="footer-links">
-              <a className="footer-link" href="mailto:strategy@shieldgcc.com">strategy@shieldgcc.com</a>
-              <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>shieldgcc.com</a>
+              <a className="footer-link" href="mailto:strategy@instrek.com">strategy@instrek.com</a>
+              <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>instrek.com</a>
               <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
             </div>
-            <div className="footer-disclaimer">This report is based on self-reported data from the ShieldGCC risk assessment. It is intended as a strategic orientation tool and does not constitute a formal security audit. Risk scores are indicative and derived from heuristic models calibrated against GCC peer data. ShieldGCC accepts no liability for decisions made solely on the basis of this report without further technical due diligence.</div>
+            <div className="footer-disclaimer">This report is based on self-reported data from the Instrek Technology risk assessment. It is intended as a strategic orientation tool and does not constitute a formal security audit. Risk scores are indicative and derived from heuristic models calibrated against peer data. Instrek Technology accepts no liability for decisions made solely on the basis of this report without further technical due diligence.</div>
           </div>
         </>
       )}
