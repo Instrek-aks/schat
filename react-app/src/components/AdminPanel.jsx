@@ -218,46 +218,7 @@ export default function AdminPanel({ onBack }) {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-            {onBack && (
-              <button
-                onClick={onBack}
-                className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs sm:text-sm font-semibold text-slate-300 hover:text-white transition-all flex items-center gap-1.5"
-              >
-                <span>←</span> Exit Admin
-              </button>
-            )}
 
-            <button
-              onClick={() => setIsRecordModalOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/30 text-xs sm:text-sm font-semibold text-purple-300 transition-all flex items-center gap-1.5"
-            >
-              <span>🛡️</span> Record GCC Scan
-            </button>
-
-            <button
-              onClick={handleExportCsv}
-              className="px-3.5 py-2 rounded-xl bg-blue-600/20 hover:bg-blue-600/30 border border-blue-500/30 text-xs sm:text-sm font-semibold text-blue-300 transition-all flex items-center gap-1.5"
-            >
-              <span>📥</span> Export CSV
-            </button>
-
-            <button
-              onClick={loadData}
-              title="Refresh submissions"
-              className="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs text-slate-300 transition-all"
-            >
-              🔄 Refresh
-            </button>
-
-            <button
-              onClick={handleClearData}
-              title="Clear all recorded submissions"
-              className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/20 text-xs text-rose-300 transition-all"
-            >
-              🗑️ Clear
-            </button>
-          </div>
         </div>
 
         {/* METRICS CARDS */}

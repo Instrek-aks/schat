@@ -3,15 +3,15 @@ import React, { useState, useEffect } from 'react';
 export default function Navigation({ onStartAssessment, onOpenAdmin }) {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-[#070B14] border-b border-white/5 py-1.5 sm:py-2.5 md:py-3.5 backdrop-blur-md">
-      <div className="max-w-[1180px] mx-auto px-4 sm:px-8 flex items-center justify-between h-11 sm:h-13 md:h-14">
+      <div className="max-w-[1180px] mx-auto px-2.5 sm:px-8 flex items-center justify-between gap-3 h-11 sm:h-13 md:h-14">
         {/* Logo */}
         <div 
           className="flex items-center gap-2 cursor-pointer select-none group flex-shrink-0" 
           onClick={() => window.scrollTo({top:0, behavior:'smooth'})}
         >
           <div className="w-[8px] h-[8px] sm:w-[9px] sm:h-[9px] md:w-[10px] md:h-[10px] rounded-full bg-gradient-to-r from-accentBlue to-accentPurple shadow-[0_0_10px_rgba(168,85,247,0.7)] group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
-          <span className="font-sans font-extrabold text-[12px] sm:text-[15px] md:text-[18px] tracking-[-0.01em] text-white group-hover:text-slate-200 transition-colors">
-            AI <span className="hidden min-[370px]:inline">Readiness</span>
+          <span className="font-sans font-extrabold text-[11.5px] sm:text-[15px] md:text-[18px] tracking-[-0.01em] text-white group-hover:text-slate-200 transition-colors">
+            AI Readiness
           </span>
         </div>
 
