@@ -401,7 +401,7 @@ const SecurityRiskEngine = () => {
             <div>
               <div className="logo-row">
                 <div className="logo-mark">
-                  <img src="/logo.png" alt="ShieldGCC" className="logo-img" />
+                  <img src="/log.png" alt="ShieldGCC" className="logo-img" />
                 </div>
                 <div className="logo-name">SHIELDGCC</div>
               </div>
@@ -682,16 +682,7 @@ const SecurityRiskEngine = () => {
                   >
                     View My Live Risk Report →
                   </button>
-                  <button
-                    className="cta-ghost"
-                    onClick={() => {
-                      const adminUrl = `http://localhost:5173/admin?importGcc=${createdLeadId}`;
-                      window.open(adminUrl, '_blank');
-                    }}
-                    style={{ marginBottom: '16px', width: '100%', border: '1px solid rgba(59,130,246,0.5)', color: '#60A5FA', background: 'rgba(59,130,246,0.15)', fontWeight: 'bold' }}
-                  >
-                    ⚙️ View in Admin Panel →
-                  </button>
+
                   <button
                     className="cta-ghost"
                     onClick={() => {

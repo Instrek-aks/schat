@@ -375,16 +375,7 @@ function decodeReportToken(rawToken) {
         <AdminPanel onBack={() => { setView('home'); window.history.pushState({}, '', '/'); }} />
       )}
 
-      {/* Floating Direct Admin Panel Button */}
-      {view !== 'admin' && (
-        <button
-          onClick={handleOpenAdmin}
-          className="fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs sm:text-sm shadow-[0_8px_25px_rgba(59,130,246,0.6)] hover:shadow-[0_12px_32px_rgba(59,130,246,0.8)] border border-white/20 transition-all duration-300 hover:scale-105 flex items-center gap-2"
-        >
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
-          <span>⚙️ Open Admin Panel</span>
-        </button>
-      )}
+
     </div>
   );
 }

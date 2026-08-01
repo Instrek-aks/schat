@@ -7,14 +7,7 @@ export default function Footer({ onOpenAdmin }) {
         <p className="text-[13px] text-[#6E7A8E] tracking-wide">
           AI Readiness Assessment. Built to help organisations navigate AI adoption with clarity.
         </p>
-        {onOpenAdmin && (
-          <button
-            onClick={onOpenAdmin}
-            className="text-[12px] text-slate-400 hover:text-blue-400 font-medium transition-colors flex items-center gap-1"
-          >
-            <span>⚙️</span> Admin Portal
-          </button>
-        )}
+
       </div>
     </footer>
   );
