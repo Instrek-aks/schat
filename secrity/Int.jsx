@@ -59,6 +59,7 @@ const SecurityRiskEngine = () => {
     const params = new URLSearchParams(window.location.search);
     const reportData = params.get('report');
     const importGcc = params.get('importGcc');
+    const leadId = params.get('leadId');
     
     if (reportData) {
       try {
@@ -86,8 +87,28 @@ const SecurityRiskEngine = () => {
       } catch (e) {
         console.error('Failed to parse importGcc parameter:', e);
       }
+    } else if (leadId) {
+      setLoadingReport(true);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      fetch(`${apiUrl}/api/shieldgcc/leads/${leadId}`)
+        .then(res => {
+          if (!res.ok) throw new Error('Failed to fetch lead');
+          return res.json();
+        })
+        .then(data => {
+          setReportLead(data);
+          setScreen('report');
+          localStorage.setItem('shieldgcc_active_report', JSON.stringify(data));
+        })
+        .catch(err => {
+          console.error('Error fetching lead data:', err);
+          setErrorReport('Could not retrieve your risk report. Please try scanning again.');
+        })
+        .finally(() => {
+          setLoadingReport(false);
+        });
+      return;
     }
-
     
     setScreen('hero');
     setReportLead(null);

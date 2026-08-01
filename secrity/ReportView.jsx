@@ -40,7 +40,7 @@ function getPillarLabel(score) {
 const ReportView = ({ lead }) => {
   const [gaugeWidth, setGaugeWidth] = useState('0%');
   const params = new URLSearchParams(window.location.search);
-  const isFromEmail = params.get('source') === 'email';
+  const isFromEmail = params.get('source') === 'email' || params.has('leadId');
 
   useEffect(() => {
     // Animate score gauge bar on load
