@@ -39,6 +39,8 @@ function getPillarLabel(score) {
 
 const ReportView = ({ lead }) => {
   const [gaugeWidth, setGaugeWidth] = useState('0%');
+  const params = new URLSearchParams(window.location.search);
+  const isFromEmail = params.get('source') === 'email';
 
   useEffect(() => {
     // Animate score gauge bar on load
@@ -137,7 +139,7 @@ const ReportView = ({ lead }) => {
 
         .cover-logo { display: flex; align-items: center; gap: 12px; margin-bottom: 48px; }
         .cover-logo-mark {
-          width: 36px; height: 36px; border: 1.5px solid rgba(0,214,143,0.5);
+          width: 52px; height: 52px; border: 1.5px solid rgba(0,214,143,0.5);
           display: flex; align-items: center; justify-content: center;
           font-family: var(--mono); font-size: 14px; color: var(--green-hi); font-weight: 500;
         }
@@ -443,7 +445,9 @@ const ReportView = ({ lead }) => {
         <div className="cover-grid"></div>
         <div className="cover-content">
           <div className="cover-logo">
-            <div className="cover-logo-mark">SG</div>
+            <div className="cover-logo-mark">
+              <img src="/log.png" alt="ShieldGCC Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
+            </div>
             <div className="cover-logo-text">ShieldGCC</div>
           </div>
           <div className="cover-eyebrow">Confidential Risk Assessment Report</div>
@@ -493,8 +497,23 @@ const ReportView = ({ lead }) => {
         </div>
       </div>
 
-      {/* ── SECTION 1 - EXECUTIVE SUMMARY ── */}
-      <div className="paper-section">
+      {!isFromEmail && (
+        <div className="page-wrap" style={{ marginTop: '20px', marginBottom: '40px', padding: '0 20px' }}>
+          <div style={{ padding: '24px', background: 'rgba(0, 214, 143, 0.08)', border: '1px dashed rgba(0, 214, 143, 0.25)', borderRadius: '12px', textAlign: 'center' }}>
+            <p style={{ margin: 0, fontSize: '15px', color: '#00FFA3', fontWeight: 'bold' }}>
+              📧 We have sent the full board-ready GCC Risk Report to your email: {lead.email}
+            </p>
+            <p style={{ margin: '8px 0 0 0', fontSize: '13.5px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.5' }}>
+              Please check your inbox (including spam folder) and click the link to view the complete detailed analysis, cryptographic audit maps, compliance readiness levels, and custom remediation roadmaps.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {isFromEmail && (
+        <>
+          {/* ── SECTION 1 - EXECUTIVE SUMMARY ── */}
+          <div className="paper-section">
         <div className="page-wrap" style={{ paddingBottom: 0 }}>
           <div className="section-eyebrow">01 - Executive Summary</div>
           <h2 className="section-title">The situation your board will ask about next quarter.</h2>
@@ -803,16 +822,18 @@ const ReportView = ({ lead }) => {
         </div>
       </div>
 
-      {/* ── FOOTER ── */}
-      <div className="report-footer">
-        <div className="footer-brand">ShieldGCC - India GCC AI Security</div>
-        <div className="footer-links">
-          <a className="footer-link" href="mailto:strategy@shieldgcc.com">strategy@shieldgcc.com</a>
-          <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>shieldgcc.com</a>
-          <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
-        </div>
-        <div className="footer-disclaimer">This report is based on self-reported data from the ShieldGCC risk assessment. It is intended as a strategic orientation tool and does not constitute a formal security audit. Risk scores are indicative and derived from heuristic models calibrated against GCC peer data. ShieldGCC accepts no liability for decisions made solely on the basis of this report without further technical due diligence.</div>
-      </div>
+          {/* ── FOOTER ── */}
+          <div className="report-footer">
+            <div className="footer-brand">ShieldGCC - India GCC AI Security</div>
+            <div className="footer-links">
+              <a className="footer-link" href="mailto:strategy@shieldgcc.com">strategy@shieldgcc.com</a>
+              <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>shieldgcc.com</a>
+              <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
+            </div>
+            <div className="footer-disclaimer">This report is based on self-reported data from the ShieldGCC risk assessment. It is intended as a strategic orientation tool and does not constitute a formal security audit. Risk scores are indicative and derived from heuristic models calibrated against GCC peer data. ShieldGCC accepts no liability for decisions made solely on the basis of this report without further technical due diligence.</div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

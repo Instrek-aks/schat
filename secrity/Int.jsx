@@ -270,7 +270,7 @@ const SecurityRiskEngine = () => {
 
       setCreatedLeadId(encodedData);
 
-      const shareableLink = `https://sch-t.netlify.app${window.location.pathname}?report=${encodedData}`;
+      const shareableLink = `https://sca1-t.netlify.app${window.location.pathname}?report=${encodedData}`;
 
       let themeColor = '#FF4C4C'; // Critical
       if (reportPayload.tier === 'Moderate Risk') {
@@ -713,7 +713,7 @@ const SecurityRiskEngine = () => {
                   <button
                     className="cta-ghost"
                     onClick={() => {
-                      const shareableLink = `https://sch-t.netlify.app${window.location.pathname}?report=${createdLeadId}`;
+                      const shareableLink = `https://sca1-t.netlify.app${window.location.pathname}?report=${createdLeadId}`;
                       const subject = encodeURIComponent("ShieldGCC AI Risk Report");
                       const body = encodeURIComponent(`Hi,\n\nHere is your custom ShieldGCC AI Risk Report.\n\nRisk Score: ${results?.avg}/100 (${results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation'})\n\nView full interactive report here:\n${shareableLink}\n\nBest regards,\nShieldGCC Team`);
                       window.location.href = `mailto:${form.email}?subject=${subject}&body=${body}`;

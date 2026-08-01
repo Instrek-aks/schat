@@ -9,7 +9,7 @@ export default function Navigation({ onStartAssessment, onOpenAdmin }) {
           className="flex items-center gap-2 cursor-pointer select-none group flex-shrink-0" 
           onClick={() => window.scrollTo({top:0, behavior:'smooth'})}
         >
-          <div className="w-[8px] h-[8px] sm:w-[9px] sm:h-[9px] md:w-[10px] md:h-[10px] rounded-full bg-gradient-to-r from-accentBlue to-accentPurple shadow-[0_0_10px_rgba(168,85,247,0.7)] group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
+          <img src="/logo.png" alt="AI Readiness Logo" className="w-[14px] h-[14px] sm:w-[16px] sm:h-[16px] md:w-[18px] md:h-[18px] object-contain group-hover:scale-110 transition-transform duration-300 flex-shrink-0" />
           <span className="font-sans font-extrabold text-[11.5px] sm:text-[15px] md:text-[18px] tracking-[-0.01em] text-white group-hover:text-slate-200 transition-colors">
             AI Readiness
           </span>
