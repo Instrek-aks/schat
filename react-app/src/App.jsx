@@ -20,12 +20,7 @@ export default function App() {
     const path = window.location.pathname;
     const search = window.location.search;
     if (path === '/admin' || search.includes('admin')) return 'admin';
-
-    // On page refresh on report page, clear report URL and redirect to home page
-    if (path.startsWith('/report/') || search.includes('report=')) {
-      window.history.replaceState({}, '', '/');
-    }
-    localStorage.removeItem('instrek_active_report_data');
+    if (path.startsWith('/report/')) return 'loading';
     return 'home';
   });
   const [companyInfo, setCompanyInfo] = useState(null);
@@ -34,7 +29,7 @@ export default function App() {
   const [isIntakeOpen, setIsIntakeOpen] = useState(false);
   const [previewOnly, setPreviewOnly] = useState(false);
 
-  // Check URL on mount: Admin stays Admin, report refresh redirects to home page
+  // Check URL on mount: Admin stays Admin, report loads report token
   useEffect(() => {
     const path = window.location.pathname;
     const search = window.location.search;
@@ -44,13 +39,10 @@ export default function App() {
       return;
     }
 
-    // Refresh on report page -> redirect to home page
-    if (path.startsWith('/report/') || search.includes('report=')) {
-      window.history.replaceState({}, '', '/');
-      localStorage.removeItem('instrek_active_report_data');
-      setView('home');
-      setCompanyInfo(null);
-      setAssessmentAnswers(null);
+    if (path.startsWith('/report/')) {
+      const token = path.replace('/report/', '');
+      fetchReport(token);
+      return;
     }
   }, []);
 
