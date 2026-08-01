@@ -54,14 +54,53 @@ const SecurityRiskEngine = () => {
   const [errorReport, setErrorReport] = useState(null);
   const [createdLeadId, setCreatedLeadId] = useState(null);
 
-  // On page load/refresh, clear report parameters and redirect to home hero screen
+  // On page load/refresh, load report from URL or keep hero screen
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const reportData = params.get('report') || params.get('importGcc');
+    const reportData = params.get('report');
+    const importGcc = params.get('importGcc');
+    
     if (reportData) {
-      window.history.replaceState({}, '', window.location.pathname);
+      try {
+        const decodedStr = decodeURIComponent(escape(window.atob(reportData)));
+        const parsed = JSON.parse(decodedStr);
+        if (parsed && parsed.email) {
+          setReportLead(parsed);
+          setScreen('report');
+          localStorage.setItem('shieldgcc_active_report', JSON.stringify(parsed));
+          return;
+        }
+      } catch (e) {
+        console.error('Failed to parse report parameter:', e);
+      }
+    } else if (importGcc) {
+      try {
+        const decodedStr = decodeURIComponent(escape(window.atob(importGcc)));
+        const parsed = JSON.parse(decodedStr);
+        if (parsed && parsed.email) {
+          setReportLead(parsed);
+          setScreen('report');
+          localStorage.setItem('shieldgcc_active_report', JSON.stringify(parsed));
+          return;
+        }
+      } catch (e) {
+        console.error('Failed to parse importGcc parameter:', e);
+      }
     }
-    localStorage.removeItem('shieldgcc_active_report');
+    
+    // Check local storage fallback if no valid URL parameters
+    const saved = localStorage.getItem('shieldgcc_active_report');
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.email) {
+          setReportLead(parsed);
+          setScreen('report');
+          return;
+        }
+      } catch (e) {}
+    }
+    
     setScreen('hero');
     setReportLead(null);
   }, []);
@@ -243,7 +282,7 @@ const SecurityRiskEngine = () => {
 
       setCreatedLeadId(encodedData);
 
-      const shareableLink = `${window.location.origin}${window.location.pathname}?report=${encodedData}`;
+      const shareableLink = `https://sch-t.netlify.app${window.location.pathname}?report=${encodedData}`;
 
       let themeColor = '#FF4C4C'; // Critical
       if (reportPayload.tier === 'Moderate Risk') {
@@ -307,11 +346,11 @@ const SecurityRiskEngine = () => {
       .then(data => console.log('Email dispatched successfully:', data))
       .catch(err => console.warn('Email dispatch skipped or failed:', err.message));
 
+      window.location.search = `?report=${encodedData}`;
     } catch (err) {
       console.error('Failed to serialize report data:', err);
+      goScreen('hero');
     }
-
-    goScreen('confirm');
   };
 
   const viewReportSkipForm = () => {
@@ -686,7 +725,7 @@ const SecurityRiskEngine = () => {
                   <button
                     className="cta-ghost"
                     onClick={() => {
-                      const shareableLink = `${window.location.origin}${window.location.pathname}?report=${createdLeadId}`;
+                      const shareableLink = `https://sch-t.netlify.app${window.location.pathname}?report=${createdLeadId}`;
                       const subject = encodeURIComponent("ShieldGCC AI Risk Report");
                       const body = encodeURIComponent(`Hi,\n\nHere is your custom ShieldGCC AI Risk Report.\n\nRisk Score: ${results?.avg}/100 (${results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation'})\n\nView full interactive report here:\n${shareableLink}\n\nBest regards,\nShieldGCC Team`);
                       window.location.href = `mailto:${form.email}?subject=${subject}&body=${body}`;
