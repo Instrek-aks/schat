@@ -14,7 +14,7 @@ exports.sendRiskReportEmail = async (leadData) => {
     return;
   }
 
-  let fromValue = process.env.RESEND_FROM || 'ShieldGCC <onboarding@resend.dev>';
+  let fromValue = process.env.RESEND_FROM || 'Instrek Technology <onboarding@resend.dev>';
   
   // Self-heal: If the fromValue contains brackets <...> but no '@', automatically prepend 'info@'
   if (fromValue.includes('<') && fromValue.includes('>') && !fromValue.includes('@')) {
@@ -176,13 +176,13 @@ exports.sendRiskReportEmail = async (leadData) => {
     <body>
       <div class="email-container">
         <div class="header">
-          <h1 class="logo">ShieldGCC</h1>
-          <div class="logo-sub">India GCC Security Assessment</div>
+          <h1 class="logo">Instrek Technology</h1>
+          <div class="logo-sub">Security Assessment</div>
         </div>
         <div class="content">
-          <h2 class="greeting">Hi CISO / Leader,</h2>
+          <h2 class="greeting">Hi Leader,</h2>
           <p class="intro-text">
-            Thank you for completing the ShieldGCC Live Risk Scan. Your Global Capability Center (GCC) profile has been successfully evaluated across our primary AI security pillars.
+            Thank you for completing the Instrek Technology Live Risk Scan. Your profile has been successfully evaluated across our primary security pillars.
           </p>
           
           <div class="score-card">
@@ -203,7 +203,7 @@ exports.sendRiskReportEmail = async (leadData) => {
               <td class="value">${role || 'Not Specified'}</td>
             </tr>
             <tr>
-              <td class="label">GCC Size</td>
+              <td class="label">Size</td>
               <td class="value">${size || 'Not Specified'}</td>
             </tr>
             <tr>
@@ -212,19 +212,19 @@ exports.sendRiskReportEmail = async (leadData) => {
             </tr>
           </table>
           <a href="${process.env.CLIENT_URL || 'https://sca1-t.netlify.app'}/?leadId=${_id}" class="cta-button" target="_blank" style="background-color: #00D68F; color: #0D1117 !important; margin-bottom: 15px;">
-            View Your Full GCC Risk Report
+            View Your Full Risk Report
           </a>
 
-          <a href="mailto:${fromEmail}?subject=GCC%20Security%20Briefing%20Request" class="cta-button">
-            Book a 20-Min GCC Security Briefing
+          <a href="mailto:${fromEmail}?subject=Security%20Briefing%20Request" class="cta-button">
+            Book a 20-Min Security Briefing
           </a>
           
           <p class="intro-text" style="font-size: 13px; text-align: center; color: #5A6272;">
-            Our GCC security architects are preparing your custom remediation blueprint to address the AI Sovereignty, Agentic Accountability, and Post-Quantum exposure flagged in this scan. We will reach out within 24 hours.
+            Our security architects are preparing your custom remediation blueprint to address the AI Sovereignty, Agentic Accountability, and Post-Quantum exposure flagged in this scan. We will reach out within 24 hours.
           </p>
         </div>
         <div class="footer">
-          <p>ShieldGCC Ltd. &copy; 2026. All rights reserved.</p>
+          <p>Instrek Technology &copy; 2026. All rights reserved.</p>
           <p>Governed by DPDP Act & GDPR compliance standards.</p>
         </div>
       </div>
@@ -242,7 +242,7 @@ exports.sendRiskReportEmail = async (leadData) => {
       body: JSON.stringify({
         from: fromValue,
         to: email,
-        subject: `ShieldGCC AI Risk Report: ${tier}`,
+        subject: `Instrek Technology AI Risk Report: ${tier}`,
         html: htmlContent
       })
     });
@@ -269,7 +269,7 @@ exports.sendMagnetoReportEmail = async (assessment) => {
     return;
   }
 
-  let fromValue = process.env.RESEND_FROM || 'Magneto AI <onboarding@resend.dev>';
+  let fromValue = process.env.RESEND_FROM || 'Instrek Technology <onboarding@resend.dev>';
   
   if (fromValue.includes('<') && fromValue.includes('>') && !fromValue.includes('@')) {
     fromValue = fromValue.replace('<', '<info@');
@@ -312,13 +312,13 @@ exports.sendMagnetoReportEmail = async (assessment) => {
     <body>
       <div class="email-container">
         <div class="header">
-          <h1 class="logo">Instrek Magneto</h1>
-          <div class="logo-sub">AI Readiness Platform</div>
+          <h1 class="logo">Instrek Technology</h1>
+          <div class="logo-sub">Technology Solutions</div>
         </div>
         <div class="content">
           <h2 class="greeting">Hi ${leadInfo?.name || 'Leader'},</h2>
           <p class="intro-text">
-            Thank you for completing the Magneto AI Readiness Assessment. We have processed your responses and your custom readiness report is ready.
+            Thank you for completing the Magneto Instrek Technology Assessment. We have processed your responses and your custom report is ready.
           </p>
           
           <div class="score-card">
@@ -334,7 +334,7 @@ exports.sendMagnetoReportEmail = async (assessment) => {
           </a>
         </div>
         <div class="footer">
-          <p>Instrek &copy; 2026. All rights reserved.</p>
+          <p>Instrek Technology &copy; 2026. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -351,7 +351,7 @@ exports.sendMagnetoReportEmail = async (assessment) => {
       body: JSON.stringify({
         from: fromValue,
         to: leadInfo.email,
-        subject: `Your AI Readiness Report: ${scores?.overallPct || 0}%`,
+        subject: `Your Instrek Technology Report: ${scores?.overallPct || 0}%`,
         html: htmlContent
       })
     });

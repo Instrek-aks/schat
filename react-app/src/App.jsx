@@ -222,16 +222,16 @@ function decodeReportToken(rawToken) {
         </head>
         <body>
           <div class="container">
-            <div class="header">Instrek AI Readiness Report</div>
+            <div class="header">Instrek Technology Report</div>
             <p style="color: #A0AEC0; font-size: 15px;">Hi ${contactInfo.name || 'Leader'},</p>
-            <p style="color: #A0AEC0; font-size: 15px; line-height: 1.6;">Thank you for completing the Instrek AI Readiness Assessment for <strong>${fullInfo.company || 'your organisation'}</strong>. Your custom AI transformation roadmap is ready.</p>
+            <p style="color: #A0AEC0; font-size: 15px; line-height: 1.6;">Thank you for completing the Instrek Technology Assessment for <strong>${fullInfo.company || 'your organisation'}</strong>. Your custom transformation roadmap is ready.</p>
             <div class="score-card">
-              <div class="score-title">AI Readiness Assessment</div>
+              <div class="score-title">Instrek Technology</div>
               <p style="color: #00FFA3; font-size: 18px; font-weight: bold; margin-top: 10px;">Report Generated Successfully</p>
             </div>
             <a href="${shareableLink}" class="cta-btn">View My Dashboard</a>
             <div class="footer">
-              <p>Instrek &copy; 2026. All rights reserved.</p>
+              <p>Instrek Technology &copy; 2026. All rights reserved.</p>
             </div>
           </div>
         </body>
@@ -245,7 +245,7 @@ function decodeReportToken(rawToken) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: contactInfo.email,
-          subject: 'Your Instrek AI Readiness Report',
+          subject: 'Your Instrek Technology Report',
           html: emailHtml
         })
       })

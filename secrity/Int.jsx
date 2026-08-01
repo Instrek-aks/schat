@@ -319,9 +319,9 @@ const SecurityRiskEngine = () => {
         </head>
         <body>
           <div class="container">
-            <div class="header">ShieldGCC</div>
+            <div class="header">Instrek Technology</div>
             <p style="color: #A0AEC0; font-size: 15px;">Hi ${firstName},</p>
-            <p style="color: #A0AEC0; font-size: 15px; line-height: 1.6;">Thank you for completing the ShieldGCC Live Risk Scan. Your assessment report has been successfully generated.</p>
+            <p style="color: #A0AEC0; font-size: 15px; line-height: 1.6;">Thank you for completing the Instrek Technology Live Risk Scan. Your assessment report has been successfully generated.</p>
             <div class="score-card">
               <div class="score-title">Your Risk Score</div>
               <div class="score-value">${reportPayload.riskScore}</div>
@@ -329,7 +329,7 @@ const SecurityRiskEngine = () => {
             </div>
             <a href="${shareableLink}" class="cta-btn">View My Risk Report</a>
             <div class="footer">
-              <p>ShieldGCC Ltd. &copy; 2026. All rights reserved.</p>
+              <p>Instrek Technology Ltd. &copy; 2026. All rights reserved.</p>
               <p>Governed by DPDP Act & GDPR compliance standards.</p>
             </div>
           </div>
@@ -342,7 +342,7 @@ const SecurityRiskEngine = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: emailLower,
-          subject: `ShieldGCC AI Risk Report: ${reportPayload.tier}`,
+          subject: `Instrek Technology AI Risk Report: ${reportPayload.tier}`,
           html: emailHtml
         })
       })
@@ -735,8 +735,8 @@ const SecurityRiskEngine = () => {
                     className="cta-ghost"
                     onClick={() => {
                       const shareableLink = `https://sca1-t.netlify.app${window.location.pathname}?report=${createdLeadId}`;
-                      const subject = encodeURIComponent("ShieldGCC AI Risk Report");
-                      const body = encodeURIComponent(`Hi,\n\nHere is your custom ShieldGCC AI Risk Report.\n\nRisk Score: ${results?.avg}/100 (${results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation'})\n\nView full interactive report here:\n${shareableLink}\n\nBest regards,\nShieldGCC Team`);
+                      const subject = encodeURIComponent("Instrek Technology AI Risk Report");
+                      const body = encodeURIComponent(`Hi,\n\nHere is your custom Instrek Technology AI Risk Report.\n\nRisk Score: ${results?.avg}/100 (${results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation'})\n\nView full interactive report here:\n${shareableLink}\n\nBest regards,\nInstrek Technology Team`);
                       window.location.href = `mailto:${form.email}?subject=${subject}&body=${body}`;
                     }}
                     style={{ marginBottom: '16px', width: '100%', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}

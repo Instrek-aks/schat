@@ -53,7 +53,7 @@ export const handler = async (event, context) => {
     // 2. Load API Key (Priority: process.env.RESEND_API_KEY -> fallback)
     console.log('[send-email] Checking for RESEND_API_KEY environment variable...');
     const apiKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM || 'ShieldGCC <info@shieldgcc.instrek.com>';
+    const fromEmail = process.env.RESEND_FROM || 'Instrek Technology <info@shieldgcc.instrek.com>';
 
     console.log('[send-email] API Key retrieved. Length:', apiKey ? apiKey.length : 0);
     console.log('[send-email] From email address:', fromEmail);
