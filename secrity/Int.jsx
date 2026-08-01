@@ -87,19 +87,7 @@ const SecurityRiskEngine = () => {
         console.error('Failed to parse importGcc parameter:', e);
       }
     }
-    
-    // Check local storage fallback if no valid URL parameters
-    const saved = localStorage.getItem('shieldgcc_active_report');
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved);
-        if (parsed && parsed.email) {
-          setReportLead(parsed);
-          setScreen('report');
-          return;
-        }
-      } catch (e) {}
-    }
+
     
     setScreen('hero');
     setReportLead(null);
