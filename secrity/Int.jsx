@@ -243,7 +243,7 @@ const SecurityRiskEngine = () => {
       lastName,
       email: emailLower,
       role: form.role,
-      company: form.company || 'ShieldGCC Assessment',
+      company: form.company || 'Instrek Technology Assessment',
       size: form.size || '500-2000',
       riskScore: results?.avg,
       tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
@@ -373,7 +373,7 @@ const SecurityRiskEngine = () => {
       email: 'anonymous@shieldgcc-scan.com',
       role: 'GCC Leader',
       size: '500-2000',
-      company: 'ShieldGCC Assessment',
+      company: 'Instrek Technology Assessment',
       riskScore: results?.avg,
       tier: results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation',
       p1Score,
@@ -449,9 +449,11 @@ const SecurityRiskEngine = () => {
             <div>
               <div className="logo-row">
                 <div className="logo-mark">
-                  <img src="/log.png" alt="ShieldGCC" className="logo-img" />
+                  <img src="/log.png" alt="Instrek Technology" className="logo-img" />
                 </div>
-                <div className="logo-name">SHIELDGCC</div>
+                <div className="logo-text-group">
+                  <div className="logo-name">Instrek Technology</div>
+                </div>
               </div>
 
               <div className="badge-row">
