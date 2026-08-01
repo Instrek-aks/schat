@@ -285,6 +285,11 @@ function decodeReportToken(rawToken) {
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
 
+  function handleOpenAdmin() {
+    setView('admin');
+    window.history.pushState({}, '', '/admin');
+  }
+
   function scrollToIntake() {
     document.getElementById('intake-section')?.scrollIntoView({behavior:'smooth'});
   }
@@ -321,18 +326,18 @@ function decodeReportToken(rawToken) {
 
           <Navigation 
             onStartAssessment={() => setIsIntakeOpen(true)} 
-            onOpenAdmin={() => setView('admin')}
+            onOpenAdmin={handleOpenAdmin}
           />
           <HeroSection 
             onStartAssessment={() => setIsIntakeOpen(true)} 
             onLearnMore={scrollToDimensions} 
-            onOpenAdmin={() => setView('admin')}
+            onOpenAdmin={handleOpenAdmin}
           />
           <TestimonialSection onStartAssessment={() => setIsIntakeOpen(true)} />
           <HowItWorksSection onStartAssessment={() => setIsIntakeOpen(true)} />
           <DimensionsGridSection onStartAssessment={() => setIsIntakeOpen(true)} />
           <StartNowSection onStartAssessment={() => setIsIntakeOpen(true)} />
-          <Footer onOpenAdmin={() => setView('admin')} />
+          <Footer onOpenAdmin={handleOpenAdmin} />
           <IntakeModal 
             isOpen={isIntakeOpen} 
             onClose={() => setIsIntakeOpen(false)} 
@@ -373,7 +378,7 @@ function decodeReportToken(rawToken) {
       {/* Floating Direct Admin Panel Button */}
       {view !== 'admin' && (
         <button
-          onClick={() => setView('admin')}
+          onClick={handleOpenAdmin}
           className="fixed bottom-5 right-5 z-50 px-4 py-2.5 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white font-bold text-xs sm:text-sm shadow-[0_8px_25px_rgba(59,130,246,0.6)] hover:shadow-[0_12px_32px_rgba(59,130,246,0.8)] border border-white/20 transition-all duration-300 hover:scale-105 flex items-center gap-2"
         >
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping" />
