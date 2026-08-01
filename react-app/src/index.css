@@ -68,16 +68,15 @@ body::before {
 }
 
 .logo-img {
-  height: 24px;
+  height: 32px;
   width: auto;
   display: block;
 }
 
 .logo-img-inv {
-  height: 28px;
+  height: 32px;
   width: auto;
   display: block;
-  filter: brightness(0) invert(1);
 }
 
 .logo-sep {
@@ -1184,8 +1183,6 @@ h2 {
   width: auto;
   object-fit: contain;
   display: block;
-  filter: invert(1) hue-rotate(180deg);
-  mix-blend-mode: screen;
 }
 
 .results-body {
