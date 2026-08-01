@@ -14,7 +14,7 @@ exports.getAllLeads = async (req, res) => {
       ShieldGccLead.find({}).sort({ createdAt: -1 })
     ]);
 
-    const leads = [];
+    const leadsMap = new Map();
 
     // Process Magneto Assessments
     magnetoDocs.forEach(doc => {
@@ -22,7 +22,7 @@ exports.getAllLeads = async (req, res) => {
       if (!email) return;
       const emailKey = email.trim().toLowerCase();
 
-      leads.push({
+      leadsMap.set(emailKey, {
         _id: doc._id,
         email: emailKey,
         name: doc.leadInfo?.name || 'N/A',
@@ -51,16 +51,9 @@ exports.getAllLeads = async (req, res) => {
         ? `${doc.firstName} ${doc.lastName || ''}`.trim() 
         : 'N/A';
 
-      leads.push({
-        _id: doc._id,
-        email: emailKey,
-        name: fullName,
-        company: doc.company || 'N/A',
-        role: doc.role || 'N/A',
-        size: doc.size || 'N/A',
-        revenue: 'N/A',
-        magneto: { completed: false },
-        gcc: {
+      if (leadsMap.has(emailKey)) {
+        const existing = leadsMap.get(emailKey);
+        existing.gcc = {
           completed: true,
           riskScore: doc.riskScore || 0,
           tier: doc.tier || 'N/A',
@@ -68,10 +61,33 @@ exports.getAllLeads = async (req, res) => {
           p2Score: doc.p2Score || 0,
           p3Score: doc.p3Score || 0,
           completedAt: doc.createdAt || doc.timestamp
-        },
-        filledBoth: false
-      });
+        };
+        existing.filledBoth = true;
+      } else {
+        leadsMap.set(emailKey, {
+          _id: doc._id,
+          email: emailKey,
+          name: fullName,
+          company: doc.company || 'N/A',
+          role: doc.role || 'N/A',
+          size: doc.size || 'N/A',
+          revenue: 'N/A',
+          magneto: { completed: false },
+          gcc: {
+            completed: true,
+            riskScore: doc.riskScore || 0,
+            tier: doc.tier || 'N/A',
+            p1Score: doc.p1Score || 0,
+            p2Score: doc.p2Score || 0,
+            p3Score: doc.p3Score || 0,
+            completedAt: doc.createdAt || doc.timestamp
+          },
+          filledBoth: false
+        });
+      }
     });
+
+    const leads = Array.from(leadsMap.values());
 
     // Sort by completedAt descending
     leads.sort((a, b) => {
@@ -80,17 +96,18 @@ exports.getAllLeads = async (req, res) => {
       return dateB - dateA;
     });
 
+    const bothCount = leads.filter(l => l.filledBoth).length;
     const magnetoCount = leads.filter(l => l.magneto?.completed).length;
     const gccCount = leads.filter(l => l.gcc?.completed).length;
 
     res.json({
       success: true,
       summary: {
-        totalBoth: 0,
+        totalBoth: bothCount,
         totalMagneto: magnetoCount,
         totalGcc: gccCount,
         totalUnique: leads.length,
-        conversionRate: 0
+        conversionRate: leads.length > 0 ? Math.round((bothCount / leads.length) * 100) : 0
       },
       leads
     });

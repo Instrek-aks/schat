@@ -43,12 +43,12 @@ export const handler = async (event) => {
     let gccDocs = await gccCol.find({}).toArray();
 
 
-    const leads = [];
+    const leadsMap = new Map();
 
     magnetoDocs.forEach(sub => {
       if (!sub.email) return;
       const key = sub.email.trim().toLowerCase();
-      leads.push({
+      leadsMap.set(key, {
         _id: sub._id,
         email: key,
         name: sub.name || 'N/A',
@@ -72,16 +72,9 @@ export const handler = async (event) => {
       const key = sub.email.trim().toLowerCase();
       const fullName = sub.name || `${sub.firstName || ''} ${sub.lastName || ''}`.trim() || 'N/A';
 
-      leads.push({
-        _id: sub._id,
-        email: key,
-        name: fullName,
-        company: sub.company || 'N/A',
-        role: sub.role || 'N/A',
-        size: sub.size || 'N/A',
-        revenue: 'N/A',
-        magneto: { completed: false },
-        gcc: {
+      if (leadsMap.has(key)) {
+        const existing = leadsMap.get(key);
+        existing.gcc = {
           completed: true,
           riskScore: sub.riskScore || 72,
           tier: sub.tier || 'High Risk',
@@ -89,10 +82,33 @@ export const handler = async (event) => {
           p2Score: sub.p2Score || 68,
           p3Score: sub.p3Score || 72,
           completedAt: sub.completedAt || new Date()
-        },
-        filledBoth: false
-      });
+        };
+        existing.filledBoth = true;
+      } else {
+        leadsMap.set(key, {
+          _id: sub._id,
+          email: key,
+          name: fullName,
+          company: sub.company || 'N/A',
+          role: sub.role || 'N/A',
+          size: sub.size || 'N/A',
+          revenue: 'N/A',
+          magneto: { completed: false },
+          gcc: {
+            completed: true,
+            riskScore: sub.riskScore || 72,
+            tier: sub.tier || 'High Risk',
+            p1Score: sub.p1Score || 75,
+            p2Score: sub.p2Score || 68,
+            p3Score: sub.p3Score || 72,
+            completedAt: sub.completedAt || new Date()
+          },
+          filledBoth: false
+        });
+      }
     });
+
+    const leads = Array.from(leadsMap.values());
 
     // Sort by completedAt descending
     leads.sort((a, b) => {
@@ -101,6 +117,7 @@ export const handler = async (event) => {
       return dateB - dateA;
     });
 
+    const both = leads.filter(l => l.filledBoth);
     const magnetoCount = leads.filter(l => l.magneto?.completed).length;
     const gccCount = leads.filter(l => l.gcc?.completed).length;
 
