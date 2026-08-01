@@ -55,14 +55,7 @@ export default function HeroSection({ onStartAssessment, onLearnMore, onOpenAdmi
               Begin assessment <span className="inline-block group-hover:translate-x-1 transition-transform ml-1.5">→</span>
             </button>
 
-            {onOpenAdmin && (
-              <button 
-                onClick={onOpenAdmin}
-                className="px-5 py-3 sm:px-[26px] sm:py-[14px] text-xs sm:text-[14px] font-bold text-blue-300 bg-blue-600/20 hover:bg-blue-600/35 border border-blue-500/40 rounded-full transition-all duration-300 shadow-[0_4px_20px_rgba(59,130,246,0.2)] hover:scale-[1.02] whitespace-nowrap flex items-center gap-2"
-              >
-                <span>⚙️</span> Admin Panel (Both Forms Data)
-              </button>
-            )}
+
 
             <button 
               onClick={onLearnMore}
