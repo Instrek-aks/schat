@@ -242,7 +242,7 @@ exports.sendRiskReportEmail = async (leadData) => {
       body: JSON.stringify({
         from: fromValue,
         to: email,
-        subject: `Instrek Technologies AI Risk Report: ${tier}`,
+        subject: `Gcc-Security-Risk Report`,
         html: htmlContent
       })
     });
@@ -351,7 +351,7 @@ exports.sendMagnetoReportEmail = async (assessment) => {
       body: JSON.stringify({
         from: fromValue,
         to: leadInfo.email,
-        subject: `Your Instrek Technologies Report: ${scores?.overallPct || 0}%`,
+        subject: `Your Ai-readiness Report`,
         html: htmlContent
       })
     });

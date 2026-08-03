@@ -342,7 +342,7 @@ const SecurityRiskEngine = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: emailLower,
-          subject: `Instrek Technologies AI Risk Report: ${reportPayload.tier}`,
+          subject: `Gcc-Security-Risk Report`,
           html: emailHtml
         })
       })
@@ -737,8 +737,8 @@ const SecurityRiskEngine = () => {
                     className="cta-ghost"
                     onClick={() => {
                       const shareableLink = `https://sca1-t.netlify.app${window.location.pathname}?report=${createdLeadId}`;
-                      const subject = encodeURIComponent("Instrek Technologies AI Risk Report");
-                      const body = encodeURIComponent(`Hi,\n\nHere is your custom Instrek Technologies AI Risk Report.\n\nRisk Score: ${results?.avg}/100 (${results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation'})\n\nView full interactive report here:\n${shareableLink}\n\nBest regards,\nInstrek Technologies Team`);
+                      const subject = encodeURIComponent("Gcc-Security-Risk Report");
+                      const body = encodeURIComponent(`Hi,\n\nHere is your custom Gcc-Security-Risk Report.\n\nRisk Score: ${results?.avg}/100 (${results?.avg >= 70 ? 'Critical Exposure' : results?.avg >= 45 ? 'Moderate Risk' : 'Strong Foundation'})\n\nView full interactive report here:\n${shareableLink}\n\nBest regards,\nInstrek Technologies Team`);
                       window.location.href = `mailto:${form.email}?subject=${subject}&body=${body}`;
                     }}
                     style={{ marginBottom: '16px', width: '100%', border: '1px solid rgba(255,255,255,0.2)', color: '#fff' }}

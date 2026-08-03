@@ -245,7 +245,7 @@ function decodeReportToken(rawToken) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: contactInfo.email,
-          subject: 'Your Instrek Technologies Report',
+          subject: 'Your Ai-readiness Report',
           html: emailHtml
         })
       })
