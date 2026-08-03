@@ -446,13 +446,13 @@ const ReportView = ({ lead }) => {
         <div className="cover-content">
           <div className="cover-logo">
             <div className="cover-logo-mark">
-              <img src="/log.png" alt="Instrek Technology Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
+              <img src="/log.png" alt="Instrek Technologies Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
             </div>
-            <div className="cover-logo-text">Instrek Technology</div>
+            <div className="cover-logo-text">Instrek Technologies</div>
           </div>
           <div className="cover-eyebrow">Confidential Risk Assessment Report</div>
           <h1 className="cover-headline">Your organisation carries <em>three open wounds</em> that your AI roadmap hasn't closed.</h1>
-          <p className="cover-sub">This report maps your organization's AI security exposure across the three pillars that regulators, auditors, and adversaries are already prioritising. It is based on your responses to the Instrek Technology risk scan.</p>
+          <p className="cover-sub">This report maps your organization's AI security exposure across the three pillars that regulators, auditors, and adversaries are already prioritising. It is based on your responses to the Instrek Technologies risk scan.</p>
           
           <div className="cover-meta">
             <div className="cover-meta-item">
@@ -501,7 +501,7 @@ const ReportView = ({ lead }) => {
         <div className="page-wrap" style={{ marginTop: '20px', marginBottom: '40px', padding: '0 20px' }}>
           <div style={{ padding: '24px', background: 'rgba(0, 214, 143, 0.08)', border: '1px dashed rgba(0, 214, 143, 0.25)', borderRadius: '12px', textAlign: 'center' }}>
             <p style={{ margin: 0, fontSize: '15px', color: '#00FFA3', fontWeight: 'bold' }}>
-              📧 We have sent the full board-ready Instrek Technology Risk Report to your email: {lead.email}
+              📧 We have sent the full board-ready Instrek Technologies Risk Report to your email: {lead.email}
             </p>
             <p style={{ margin: '8px 0 0 0', fontSize: '13.5px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.5' }}>
               Please check your inbox (including spam folder) and click the link to view the complete detailed analysis, cryptographic audit maps, compliance readiness levels, and custom remediation roadmaps.
@@ -522,7 +522,7 @@ const ReportView = ({ lead }) => {
 
           <div className="pull-quote">
             <div className="pull-quote-text">"The organisations that define AI governance frameworks now will not just avoid the next breach. They will win the talent, the client trust, and the regulatory goodwill that defines who leads in the next decade of enterprise AI."</div>
-            <div className="pull-quote-source">- Instrek Technology Research, April 2026</div>
+            <div className="pull-quote-source">- Instrek Technologies Research, April 2026</div>
           </div>
 
           <div className="impact-grid">
@@ -694,7 +694,7 @@ const ReportView = ({ lead }) => {
         <div className="page-wrap" style={{ paddingBottom: 0 }}>
           <div className="section-eyebrow">04 - Peer Intelligence</div>
           <h2 className="section-title">Where executives at your level actually stand.</h2>
-          <p className="section-body">These benchmarks are drawn from Instrek Technology's assessment data across 340 organisations scanned in Q1 2026. They give you an objective read on how your posture compares - and where the largest competitive differentiation opportunity sits.</p>
+          <p className="section-body">These benchmarks are drawn from Instrek Technologies's assessment data across 340 organisations scanned in Q1 2026. They give you an objective read on how your posture compares - and where the largest competitive differentiation opportunity sits.</p>
 
           <div className="intel-cards" style={{ marginBottom: '28px' }}>
             <div className="intel-card">
@@ -779,7 +779,7 @@ const ReportView = ({ lead }) => {
               <div className="cta-option-title">Book a 30-min Strategy Call</div>
               <div className="cta-option-desc">Live session with a security architect. We review your specific pillar profile and recommend a starting architecture. This week's slots are filling.</div>
             </a>
-            <a className="cta-option" href={`mailto:strategy@instrek.com?subject=Instrek Technology Risk Report - Architecture Review Request for ${encodeURIComponent(lead.company || '')}`} target="_blank" rel="noreferrer">
+            <a className="cta-option" href={`mailto:strategy@instrek.com?subject=Instrek Technologies Risk Report - Architecture Review Request for ${encodeURIComponent(lead.company || '')}`} target="_blank" rel="noreferrer">
               <div className="cta-option-icon">✉️</div>
               <div className="cta-option-title">Request a Written Architecture Blueprint</div>
               <div className="cta-option-desc">Prefer async? Email us with your report score and we will respond within 24 hours with a written architecture recommendation tailored to your organization size and sector.</div>
@@ -824,13 +824,13 @@ const ReportView = ({ lead }) => {
 
           {/* ── FOOTER ── */}
           <div className="report-footer">
-            <div className="footer-brand">Instrek Technology - AI Security</div>
+            <div className="footer-brand">Instrek Technologies - AI Security</div>
             <div className="footer-links">
               <a className="footer-link" href="mailto:strategy@instrek.com">strategy@instrek.com</a>
               <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>instrek.com</a>
               <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
             </div>
-            <div className="footer-disclaimer">This report is based on self-reported data from the Instrek Technology risk assessment. It is intended as a strategic orientation tool and does not constitute a formal security audit. Risk scores are indicative and derived from heuristic models calibrated against peer data. Instrek Technology accepts no liability for decisions made solely on the basis of this report without further technical due diligence.</div>
+            <div className="footer-disclaimer">This report is based on self-reported data from the Instrek Technologies risk assessment. It is intended as a strategic orientation tool and does not constitute a formal security audit. Risk scores are indicative and derived from heuristic models calibrated against peer data. Instrek Technologies accepts no liability for decisions made solely on the basis of this report without further technical due diligence.</div>
           </div>
         </>
       )}

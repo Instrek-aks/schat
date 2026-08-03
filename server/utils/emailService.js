@@ -14,7 +14,7 @@ exports.sendRiskReportEmail = async (leadData) => {
     return;
   }
 
-  let fromValue = process.env.RESEND_FROM || 'Instrek Technology <onboarding@resend.dev>';
+  let fromValue = process.env.RESEND_FROM || 'Instrek Technologies <onboarding@resend.dev>';
   
   // Self-heal: If the fromValue contains brackets <...> but no '@', automatically prepend 'info@'
   if (fromValue.includes('<') && fromValue.includes('>') && !fromValue.includes('@')) {
@@ -176,13 +176,13 @@ exports.sendRiskReportEmail = async (leadData) => {
     <body>
       <div class="email-container">
         <div class="header">
-          <h1 class="logo">Instrek Technology</h1>
+          <h1 class="logo">Instrek Technologies</h1>
           <div class="logo-sub">Security Assessment</div>
         </div>
         <div class="content">
           <h2 class="greeting">Hi Leader,</h2>
           <p class="intro-text">
-            Thank you for completing the Instrek Technology Live Risk Scan. Your profile has been successfully evaluated across our primary security pillars.
+            Thank you for completing the Instrek Technologies Live Risk Scan. Your profile has been successfully evaluated across our primary security pillars.
           </p>
           
           <div class="score-card">
@@ -224,7 +224,7 @@ exports.sendRiskReportEmail = async (leadData) => {
           </p>
         </div>
         <div class="footer">
-          <p>Instrek Technology &copy; 2026. All rights reserved.</p>
+          <p>Instrek Technologies &copy; 2026. All rights reserved.</p>
           <p>Governed by DPDP Act & GDPR compliance standards.</p>
         </div>
       </div>
@@ -242,7 +242,7 @@ exports.sendRiskReportEmail = async (leadData) => {
       body: JSON.stringify({
         from: fromValue,
         to: email,
-        subject: `Instrek Technology AI Risk Report: ${tier}`,
+        subject: `Instrek Technologies AI Risk Report: ${tier}`,
         html: htmlContent
       })
     });
@@ -269,7 +269,7 @@ exports.sendMagnetoReportEmail = async (assessment) => {
     return;
   }
 
-  let fromValue = process.env.RESEND_FROM || 'Instrek Technology <onboarding@resend.dev>';
+  let fromValue = process.env.RESEND_FROM || 'Instrek Technologies <onboarding@resend.dev>';
   
   if (fromValue.includes('<') && fromValue.includes('>') && !fromValue.includes('@')) {
     fromValue = fromValue.replace('<', '<info@');
@@ -312,13 +312,13 @@ exports.sendMagnetoReportEmail = async (assessment) => {
     <body>
       <div class="email-container">
         <div class="header">
-          <h1 class="logo">Instrek Technology</h1>
+          <h1 class="logo">Instrek Technologies</h1>
           <div class="logo-sub">Technology Solutions</div>
         </div>
         <div class="content">
           <h2 class="greeting">Hi ${leadInfo?.name || 'Leader'},</h2>
           <p class="intro-text">
-            Thank you for completing the Magneto Instrek Technology Assessment. We have processed your responses and your custom report is ready.
+            Thank you for completing the Magneto Instrek Technologies Assessment. We have processed your responses and your custom report is ready.
           </p>
           
           <div class="score-card">
@@ -334,7 +334,7 @@ exports.sendMagnetoReportEmail = async (assessment) => {
           </a>
         </div>
         <div class="footer">
-          <p>Instrek Technology &copy; 2026. All rights reserved.</p>
+          <p>Instrek Technologies &copy; 2026. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -351,7 +351,7 @@ exports.sendMagnetoReportEmail = async (assessment) => {
       body: JSON.stringify({
         from: fromValue,
         to: leadInfo.email,
-        subject: `Your Instrek Technology Report: ${scores?.overallPct || 0}%`,
+        subject: `Your Instrek Technologies Report: ${scores?.overallPct || 0}%`,
         html: htmlContent
       })
     });
