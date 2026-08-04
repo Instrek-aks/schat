@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const INDUSTRIES = ['Financial Services','Healthcare','Retail & E-commerce','Manufacturing','Technology','Professional Services','Other'];
-const REVENUES = ['Under ₹100Cr','₹100Cr - ₹500Cr','₹500Cr - ₹2,000Cr','Over ₹2,000Cr'];
+const REVENUES = ['Under 10 cr', 'Under 100 cr', 'Under 500 cr', 'Over 500 cr'];
 const SIZES = ['1-50','51-200','201-1,000','1,000+'];
 const ROLES = ['Founder / CEO','CTO / CDO / CAIO','Head of Product / Ops','Legal / Compliance Lead'];
 const LEVELS = ['None (Exploring)','Early (Pilot phase)','Active (Production usage)','Advanced (AI-first ops)'];

@@ -29,7 +29,8 @@ const magnetoAssessmentSchema = new mongoose.Schema({
   },
   leadInfo: {
     email: String,
-    name: String
+    name: String,
+    phone: String
   },
   reportToken: {
     type: String,

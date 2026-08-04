@@ -9,6 +9,9 @@ const shieldGccLeadSchema = new mongoose.Schema({
   company: {
     type: String
   },
+  phone: {
+    type: String
+  },
   role: {
     type: String
   },

@@ -53,6 +53,7 @@ export const handler = async (event) => {
       await gccCol.insertOne({
         email: emailLower,
         name: data.name || `${data.firstName || ''} ${data.lastName || ''}`.trim() || null,
+        phone: data.phone || null,
         company: data.company || null,
         role: data.role || null,
         size: data.size || null,
@@ -69,6 +70,7 @@ export const handler = async (event) => {
         sessionId: data.sessionId || 'session_' + Date.now(),
         email: emailLower,
         name: data.name || null,
+        phone: data.phone || null,
         company: data.company || null,
         role: data.role || null,
         size: data.size || null,

@@ -135,6 +135,7 @@ export const adminDataService = {
         _id: sub._id || sub.sessionId || `magneto_${Date.now()}_${Math.random()}`,
         email: emailKey,
         name: sub.name || sub.leadInfo?.name || 'N/A',
+        phone: sub.phone || sub.leadInfo?.phone || 'N/A',
         company: sub.company || sub.companyInfo?.company || 'N/A',
         role: sub.role || sub.companyInfo?.role || 'N/A',
         size: sub.size || sub.companyInfo?.size || 'N/A',
@@ -164,6 +165,7 @@ export const adminDataService = {
         _id: sub._id || `gcc_${Date.now()}_${Math.random()}`,
         email: emailKey,
         name: fullName,
+        phone: sub.phone || 'N/A',
         company: sub.company || 'N/A',
         role: sub.role || 'N/A',
         size: sub.size || 'N/A',
@@ -340,6 +342,7 @@ export const adminDataService = {
     const headers = [
       'Email',
       'Name',
+      'Phone',
       'Company Name',
       'Role',
       'Company Size',
@@ -357,6 +360,7 @@ export const adminDataService = {
     const rows = leads.map(lead => [
       `"${lead.email || ''}"`,
       `"${lead.name || ''}"`,
+      `"${lead.phone || ''}"`,
       `"${lead.company || ''}"`,
       `"${lead.role || ''}"`,
       `"${lead.size || ''}"`,

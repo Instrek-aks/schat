@@ -157,6 +157,7 @@ function decodeReportToken(rawToken) {
       sessionId: sessionId || 'session_' + Date.now(),
       email: emailLower,
       name: updatedContactInfo.name || 'Leader',
+      phone: updatedContactInfo.phone || '',
       company: fullInfo.company || 'Enterprise',
       role: fullInfo.role || 'Leader',
       size: fullInfo.size || '100-500',

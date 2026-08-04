@@ -457,6 +457,11 @@ export default function AdminPanel({ onBack }) {
                             <div className="text-blue-400 font-mono text-[11px] whitespace-nowrap">
                               {lead.email}
                             </div>
+                            {lead.phone && lead.phone !== 'N/A' && (
+                              <div className="text-slate-400 font-mono text-[11px] whitespace-nowrap mt-0.5">
+                                📞 {lead.phone}
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>

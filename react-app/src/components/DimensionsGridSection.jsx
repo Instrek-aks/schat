@@ -130,32 +130,6 @@ export default function DimensionsGridSection({ onStartAssessment }) {
             </motion.div>
           ))}
 
-          {/* Card 8: Gradient CTA Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: '-50px' }}
-            transition={{ duration: 0.5, delay: 7 * 0.05 }}
-            className="rounded-[16px] p-5 sm:p-[26px_24px] text-left shadow-[0_20px_45px_rgba(0,0,0,0.4)] flex flex-col justify-between hover:-translate-y-1.5 transition-all duration-300 group min-h-[200px] sm:min-h-[240px] border border-white/9 bg-gradient-to-br from-[#4C8DFF]/16 to-[#A855F7]/16 relative overflow-hidden"
-          >
-            <div className="relative z-10">
-              <h3 className="font-sans font-extrabold text-sm sm:text-[16px] text-white leading-snug max-w-[190px]">
-                Ready to see where you stand?
-              </h3>
-            </div>
-
-            <div className="relative z-10 mt-6 sm:mt-8">
-              {/* Glow for the button */}
-              <div className="absolute inset-0 bg-[#A855F7]/20 blur-lg rounded-full scale-90" />
-              <button 
-                onClick={onStartAssessment}
-                className="w-full flex items-center justify-center gap-1 px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-gradient-to-r from-accentBlue to-accentPurple text-[12px] sm:text-[13.5px] font-bold text-white tracking-wide shadow-[0_8px_24px_rgba(88,110,247,0.35)] hover:shadow-[0_12px_32px_rgba(88,110,247,0.5)] transition-all duration-300 hover:scale-[1.02] whitespace-nowrap"
-              >
-                <span>Begin assessment</span>
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
-              </button>
-            </div>
-          </motion.div>
         </div>
 
       </div>

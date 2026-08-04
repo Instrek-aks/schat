@@ -26,6 +26,7 @@ exports.getAllLeads = async (req, res) => {
         _id: doc._id,
         email: emailKey,
         name: doc.leadInfo?.name || 'N/A',
+        phone: doc.leadInfo?.phone || 'N/A',
         company: doc.companyInfo?.company || 'N/A',
         role: doc.companyInfo?.role || 'N/A',
         size: doc.companyInfo?.size || 'N/A',
@@ -53,6 +54,9 @@ exports.getAllLeads = async (req, res) => {
 
       if (leadsMap.has(emailKey)) {
         const existing = leadsMap.get(emailKey);
+        if (doc.phone && (!existing.phone || existing.phone === 'N/A')) {
+          existing.phone = doc.phone;
+        }
         existing.gcc = {
           completed: true,
           riskScore: doc.riskScore || 0,
@@ -68,6 +72,7 @@ exports.getAllLeads = async (req, res) => {
           _id: doc._id,
           email: emailKey,
           name: fullName,
+          phone: doc.phone || 'N/A',
           company: doc.company || 'N/A',
           role: doc.role || 'N/A',
           size: doc.size || 'N/A',

@@ -292,7 +292,7 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart, prev
               <button
                 className="btn-cta"
                 style={{width:'100%', textAlign:'center'}}
-                onClick={() => window.open('https://instrek.com','_blank')}
+                onClick={() => window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text=Instrek+Demo+Meeting&details=Personalized+demo+of+Instrek%27s+AI%2C+IoT%2C+and+technology+services.+We%27ll+discuss+your+specific+needs+and+show+you+our+solutions+in+action.&location=Online+Meeting+%28Zoom%2FTeams%29&add=connect@instrek.com','_blank')}
               >
                 BOOK A STRATEGY CALL →
               </button>
@@ -406,7 +406,7 @@ export default function ResultsDashboard({ answers, companyInfo, onRestart, prev
                   Instrek has identified critical gaps across {weakNames}. Our 30-Day AI Acceleration Sprint delivers a prioritised roadmap, data architecture review, and governance framework - with a guaranteed path to your next maturity tier. Let's talk this week.
                 </div>
               </div>
-              <button className="btn-cta" onClick={() => window.open('https://instrek.com','_blank')}>
+              <button className="btn-cta" onClick={() => window.open('https://calendar.google.com/calendar/render?action=TEMPLATE&text=Instrek+Demo+Meeting&details=Personalized+demo+of+Instrek%27s+AI%2C+IoT%2C+and+technology+services.+We%27ll+discuss+your+specific+needs+and+show+you+our+solutions+in+action.&location=Online+Meeting+%28Zoom%2FTeams%29&add=connect@instrek.com','_blank')}>
                 BOOK A STRATEGY CALL →
               </button>
             </div>
