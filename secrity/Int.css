@@ -360,3 +360,45 @@
   -ms-overflow-style: none !important;
   scrollbar-width: none !important;
 }
+
+@media (min-width: 1440px) {
+  .wrap {
+    max-width: 900px;
+  }
+  .quiz-screen,
+  .scan-screen,
+  .result-screen,
+  .form-screen,
+  .confirm-screen {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .hero-screen {
+    justify-content: center;
+    padding: 60px 0;
+    min-height: 100vh;
+    gap: 0;
+  }
+  .hero-screen .logo-row { margin-bottom: 28px; }
+  .hero-screen .badge-row { margin-bottom: 16px; }
+  .hero-screen .hero-headline { margin-bottom: 16px; }
+  .hero-screen .hero-sub { margin-bottom: 24px; }
+  .hero-screen .fear-card { margin-bottom: 24px; }
+  .hero-screen .risk-ticker { margin-bottom: 32px; }
+  
+  .ticker-track {
+    animation: none !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 12px !important;
+  }
+  .ticker-item {
+    flex-shrink: 0 !important;
+  }
+  .ticker-item:nth-child(n+6) {
+    display: none !important;
+  }
+}
+
