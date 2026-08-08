@@ -388,10 +388,29 @@ const SecurityRiskEngine = () => {
         ].join("\n");
 
         const streamLength = textContent.length;
-        const streamObj = `4 0 obj << /Length ${streamLength} >>\nstream\n${textContent}\nendstream\nendobj`;
+        const streamObj = [
+          `4 0 obj << /Length ${streamLength} >>`,
+          "stream",
+          textContent,
+          "endstream",
+          "endobj"
+        ].join("\n");
 
         lines.push(streamObj);
-        lines.push("xref\n0 6\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000300 00000 n \n0000000235 00000 n \ntrailer << /Size 6 /Root 1 0 R >>\nstartxref\n400\n%%EOF`);
+        lines.push([
+          "xref",
+          "0 6",
+          "0000000000 65535 f ",
+          "0000000009 00000 n ",
+          "0000000058 00000 n ",
+          "0000000115 00000 n ",
+          "0000000300 00000 n ",
+          "0000000235 00000 n ",
+          "trailer << /Size 6 /Root 1 0 R >>",
+          "startxref",
+          "400",
+          "%%EOF"
+        ].join("\n"));
 
         const rawPdf = lines.join("\n");
         return window.btoa(unescape(encodeURIComponent(rawPdf)));
