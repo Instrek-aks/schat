@@ -267,13 +267,18 @@ function decodeReportToken(rawToken) {
           return lines;
         };
 
+        const catScoresMap = calculateCategoryScores(assessmentAnswers || {});
+        const catScores = CATEGORIES.map(c => catScoresMap[c.id] || 0);
+        const overall = calculateOverallScore(assessmentAnswers || {});
+        const tierVal = MATURITY_TIERS.find(t => overall >= t.min && overall <= t.max) || MATURITY_TIERS[0];
+
         const compName = s(fullInfo.company || contactInfo.companyName || 'Enterprise');
         const userName = s(updatedContactInfo.name || contactInfo.fullName || 'Leader');
         const userEmail = s(contactInfo.email || emailLower);
         const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
         const scoreColor = overall >= 75 ? '0.06 0.73 0.50' : overall >= 50 ? '0.96 0.62 0.04' : '0.94 0.27 0.27';
-        const tierLabel = tier.name || 'Enterprise AI Leader';
+        const tierLabel = tierVal.name || 'Enterprise AI Leader';
 
         // Helper to get score colors for categories
         const getCatColor = (score) => {
