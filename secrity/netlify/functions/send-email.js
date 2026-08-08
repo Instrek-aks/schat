@@ -36,8 +36,8 @@ export const handler = async (event, context) => {
       };
     }
 
-    const { email, subject, html } = JSON.parse(event.body);
-    console.log('[send-email] Parsed request fields. Email:', email, ', Subject:', subject);
+    const { email, subject, html, attachments } = JSON.parse(event.body);
+    console.log('[send-email] Parsed request fields. Email:', email, ', Subject:', subject, ', Attachments:', attachments ? attachments.length : 0);
 
     if (!email || !subject || !html) {
       console.warn('[send-email] Validation failed: missing email, subject, or html.');
@@ -68,12 +68,18 @@ export const handler = async (event, context) => {
     }
 
     // 3. Make HTTPS request directly to Resend API using built-in Node.js module (zero npm dependencies)
-    const payload = JSON.stringify({
+    const resendPayload = {
       from: fromEmail,
       to: emailLower,
       subject: subject,
       html: html
-    });
+    };
+
+    if (attachments && Array.isArray(attachments) && attachments.length > 0) {
+      resendPayload.attachments = attachments;
+    }
+
+    const payload = JSON.stringify(resendPayload);
 
     console.log('[send-email] Sending POST request to api.resend.com...');
     const result = await new Promise((resolve, reject) => {

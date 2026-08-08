@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "dependencies": {
+    "jspdf": "^4.2.1",
     "resend": "^3.2.0"
   }
 }
