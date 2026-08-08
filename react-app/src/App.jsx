@@ -237,270 +237,261 @@ function decodeReportToken(rawToken) {
           </div>
         </body>
         </html>
-      `;
+            const generatePdfBase64 = () => {
+        const s = (str) => String(str || '').replace(/[()\\]/g, '');
+        const wrapText = (text, maxChars = 92) => {
+          const words = text.split(' ');
+          const lines = [];
+          let line = '';
+          for (const w of words) {
+            if ((line + ' ' + w).trim().length > maxChars) {
+              lines.push(line.trim());
+              line = w;
+            } else {
+              line = line ? line + ' ' + w : w;
+            }
+          }
+          if (line.trim()) lines.push(line.trim());
+          return lines;
+        };
 
-      const generatePdfBase64 = () => {
-        const sanitize = (str) => String(str || '').replace(/[()\\]/g, '');
+        const compName = s(fullInfo.company || contactInfo.companyName || 'Enterprise');
+        const userName = s(updatedContactInfo.name || contactInfo.fullName || 'Leader');
+        const userEmail = s(contactInfo.email || emailLower);
+        const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
-        const compName = sanitize(fullInfo.company || contactInfo.companyName || 'Enterprise');
-        const userName = sanitize(updatedContactInfo.name || contactInfo.fullName || 'Leader');
-        const userEmail = sanitize(contactInfo.email || emailLower);
+        const scoreColor = overall >= 75 ? '0.06 0.73 0.50' : overall >= 50 ? '0.96 0.62 0.04' : '0.94 0.27 0.27';
+        const tierLabel = tier.name || 'Enterprise AI Leader';
 
-        // PAGE 1: Brand Header, Title, Compact Metadata Box, Score Block, Executive Summary Card, Dimension Table
-        const p1Streams = [
-          "0.04 0.43 0.31 rg", // Instrek Green accent fill
-          "40 750 532 2 rect fill",
-          "0 0 0 rg", // Reset fill
+        // Helper to get score colors for categories
+        const getCatColor = (score) => {
+          if (score >= 75) return '0.02 0.59 0.41';
+          if (score >= 50) return '0.85 0.47 0.02';
+          return '0.86 0.15 0.15';
+        };
+
+        const catColors = catScores.map(score => getCatColor(score));
+
+        // ── PAGE 1: Header + Score + Exec Summary + 4 Category Cards ──
+        const p1Lines = [];
+        
+        // Top border accent
+        p1Lines.push('q', '0.04 0.43 0.31 rg', '0 788 612 4 re f', 'Q');
+
+        // Header
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 16 Tf', '40 754 Td', '(INSTREK TECHNOLOGIES - AI READINESS) Tj', 'ET');
+        p1Lines.push('BT', '0.4 0.45 0.55 rg', '/F1 8 Tf', '40 740 Td', '(GCC CONFIDENTIAL AI READINESS ASSESSMENT REPORT) Tj', 'ET');
+        p1Lines.push('BT', '0.4 0.45 0.55 rg', '/F1 8 Tf', '450 754 Td', `(Date: ${s(dateStr)}) Tj`, 'ET');
+
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '40 728 532 1 re f', 'Q');
+
+        // Prepared for subtitle
+        p1Lines.push('BT', '0.1 0.15 0.25 rg', '/F2 11 Tf', '40 708 Td', `(Readiness Report for: ${compName} | Leader: ${userName}) Tj`, 'ET');
+
+        // ── Score Card (Light Grey Box with color accent) ──
+        p1Lines.push('q', '0.96 0.97 0.99 rg', '40 622 532 72 re f', 'Q');
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '40 622 532 72 re S', 'Q');
+        p1Lines.push('q', `${scoreColor} rg`, '40 622 5 72 re f', 'Q');
+
+        // Overall Score big text
+        p1Lines.push('BT', `${scoreColor} rg`, '/F2 34 Tf', '60 644 Td', `(${overall}%) Tj`, 'ET');
+        p1Lines.push('BT', '0.3 0.35 0.4 rg', '/F1 8 Tf', '60 632 Td', '(OVERALL READINESS INDEX) Tj', 'ET');
+
+        // Tier badge
+        p1Lines.push('q', `${scoreColor} rg`, '340 656 180 20 re f', 'Q');
+        p1Lines.push('BT', '1 1 1 rg', '/F2 9 Tf', '355 662 Td', `(${s(tierLabel).toUpperCase()}) Tj`, 'ET');
+
+        // Gauge bar background
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '340 638 180 5 re f', 'Q');
+        const gaugeW = Math.round(180 * overall / 100);
+        p1Lines.push('q', `${scoreColor} rg`, `340 638 ${gaugeW} 5 re f`, 'Q');
+
+        // Executive summary text
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 9 Tf', '40 598 Td', '(EXECUTIVE SUMMARY) Tj', 'ET');
+        const execText = "Your organization has established a foundational AI posture. Critical gaps exist in modern data pipelines, shadow governance parameters, and operational resource scaling structures.";
+        const execW = wrapText(execText, 110);
+        let ey = 584;
+        for (const line of execW) {
+          p1Lines.push('BT', '0.4 0.45 0.5 rg', '/F1 9 Tf', `40 ${ey} Td`, `(${s(line)}) Tj`, 'ET');
+          ey -= 11;
+        }
+
+        // Divider
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '40 560 532 1 re f', 'Q');
+
+        // ── 4 Category Dimension Cards compacted on page 1 ──
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 11 Tf', '40 540 Td', '(01. DIMENSION PERFORMANCE & BREAKDOWN) Tj', 'ET');
+
+        let cy = 526;
+        const dimensions = [
+          { name: 'Strategy & Vision', score: catScores[0], desc: 'Alignment of technology pipelines with corporate scale, use-case mapping, and ROI frameworks.', color: catColors[0] },
+          { name: 'Architecture & Data', score: catScores[1], desc: 'Unified RAG pipelines, data clean rooms, warehouse performance, and pipeline processing speeds.', color: catColors[1] },
+          { name: 'Security & Compliance', score: catScores[2], desc: 'Zero-trust API key monitoring, DPDP regulatory audits, and post-quantum cryptographic roadmaps.', color: catColors[2] },
+          { name: 'Talent & Operations', score: catScores[3], desc: 'Centre of excellence orchestration, developer skill fluency levels, and prompt ops management.', color: catColors[3] }
+        ];
+
+        dimensions.forEach((dim) => {
+          p1Lines.push('q', '0.98 0.98 0.99 rg', `40 ${cy - 88} 532 80 re f`, 'Q');
+          p1Lines.push('q', '0.90 0.92 0.94 rg', `40 ${cy - 88} 532 80 re S`, 'Q');
+          p1Lines.push('q', `${dim.color} rg`, `40 ${cy - 88} 4 80 re f`, 'Q');
           
-          "BT",
-          "/F1 18 Tf",
-          "40 762 Td",
-          "(INSTREK TECHNOLOGIES - AI READINESS) Tj",
-          "0 -22 Td",
-          "/F1 9 Tf",
-          "(CONFIDENTIAL ASSESSMENT REPORT) Tj",
-          "0 -32 Td",
-          "/F1 15 Tf",
-          "(Enterprise AI Readiness Transformation Roadmap) Tj",
-          "ET",
-
-          // Compact Metadata Card Container
-          "0.92 0.91 0.89 rg",
-          "40 625 532 42 rect fill",
-          "0.83 0.80 0.77 RG",
-          "40 625 532 42 rect stroke",
-
-          "BT",
-          "0 0 0 rg",
-          "/F1 9 Tf",
-          "50 652 Td",
-          `(${`Organization : ${compName}`}) Tj`,
-          "260 0 Td",
-          `(${`Leader : ${userName}`}) Tj`,
-          "-260 -15 Td",
-          `(${`Work Email   : ${userEmail}`}) Tj`,
-          "260 0 Td",
-          `(${`Date   : ${new Date().toLocaleDateString('en-GB')}`}) Tj`,
-          "ET",
-
-          // Executive Summary & Score Block Header
-          "BT",
-          "/F1 12 Tf",
-          "40 595 Td",
-          "(1. EXECUTIVE SUMMARY & POSTURE) Tj",
-          "ET",
-
-          // Score Card Accent Block
-          "0.05 0.1 0.18 rg",
-          "40 515 532 65 rect fill",
+          p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 10 Tf', `55 ${cy - 18} Td`, `(${dim.name}) Tj`, 'ET');
+          p1Lines.push('BT', `${dim.color} rg`, '/F2 9 Tf', `480 ${cy - 18} Td`, `(Score: ${dim.score}%) Tj`, 'ET');
           
-          "BT",
-          "1 1 1 rg",
-          "/F1 18 Tf",
-          "55 555 Td",
-          "(OVERALL READINESS SCORE: 84 / 100) Tj",
-          "0 -22 Td",
-          "/F1 11 Tf",
-          "(CLASSIFICATION TIER: Enterprise AI Leader) Tj",
-          "ET",
+          const lines = wrapText(dim.desc, 90);
+          let py = cy - 34;
+          for (const line of lines) {
+            p1Lines.push('BT', '0.4 0.45 0.5 rg', '/F1 8.5 Tf', `55 ${py} Td`, `(${s(line)}) Tj`, 'ET');
+            py -= 11;
+          }
 
-          // Executive Summary Card Text
-          "0.97 0.96 0.94 rg",
-          "40 445 532 55 rect fill",
-          "0.83 0.80 0.77 RG",
-          "40 445 532 55 rect stroke",
+          // Small progress bar
+          p1Lines.push('q', '0.90 0.92 0.94 rg', `55 ${cy - 72} 460 3 re f`, 'Q');
+          p1Lines.push('q', `${dim.color} rg`, `55 ${cy - 72} ${Math.round(460 * dim.score / 100)} 3 re f`, 'Q');
 
-          "BT",
-          "0.05 0.06 0.09 rg",
-          "/F1 9 Tf",
-          "50 482 Td",
-          "(Your organization has established a strong foundation across core enterprise AI dimensions.) Tj",
-          "0 -15 Td",
-          "(This roadmap evaluates Data Readiness, Architecture, Security Governance, and AI Operations.) Tj",
-          "ET",
+          cy -= 94;
+        });
 
-          // Dimension Evaluation Header
-          "BT",
-          "0 0 0 rg",
-          "/F1 12 Tf",
-          "40 415 Td",
-          "(2. DIMENSION EVALUATION AT A GLANCE) Tj",
-          "ET",
+        // Footer Page 1
+        p1Lines.push('q', '0.04 0.43 0.31 rg', '0 30 612 1 re f', 'Q');
+        p1Lines.push('BT', '0.5 0.55 0.6 rg', '/F1 7 Tf', '40 18 Td', '(Instrek Technologies | Confidential AI Readiness Report | Page 1 of 2) Tj', 'ET');
 
-          // 4-Row Dimension Table Card Container
-          "0.97 0.96 0.94 rg",
-          "40 260 532 135 rect fill",
-          "0.83 0.80 0.77 RG",
-          "40 260 532 135 rect stroke",
+        const p1Streams = p1Lines.join('\n');
 
-          // Row Dividers
-          "40 360 532 0.5 rect stroke",
-          "40 325 532 0.5 rect stroke",
-          "40 290 532 0.5 rect stroke",
+        // ── PAGE 2: Roadmap phases + Next Action Plan Card ──
+        const p2Lines = [];
+        
+        p2Lines.push('q', '0.04 0.43 0.31 rg', '0 788 612 4 re f', 'Q');
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 10 Tf', '40 762 Td', '(INSTREK TECHNOLOGIES  |  ROADMAP & ACTION STRATEGY) Tj', 'ET');
+        p2Lines.push('q', '0.88 0.91 0.93 rg', '40 750 532 1 re f', 'Q');
 
-          "BT",
-          "0.05 0.06 0.09 rg",
-          "/F1 9 Tf",
-          "52 377 Td",
-          "(Strategy & Vision) Tj",
-          "175 0 Td",
-          "(88%) Tj",
-          "50 0 Td",
-          "(Advanced alignment across leadership) Tj",
+        // 100-Day Roadmap Section
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 11 Tf', '40 724 Td', '(02. 100-DAY ACCELERATION ROADMAP) Tj', 'ET');
 
-          "-225 -35 Td",
-          "(Architecture & Data) Tj",
-          "175 0 Td",
-          "(82%) Tj",
-          "50 0 Td",
-          "(Enterprise data governance in place) Tj",
+        const roadmapPhases = [
+          { time: 'PHASE 1 (Days 1 - 30)', title: 'Eliminate critical security gaps, audit external flows, publish AUP.', color: '0.86 0.15 0.15' },
+          { time: 'PHASE 2 (Days 31 - 70)', title: 'Deploy secure VPC instances, private RAG indexes, and Agent identities.', color: '0.85 0.47 0.02' },
+          { time: 'PHASE 3 (Days 71 - 100)', title: 'Scale enterprise production, initiate AI Center of Excellence structures.', color: '0.02 0.59 0.41' }
+        ];
 
-          "-225 -35 Td",
-          "(Security & Compliance) Tj",
-          "175 0 Td",
-          "(85%) Tj",
-          "50 0 Td",
-          "(DPDP & GDPR compliance enforced) Tj",
+        let ry = 690;
+        p2Lines.push('q', '0.90 0.92 0.94 rg', '58 580 2 115 re f', 'Q');
+        roadmapPhases.forEach((phase) => {
+          p2Lines.push('q', `${phase.color} rg`, `50 ${ry - 2} 18 18 re f`, 'Q');
+          p2Lines.push('BT', `${phase.color} rg`, '/F2 8.5 Tf', `80 ${ry + 8} Td`, `(${phase.time}) Tj`, 'ET');
+          p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F1 9.5 Tf', `80 ${ry - 4} Td`, `(${s(phase.title)}) Tj`, 'ET');
+          ry -= 46;
+        });
 
-          "-225 -35 Td",
-          "(Talent & Operations) Tj",
-          "175 0 Td",
-          "(81%) Tj",
-          "50 0 Td",
-          "(Scaling operational AI capabilities) Tj",
-          "ET"
-        ].join("\n");
+        // Benchmark Section
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 11 Tf', '40 538 Td', '(03. INDUSTRY PERFORMANCE BENCHMARKS) Tj', 'ET');
+        
+        const bTop = 512;
+        p2Lines.push('q', '0.96 0.97 0.99 rg', `40 ${bTop - 18} 532 18 re f', 'Q');
+        p2Lines.push('q', '0.88 0.91 0.93 rg', `40 ${bTop - 18} 532 18 re S`, 'Q');
+        p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F2 8 Tf', `50 ${bTop - 13} Td`, '(CAPABILITY) Tj', 'ET');
+        p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F2 8 Tf', `250 ${bTop - 13} Td`, '(PEER AVERAGE) Tj', 'ET');
+        p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F2 8 Tf', `400 ${bTop - 13} Td`, '(MATURITY GAP STATUS) Tj', 'ET');
 
-        // PAGE 2: Main Section Heading, Phase 1, Phase 2, Phase 3 Blocks, Industry Benchmarks & Next Steps
-        const p2Streams = [
-          "0.04 0.43 0.31 rg", // Instrek Green accent fill
-          "40 750 532 2 rect fill",
-          "0 0 0 rg",
+        const benchmarksList = [
+          ['AI Acceptable Use Policy', '41% set rules', 41, '0.85 0.47 0.02'],
+          ['Private LLM VPC Deployment', '19% deployed', 19, '0.86 0.15 0.15'],
+          ['Agentic Identity Scope', '11% operational', 11, '0.86 0.15 0.15'],
+          ['NIST PQC Assessment Mapped', '18% completed', 18, '0.86 0.15 0.15']
+        ];
 
-          "BT",
-          "/F1 14 Tf",
-          "40 760 Td",
-          "(3. DETAILED TRANSFORMATION ROADMAP & RECOMMENDATIONS) Tj",
-          "ET",
+        let ty = bTop - 18;
+        benchmarksList.forEach((bm, i) => {
+          const rowBg = i % 2 === 0 ? '0.98 0.99 1' : '1 1 1';
+          p2Lines.push('q', `${rowBg} rg`, `40 ${ty - 22} 532 22 re f`, 'Q');
+          p2Lines.push('q', '0.93 0.94 0.96 rg', `40 ${ty - 22} 532 22 re S`, 'Q');
+          p2Lines.push('BT', '0.1 0.1 0.15 rg', '/F1 9 Tf', `50 ${ty - 14} Td`, `(${bm[0]}) Tj`, 'ET');
+          p2Lines.push('BT', '0.4 0.45 0.5 rg', '/F1 9 Tf', `250 ${ty - 14} Td`, `(${bm[1]}) Tj`, 'ET');
+          // Bar
+          p2Lines.push('q', '0.92 0.94 0.96 rg', `400 ${ty - 16} 150 5 re f`, 'Q');
+          p2Lines.push('q', `${bm[3]} rg`, `400 ${ty - 16} ${Math.round(150 * bm[2] / 100)} 5 re f`, 'Q');
+          ty -= 22;
+        });
 
-          // Phase 1 Card
-          "0.97 0.96 0.94 rg",
-          "40 645 532 75 rect fill",
-          "0.83 0.80 0.77 RG",
-          "40 645 532 75 rect stroke",
+        // CTA Section (Light gray box with green top accent border)
+        const ctaTop = ty - 25;
+        p2Lines.push('q', '0.96 0.97 0.99 rg', `40 ${ctaTop - 85} 532 85 re f`, 'Q');
+        p2Lines.push('q', '0.88 0.91 0.93 rg', `40 ${ctaTop - 85} 532 85 re S`, 'Q');
+        p2Lines.push('q', '0.04 0.43 0.31 rg', `40 ${ctaTop - 2} 532 2 re f`, 'Q');
 
-          "BT",
-          "0.04 0.43 0.31 rg",
-          "/F1 10 Tf",
-          "50 700 Td",
-          "(PHASE 1: FOUNDATIONAL SECURITY & GOVERNANCE) Tj",
-          "0.05 0.06 0.09 rg",
-          "/F1 9 Tf",
-          "0 -18 Td",
-          "(Formalize GenAI usage policies and enforce data residency controls across all teams.) Tj",
-          "0 -14 Td",
-          "(Deploy zero-trust API gateways to prevent sensitive IP leakage to third-party models.) Tj",
-          "ET",
+        p2Lines.push('BT', '0.06 0.53 0.35 rg', '/F2 9 Tf', `60 ${ctaTop - 18} Td`, '(YOUR NEXT ACTION PLAN) Tj', 'ET');
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 10.5 Tf', `60 ${ctaTop - 36} Td`, '(This assessment surfaces critical gaps. Let\'s resolve them.) Tj', 'ET');
+        p2Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 8.5 Tf', `60 ${ctaTop - 54} Td`, '(Book a custom 30-min strategy review session: calendly.com/instrek/strategy) Tj', 'ET');
+        p2Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 8 Tf', `60 ${ctaTop - 70} Td`, '(Or contact us at: strategy@instrek.com  |  Visit: instrek.com) Tj', 'ET');
 
-          // Phase 2 Card
-          "0.97 0.96 0.94 rg",
-          "40 545 532 75 rect fill",
-          "0.83 0.80 0.77 RG",
-          "40 545 532 75 rect stroke",
+        // Button rectangle & Text
+        p2Lines.push('q', '0.04 0.43 0.31 rg', `410 ${ctaTop - 50} 145 25 re f`, 'Q');
+        p2Lines.push('BT', '1 1 1 rg', '/F2 8 Tf', `430 ${ctaTop - 42} Td`, '(BOOK CALL NOW) Tj', 'ET');
 
-          "BT",
-          "0.04 0.43 0.31 rg",
-          "/F1 10 Tf",
-          "50 600 Td",
-          "(PHASE 2: PRIVATE LLM & AGENTIC INFRASTRUCTURE) Tj",
-          "0.05 0.06 0.09 rg",
-          "/F1 9 Tf",
-          "0 -18 Td",
-          "(Establish dedicated private model instances with scoped role-based access control.) Tj",
-          "0 -14 Td",
-          "(Implement agentic identity frameworks to track and audit AI agent transactions.) Tj",
-          "ET",
+        // Footer Page 2
+        p2Lines.push('q', '0.04 0.43 0.31 rg', '0 30 612 1 re f', 'Q');
+        p2Lines.push('BT', '0.5 0.55 0.6 rg', '/F1 7 Tf', '40 18 Td', '(Instrek Technologies | Confidential AI Readiness Report | Page 2 of 2) Tj', 'ET');
+        p2Lines.push('BT', '0.6 0.65 0.7 rg', '/F1 6 Tf', '40 8 Td', '(All details are subject to NDA. Instrek accepts no liability for decisions made solely on the basis of this assessment.) Tj', 'ET');
 
-          // Phase 3 Card
-          "0.97 0.96 0.94 rg",
-          "40 445 532 75 rect fill",
-          "0.83 0.80 0.77 RG",
-          "40 445 532 75 rect stroke",
-
-          "BT",
-          "0.04 0.43 0.31 rg",
-          "/F1 10 Tf",
-          "50 500 Td",
-          "(PHASE 3: POST-QUANTUM READINESS & SCALING) Tj",
-          "0.05 0.06 0.09 rg",
-          "/F1 9 Tf",
-          "0 -18 Td",
-          "(Conduct cryptographic inventory and align migration timeline with NIST PQC standards.) Tj",
-          "ET",
-
-          // Industry Benchmarks & Next Steps Card
-          "BT",
-          "0 0 0 rg",
-          "/F1 12 Tf",
-          "40 405 Td",
-          "(4. INDUSTRY BENCHMARKS & NEXT STEPS) Tj",
-          "ET",
-
-          "0.92 0.96 0.94 rg",
-          "40 280 532 105 rect fill",
-          "0.04 0.43 0.31 RG",
-          "40 280 532 105 rect stroke",
-
-          "BT",
-          "0.05 0.06 0.09 rg",
-          "/F1 9 Tf",
-          "50 365 Td",
-          "(Your organisation ranks in the top 15% of peer enterprise AI readiness assessments.) Tj",
-          "0 -22 Td",
-          "(Schedule a 30-minute strategy review with Instrek Architects:) Tj",
-          "0 -18 Td",
-          "0.04 0.43 0.31 rg",
-          "/F1 10 Tf",
-          "(calendly.com/instrek/strategy) Tj",
-          "ET",
-
-          // Footer
-          "BT",
-          "0.4 0.45 0.5 rg",
-          "/F1 8 Tf",
-          "40 50 Td",
-          "(Instrek Technologies - Governed by DPDP Act & GDPR compliance standards.) Tj",
-          "ET"
-        ].join("\n");
+        const p2Streams = p2Lines.join('\n');
 
         let pdf = "%PDF-1.4\n";
-        pdf += "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n";
-        pdf += "2 0 obj << /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >> endobj\n";
-        pdf += "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj\n";
-        pdf += "4 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj\n";
-        pdf += "7 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n";
+        const objects = [];
+        let objNum = 1;
 
-        pdf += `5 0 obj << /Length ${p1Streams.length} >>\nstream\n${p1Streams}\nendstream\nendobj\n`;
-        pdf += `6 0 obj << /Length ${p2Streams.length} >>\nstream\n${p2Streams}\nendstream\nendobj\n`;
+        // Object 1: Catalog
+        objects.push(`${objNum} 0 obj << /Type /Catalog /Pages 2 0 R >> endobj`);
+        objNum++;
 
-        pdf += [
-          "xref",
-          "0 8",
-          "0000000000 65535 f ",
-          "0000000009 00000 n ",
-          "0000000058 00000 n ",
-          "0000000121 00000 n ",
-          "0000000241 00000 n ",
-          "0000000450 00000 n ",
-          "0000000600 00000 n ",
-          "0000000360 00000 n ",
-          "trailer << /Size 8 /Root 1 0 R >>",
-          "startxref",
-          "750",
-          "%%EOF"
-        ].join("\n");
+        // Object 2: Pages
+        objects.push(`${objNum} 0 obj << /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >> endobj`);
+        objNum++;
 
-        return window.btoa(unescape(encodeURIComponent(pdf)));
+        // Object 3: Page 1
+        objects.push(`${objNum} 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> >> endobj`);
+        objNum++;
+
+        // Object 4: Page 2
+        objects.push(`${objNum} 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> >> endobj`);
+        objNum++;
+
+        // Object 5: Page 1 content stream
+        objects.push(`${objNum} 0 obj << /Length ${p1Streams.length} >>\nstream\n${p1Streams}\nendstream\nendobj`);
+        objNum++;
+
+        // Object 6: Page 2 content stream
+        objects.push(`${objNum} 0 obj << /Length ${p2Streams.length} >>\nstream\n${p2Streams}\nendstream\nendobj`);
+        objNum++;
+
+        // Object 7: Font Helvetica (regular)
+        objects.push(`${objNum} 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj`);
+        objNum++;
+
+        // Object 8: Font Helvetica-Bold
+        objects.push(`${objNum} 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj`);
+        objNum++;
+
+        let pdfData = '%PDF-1.4\n';
+        const offsets = [];
+        for (const obj of objects) {
+          offsets.push(pdfData.length);
+          pdfData += obj + '\n';
+        }
+
+        const xrefOffset = pdfData.length;
+        pdfData += 'xref\n';
+        pdfData += `0 ${objNum}\n`;
+        pdfData += '0000000000 65535 f \n';
+        for (const offset of offsets) {
+          pdfData += String(offset).padStart(10, '0') + ' 00000 n \n';
+        }
+
+        pdfData += `trailer << /Size ${objNum} /Root 1 0 R >>\n`;
+        pdfData += 'startxref\n';
+        pdfData += xrefOffset + '\n';
+        pdfData += '%%EOF';
+
+        return window.btoa(unescape(encodeURIComponent(pdfData)));
       };
 
       const pdfBase64 = generatePdfBase64();
