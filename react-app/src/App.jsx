@@ -246,88 +246,229 @@ function decodeReportToken(rawToken) {
         const userName = sanitize(updatedContactInfo.name || contactInfo.fullName || 'Leader');
         const userEmail = sanitize(contactInfo.email || emailLower);
 
-        const page1Content = [
+        // PAGE 1: Brand Header, Title, Compact Metadata Box, Score Block, Executive Summary Card, Dimension Table
+        const p1Streams = [
+          "0.04 0.43 0.31 rg", // Instrek Green accent fill
+          "40 750 532 2 rect fill",
+          "0 0 0 rg", // Reset fill
+          
           "BT",
-          "/F1 20 Tf",
-          "40 740 Td",
+          "/F1 18 Tf",
+          "40 762 Td",
           "(INSTREK TECHNOLOGIES - AI READINESS) Tj",
-          "0 -25 Td",
-          "/F1 11 Tf",
-          "(CONFIDENTIAL ASSESSMENT REPORT) Tj",
-          "0 -35 Td",
-          "/F1 16 Tf",
-          "(Enterprise AI Readiness Transformation Roadmap) Tj",
           "0 -22 Td",
-          "/F1 10 Tf",
-          `(${`Organization: ${compName} | Leader: ${userName}`}) Tj`,
-          "0 -15 Td",
-          `(${`Work Email: ${userEmail} | Date: ${new Date().toLocaleDateString('en-GB')}`}) Tj`,
-          "0 -35 Td",
-          "/F1 13 Tf",
-          "(1. EXECUTIVE SUMMARY & POSTURE) Tj",
-          "0 -25 Td",
-          "/F1 22 Tf",
-          "(OVERALL READINESS SCORE: 84 / 100) Tj",
-          "0 -25 Td",
+          "/F1 9 Tf",
+          "(CONFIDENTIAL ASSESSMENT REPORT) Tj",
+          "0 -32 Td",
+          "/F1 15 Tf",
+          "(Enterprise AI Readiness Transformation Roadmap) Tj",
+          "ET",
+
+          // Compact Metadata Card Container
+          "0.92 0.91 0.89 rg",
+          "40 625 532 42 rect fill",
+          "0.83 0.80 0.77 RG",
+          "40 625 532 42 rect stroke",
+
+          "BT",
+          "0 0 0 rg",
+          "/F1 9 Tf",
+          "50 652 Td",
+          `(${`Organization : ${compName}`}) Tj`,
+          "260 0 Td",
+          `(${`Leader : ${userName}`}) Tj`,
+          "-260 -15 Td",
+          `(${`Work Email   : ${userEmail}`}) Tj`,
+          "260 0 Td",
+          `(${`Date   : ${new Date().toLocaleDateString('en-GB')}`}) Tj`,
+          "ET",
+
+          // Executive Summary & Score Block Header
+          "BT",
           "/F1 12 Tf",
+          "40 595 Td",
+          "(1. EXECUTIVE SUMMARY & POSTURE) Tj",
+          "ET",
+
+          // Score Card Accent Block
+          "0.05 0.1 0.18 rg",
+          "40 515 532 65 rect fill",
+          
+          "BT",
+          "1 1 1 rg",
+          "/F1 18 Tf",
+          "55 555 Td",
+          "(OVERALL READINESS SCORE: 84 / 100) Tj",
+          "0 -22 Td",
+          "/F1 11 Tf",
           "(CLASSIFICATION TIER: Enterprise AI Leader) Tj",
-          "0 -30 Td",
-          "/F1 10 Tf",
+          "ET",
+
+          // Executive Summary Card Text
+          "0.97 0.96 0.94 rg",
+          "40 445 532 55 rect fill",
+          "0.83 0.80 0.77 RG",
+          "40 445 532 55 rect stroke",
+
+          "BT",
+          "0.05 0.06 0.09 rg",
+          "/F1 9 Tf",
+          "50 482 Td",
           "(Your organization has established a strong foundation across core enterprise AI dimensions.) Tj",
           "0 -15 Td",
           "(This roadmap evaluates Data Readiness, Architecture, Security Governance, and AI Operations.) Tj",
-          "0 -35 Td",
-          "/F1 13 Tf",
+          "ET",
+
+          // Dimension Evaluation Header
+          "BT",
+          "0 0 0 rg",
+          "/F1 12 Tf",
+          "40 415 Td",
           "(2. DIMENSION EVALUATION AT A GLANCE) Tj",
-          "0 -20 Td",
-          "/F1 10 Tf",
-          "(- Strategy & Vision       : 88% - Advanced alignment across leadership) Tj",
-          "0 -15 Td",
-          "(- Architecture & Data     : 82% - Enterprise data governance in place) Tj",
-          "0 -15 Td",
-          "(- Security & Compliance   : 85% - DPDP & GDPR compliance enforced) Tj",
-          "0 -15 Td",
-          "(- Talent & Operations     : 81% - Scaling operational AI capabilities) Tj",
+          "ET",
+
+          // 4-Row Dimension Table Card Container
+          "0.97 0.96 0.94 rg",
+          "40 260 532 135 rect fill",
+          "0.83 0.80 0.77 RG",
+          "40 260 532 135 rect stroke",
+
+          // Row Dividers
+          "40 360 532 0.5 rect stroke",
+          "40 325 532 0.5 rect stroke",
+          "40 290 532 0.5 rect stroke",
+
+          "BT",
+          "0.05 0.06 0.09 rg",
+          "/F1 9 Tf",
+          "52 377 Td",
+          "(Strategy & Vision) Tj",
+          "175 0 Td",
+          "(88%) Tj",
+          "50 0 Td",
+          "(Advanced alignment across leadership) Tj",
+
+          "-225 -35 Td",
+          "(Architecture & Data) Tj",
+          "175 0 Td",
+          "(82%) Tj",
+          "50 0 Td",
+          "(Enterprise data governance in place) Tj",
+
+          "-225 -35 Td",
+          "(Security & Compliance) Tj",
+          "175 0 Td",
+          "(85%) Tj",
+          "50 0 Td",
+          "(DPDP & GDPR compliance enforced) Tj",
+
+          "-225 -35 Td",
+          "(Talent & Operations) Tj",
+          "175 0 Td",
+          "(81%) Tj",
+          "50 0 Td",
+          "(Scaling operational AI capabilities) Tj",
           "ET"
         ].join("\n");
 
-        const page2Content = [
+        // PAGE 2: Main Section Heading, Phase 1, Phase 2, Phase 3 Blocks, Industry Benchmarks & Next Steps
+        const p2Streams = [
+          "0.04 0.43 0.31 rg", // Instrek Green accent fill
+          "40 750 532 2 rect fill",
+          "0 0 0 rg",
+
           "BT",
           "/F1 14 Tf",
-          "40 740 Td",
+          "40 760 Td",
           "(3. DETAILED TRANSFORMATION ROADMAP & RECOMMENDATIONS) Tj",
-          "0 -25 Td",
-          "/F1 11 Tf",
+          "ET",
+
+          // Phase 1 Card
+          "0.97 0.96 0.94 rg",
+          "40 645 532 75 rect fill",
+          "0.83 0.80 0.77 RG",
+          "40 645 532 75 rect stroke",
+
+          "BT",
+          "0.04 0.43 0.31 rg",
+          "/F1 10 Tf",
+          "50 700 Td",
           "(PHASE 1: FOUNDATIONAL SECURITY & GOVERNANCE) Tj",
-          "0 -16 Td",
+          "0.05 0.06 0.09 rg",
           "/F1 9 Tf",
-          "(Formalize GenAI usage policies and enforce data residency controls across all teams.) Tj",
-          "0 -12 Td",
-          "(Deploy zero-trust API gateways to prevent sensitive IP leakage to third-party models.) Tj",
-          "0 -22 Td",
-          "/F1 11 Tf",
-          "(PHASE 2: PRIVATE LLM & AGENTIC INFRASTRUCTURE) Tj",
-          "0 -16 Td",
-          "/F1 9 Tf",
-          "(Establish dedicated private model instances with scoped role-based access control.) Tj",
-          "0 -12 Td",
-          "(Implement agentic identity frameworks to track and audit AI agent transactions.) Tj",
-          "0 -22 Td",
-          "/F1 11 Tf",
-          "(PHASE 3: POST-QUANTUM READINESS & SCALING) Tj",
-          "0 -16 Td",
-          "/F1 9 Tf",
-          "(Conduct cryptographic inventory and align migration timeline with NIST PQC standards.) Tj",
-          "0 -30 Td",
-          "/F1 13 Tf",
-          "(4. INDUSTRY BENCHMARKS & NEXT STEPS) Tj",
           "0 -18 Td",
+          "(Formalize GenAI usage policies and enforce data residency controls across all teams.) Tj",
+          "0 -14 Td",
+          "(Deploy zero-trust API gateways to prevent sensitive IP leakage to third-party models.) Tj",
+          "ET",
+
+          // Phase 2 Card
+          "0.97 0.96 0.94 rg",
+          "40 545 532 75 rect fill",
+          "0.83 0.80 0.77 RG",
+          "40 545 532 75 rect stroke",
+
+          "BT",
+          "0.04 0.43 0.31 rg",
+          "/F1 10 Tf",
+          "50 600 Td",
+          "(PHASE 2: PRIVATE LLM & AGENTIC INFRASTRUCTURE) Tj",
+          "0.05 0.06 0.09 rg",
           "/F1 9 Tf",
+          "0 -18 Td",
+          "(Establish dedicated private model instances with scoped role-based access control.) Tj",
+          "0 -14 Td",
+          "(Implement agentic identity frameworks to track and audit AI agent transactions.) Tj",
+          "ET",
+
+          // Phase 3 Card
+          "0.97 0.96 0.94 rg",
+          "40 445 532 75 rect fill",
+          "0.83 0.80 0.77 RG",
+          "40 445 532 75 rect stroke",
+
+          "BT",
+          "0.04 0.43 0.31 rg",
+          "/F1 10 Tf",
+          "50 500 Td",
+          "(PHASE 3: POST-QUANTUM READINESS & SCALING) Tj",
+          "0.05 0.06 0.09 rg",
+          "/F1 9 Tf",
+          "0 -18 Td",
+          "(Conduct cryptographic inventory and align migration timeline with NIST PQC standards.) Tj",
+          "ET",
+
+          // Industry Benchmarks & Next Steps Card
+          "BT",
+          "0 0 0 rg",
+          "/F1 12 Tf",
+          "40 405 Td",
+          "(4. INDUSTRY BENCHMARKS & NEXT STEPS) Tj",
+          "ET",
+
+          "0.92 0.96 0.94 rg",
+          "40 280 532 105 rect fill",
+          "0.04 0.43 0.31 RG",
+          "40 280 532 105 rect stroke",
+
+          "BT",
+          "0.05 0.06 0.09 rg",
+          "/F1 9 Tf",
+          "50 365 Td",
           "(Your organisation ranks in the top 15% of peer enterprise AI readiness assessments.) Tj",
-          "0 -16 Td",
-          "(Schedule a 30-minute strategy review with Instrek Architects: calendly.com/instrek/strategy) Tj",
-          "0 -25 Td",
+          "0 -22 Td",
+          "(Schedule a 30-minute strategy review with Instrek Architects:) Tj",
+          "0 -18 Td",
+          "0.04 0.43 0.31 rg",
+          "/F1 10 Tf",
+          "(calendly.com/instrek/strategy) Tj",
+          "ET",
+
+          // Footer
+          "BT",
+          "0.4 0.45 0.5 rg",
           "/F1 8 Tf",
+          "40 50 Td",
           "(Instrek Technologies - Governed by DPDP Act & GDPR compliance standards.) Tj",
           "ET"
         ].join("\n");
@@ -339,8 +480,8 @@ function decodeReportToken(rawToken) {
         pdf += "4 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj\n";
         pdf += "7 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n";
 
-        pdf += `5 0 obj << /Length ${page1Content.length} >>\nstream\n${page1Content}\nendstream\nendobj\n`;
-        pdf += `6 0 obj << /Length ${page2Content.length} >>\nstream\n${page2Content}\nendstream\nendobj\n`;
+        pdf += `5 0 obj << /Length ${p1Streams.length} >>\nstream\n${p1Streams}\nendstream\nendobj\n`;
+        pdf += `6 0 obj << /Length ${p2Streams.length} >>\nstream\n${p2Streams}\nendstream\nendobj\n`;
 
         pdf += [
           "xref",
