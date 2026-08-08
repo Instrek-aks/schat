@@ -237,7 +237,9 @@ function decodeReportToken(rawToken) {
           </div>
         </body>
         </html>
-            const generatePdfBase64 = () => {
+      `;
+
+      const generatePdfBase64 = () => {
         const s = (str) => String(str || '').replace(/[()\\]/g, '');
         const wrapText = (text, maxChars = 92) => {
           const words = text.split(' ');
