@@ -239,6 +239,54 @@ function decodeReportToken(rawToken) {
         </html>
       `;
 
+      const generatePdfBase64 = () => {
+        const lines = [
+          "%PDF-1.4",
+          "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj",
+          "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj",
+          "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj",
+          "5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj"
+        ];
+
+        const textContent = [
+          "BT",
+          "/F1 18 Tf",
+          "50 750 Td",
+          "(INSTREK TECHNOLOGIES - AI READINESS ASSESSMENT REPORT) Tj",
+          "0 -30 Td",
+          "/F1 12 Tf",
+          `(${`Organization: ${contactInfo.companyName || 'N/A'}`.replace(/[()]/g, '')}) Tj`,
+          "0 -20 Td",
+          `(${`Contact Name: ${contactInfo.fullName || 'N/A'}`.replace(/[()]/g, '')}) Tj`,
+          "0 -20 Td",
+          `(${`Email: ${contactInfo.email}`.replace(/[()]/g, '')}) Tj`,
+          "0 -20 Td",
+          `(${`Date: ${new Date().toLocaleDateString('en-US')}`.replace(/[()]/g, '')}) Tj`,
+          "0 -35 Td",
+          "/F1 14 Tf",
+          "(ASSESSMENT STATUS: COMPLETED) Tj",
+          "0 -30 Td",
+          "/F1 11 Tf",
+          "(Your detailed assessment report has been generated.) Tj",
+          "0 -20 Td",
+          "(Please visit your online dashboard for detailed analytics and insights.) Tj",
+          "0 -30 Td",
+          "(Instrek Technologies - Governed by DPDP Act & GDPR standards.) Tj",
+          "ET"
+        ].join("\n");
+
+        const streamLength = textContent.length;
+        const streamObj = `4 0 obj << /Length ${streamLength} >>\nstream\n${textContent}\nendstream\nendobj`;
+
+        lines.push(streamObj);
+        lines.push("xref\n0 6\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000300 00000 n \n0000000235 00000 n \ntrailer << /Size 6 /Root 1 0 R >>\nstartxref\n400\n%%EOF`);
+
+        const rawPdf = lines.join("\n");
+        return window.btoa(unescape(encodeURIComponent(rawPdf)));
+      };
+
+      const pdfBase64 = generatePdfBase64();
+
       // Send email via Netlify serverless function (API key stays server-side, never in browser)
       console.log('[Email] Sending report email to:', contactInfo.email);
       fetch('/.netlify/functions/send-email', {
@@ -246,8 +294,14 @@ function decodeReportToken(rawToken) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: contactInfo.email,
-          subject: 'Your Ai-readiness Report',
-          html: emailHtml
+          subject: 'Your Ai-readiness Report (PDF Attached)',
+          html: emailHtml,
+          attachments: [
+            {
+              filename: `AI_Readiness_Report_${(contactInfo.fullName || 'Report').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
+              content: pdfBase64
+            }
+          ]
         })
       })
       .then(async res => {
@@ -256,7 +310,7 @@ function decodeReportToken(rawToken) {
         if (!res.ok) {
           throw new Error(`HTTP error ${res.status}: ${text}`);
         }
-        console.log('[Email] Report email sent successfully!');
+        console.log('[Email] Report email sent successfully with PDF!');
       })
       .catch(err => console.error('[Email] Dispatch failed:', err.message));
 

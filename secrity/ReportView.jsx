@@ -444,11 +444,30 @@ const ReportView = ({ lead }) => {
       <div className="cover">
         <div className="cover-grid"></div>
         <div className="cover-content">
-          <div className="cover-logo">
-            <div className="cover-logo-mark">
-              <img src="/log.png" alt="Instrek Technologies Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
+          <div className="cover-logo" style={{ justifyContent: 'space-between', width: '100%' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div className="cover-logo-mark">
+                <img src="/log.png" alt="Instrek Technologies Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
+              </div>
+              <div className="cover-logo-text">Instrek Technologies</div>
             </div>
-            <div className="cover-logo-text">Instrek Technologies</div>
+            <button 
+              onClick={() => window.print()}
+              style={{
+                background: '#00D68F',
+                color: '#0D1117',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '4px',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                fontSize: '12px',
+                letterSpacing: '0.5px',
+                textTransform: 'uppercase'
+              }}
+            >
+              📥 Download / Save PDF
+            </button>
           </div>
           <div className="cover-eyebrow">Confidential Risk Assessment Report</div>
           <h1 className="cover-headline">Your organisation carries <em>three open wounds</em> that your AI roadmap hasn't closed.</h1>

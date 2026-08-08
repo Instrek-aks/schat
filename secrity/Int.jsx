@@ -337,25 +337,95 @@ const SecurityRiskEngine = () => {
         </html>
       `;
 
+      // Simple helper to generate formatted text PDF buffer/base64 without heavy external dependencies
+      const generateReportPdfBase64 = (data) => {
+        const lines = [
+          "%PDF-1.4",
+          "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj",
+          "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj",
+          "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj",
+          "5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj"
+        ];
+
+        const textContent = [
+          "BT",
+          "/F1 18 Tf",
+          "50 750 Td",
+          "(INSTREK TECHNOLOGIES - GCC SECURITY RISK REPORT) Tj",
+          "0 -30 Td",
+          "/F1 12 Tf",
+          `(${`Organization: ${data.company || 'N/A'}`.replace(/[()]/g, '')}) Tj`,
+          "0 -20 Td",
+          `(${`Leader: ${data.firstName || ''} ${data.lastName || ''}`.replace(/[()]/g, '')}) Tj`,
+          "0 -20 Td",
+          `(${`Email: ${data.email}`.replace(/[()]/g, '')}) Tj`,
+          "0 -20 Td",
+          `(${`Date: ${new Date().toLocaleDateString('en-US')}`.replace(/[()]/g, '')}) Tj`,
+          "0 -35 Td",
+          "/F1 16 Tf",
+          `(${`OVERALL RISK SCORE: ${data.riskScore}/100  [${data.tier}]`.replace(/[()]/g, '')}) Tj`,
+          "0 -35 Td",
+          "/F1 13 Tf",
+          "(PILLAR SCORES & EVALUATION:) Tj",
+          "0 -20 Td",
+          "/F1 11 Tf",
+          `(${`- Pillar 1 (AI Sovereignty & Data Leakage): ${data.p1Score}%`.replace(/[()]/g, '')}) Tj`,
+          "0 -20 Td",
+          `(${`- Pillar 2 (Agentic Accountability): ${data.p2Score}%`.replace(/[()]/g, '')}) Tj`,
+          "0 -20 Td",
+          `(${`- Pillar 3 (Post-Quantum Defense): ${data.p3Score}%`.replace(/[()]/g, '')}) Tj`,
+          "0 -40 Td",
+          "/F1 12 Tf",
+          "(EXECUTIVE SUMMARY & RECOMMENDATION:) Tj",
+          "0 -20 Td",
+          "/F1 10 Tf",
+          "(This document summarizes your live GCC Security Scan result.) Tj",
+          "0 -15 Td",
+          "(Your full interactive dashboard and architectural recommendations are available online.) Tj",
+          "0 -25 Td",
+          "(Instrek Technologies Ltd. - Governed by DPDP Act & GDPR compliance standards.) Tj",
+          "ET"
+        ].join("\n");
+
+        const streamLength = textContent.length;
+        const streamObj = `4 0 obj << /Length ${streamLength} >>\nstream\n${textContent}\nendstream\nendobj`;
+
+        lines.push(streamObj);
+        lines.push("xref\n0 6\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000300 00000 n \n0000000235 00000 n \ntrailer << /Size 6 /Root 1 0 R >>\nstartxref\n400\n%%EOF`);
+
+        const rawPdf = lines.join("\n");
+        return window.btoa(unescape(encodeURIComponent(rawPdf)));
+      };
+
+      const pdfAttachmentBase64 = generateReportPdfBase64(reportPayload);
+
       fetch('/.netlify/functions/send-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: emailLower,
-          subject: `Gcc-Security-Risk Report`,
-          html: emailHtml
+          subject: `Gcc-Security-Risk Report (PDF Attached)`,
+          html: emailHtml,
+          attachments: [
+            {
+              filename: `GCC_Security_Risk_Report_${(firstName || 'Scan').replace(/[^a-zA-Z0-9]/g, '_')}.pdf`,
+              content: pdfAttachmentBase64
+            }
+          ]
         })
       })
       .then(res => {
         if (!res.ok) {
-          throw new Error(`HTTP error ${res.status}. Netlify functions are not hosted by the Vite dev server (run via netlify dev to test functions locally).`);
+          throw new Error(`HTTP error ${res.status}.`);
         }
         return res.json();
       })
-      .then(data => console.log('Email dispatched successfully:', data))
+      .then(data => console.log('Email dispatched successfully with PDF attachment:', data))
       .catch(err => console.warn('Email dispatch skipped or failed:', err.message));
 
-      window.location.search = `?report=${encodedData}`;
+      setReportLead(reportPayload);
+      setScreen('report');
+      window.scrollTo(0, 0);
     } catch (err) {
       console.error('Failed to serialize report data:', err);
       goScreen('hero');
@@ -384,7 +454,9 @@ const SecurityRiskEngine = () => {
 
     try {
       const encodedData = window.btoa(unescape(encodeURIComponent(JSON.stringify(anonymousForm))));
-      window.location.search = `?report=${encodedData}`;
+      setReportLead(anonymousForm);
+      setScreen('report');
+      window.scrollTo(0, 0);
     } catch (err) {
       console.error('Failed to submit anonymous lead:', err);
       setReportLead(anonymousForm);
