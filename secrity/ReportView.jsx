@@ -440,10 +440,190 @@ const ReportView = ({ lead }) => {
         }
 
         @media print {
-          button { display: none !important; }
-          .report-root-container { padding-bottom: 0 !important; background: #fff !important; }
-          .cover, .score-band, .paper-section, .cta-block, .report-footer { page-break-inside: avoid; }
-          .paper-section { page-break-before: auto; }
+          @page {
+            size: A4;
+            margin: 12mm 15mm;
+          }
+          body {
+            background: #0B1117 !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          button, .cta-primary-btn, a[href^="https://calendly.com"] {
+            display: none !important;
+          }
+          .report-root-container {
+            background: #0B1117 !important;
+            color: #F0F4F8 !important;
+            padding-bottom: 0 !important;
+            font-size: 13px !important;
+          }
+          .page-wrap {
+            max-width: 100% !important;
+            padding: 0 !important;
+          }
+
+          /* Container Cards & Color Styling */
+          .cover {
+            background: linear-gradient(135deg, #0B131F 0%, #162232 100%) !important;
+            border: 1px solid rgba(0, 214, 143, 0.3) !important;
+            border-radius: 16px !important;
+            padding: 36px 32px !important;
+            margin-bottom: 24px !important;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+            page-break-after: avoid !important;
+          }
+          .cover-headline {
+            font-size: 28px !important;
+            color: #FFFFFF !important;
+            line-height: 1.2 !important;
+          }
+          .cover-sub {
+            color: #94A3B8 !important;
+            font-size: 13px !important;
+          }
+          .cover-meta {
+            background: rgba(255,255,255,0.04) !important;
+            padding: 16px 20px !important;
+            border-radius: 12px !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+          }
+          .cover-meta-label {
+            color: #00D68F !important;
+          }
+          .cover-meta-val {
+            color: #FFFFFF !important;
+          }
+
+          .score-band {
+            background: linear-gradient(135deg, #131C27 0%, #1A2636 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 16px !important;
+            padding: 24px 32px !important;
+            margin-bottom: 24px !important;
+            page-break-inside: avoid !important;
+          }
+          .score-num {
+            font-size: 48px !important;
+          }
+
+          .paper-section {
+            background: #111923 !important;
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            border-radius: 16px !important;
+            padding: 28px 32px !important;
+            margin-bottom: 24px !important;
+            page-break-inside: avoid !important;
+          }
+          .section-title {
+            color: #FFFFFF !important;
+            font-size: 22px !important;
+          }
+          .section-body {
+            color: #94A3B8 !important;
+          }
+
+          .pillar-stack {
+            border-radius: 14px !important;
+            overflow: hidden !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            background: transparent !important;
+            gap: 12px !important;
+          }
+          .pillar-row {
+            background: #182230 !important;
+            border-radius: 12px !important;
+            border: 1px solid rgba(255,255,255,0.06) !important;
+            margin-bottom: 12px !important;
+          }
+          .pillar-name {
+            color: #FFFFFF !important;
+          }
+          .pillar-finding {
+            color: #CBD5E1 !important;
+          }
+
+          .impact-grid {
+            background: transparent !important;
+            border: none !important;
+            gap: 12px !important;
+          }
+          .impact-cell {
+            background: #16202C !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+            border-radius: 12px !important;
+            padding: 18px !important;
+          }
+          .impact-cell:nth-child(1) {
+            background: linear-gradient(135deg, #0D1B2A 0%, #162E48 100%) !important;
+            border: 1px solid rgba(0,214,143,0.3) !important;
+          }
+          .impact-stat-label {
+            color: #00D68F !important;
+          }
+          .impact-stat-val {
+            color: #CBD5E1 !important;
+          }
+
+          .benchmark-table th {
+            background: #182433 !important;
+            color: #00D68F !important;
+          }
+          .benchmark-table td {
+            background: #111923 !important;
+            color: #E2E8F0 !important;
+            border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+          }
+          .benchmark-table tr:nth-child(even) td {
+            background: #16202C !important;
+          }
+
+          .cta-block {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%) !important;
+            border: 1px solid rgba(0, 214, 143, 0.4) !important;
+            border-radius: 16px !important;
+            padding: 32px !important;
+            margin-bottom: 24px !important;
+            page-break-inside: avoid !important;
+          }
+          .cta-option {
+            background: rgba(255,255,255,0.03) !important;
+            border: 1px solid rgba(255,255,255,0.1) !important;
+            border-radius: 10px !important;
+          }
+
+          .expect-steps {
+            background: transparent !important;
+            border: none !important;
+            gap: 12px !important;
+          }
+          .expect-step {
+            background: #16202C !important;
+            border: 1px solid rgba(255,255,255,0.08) !important;
+            border-radius: 12px !important;
+          }
+          .expect-title {
+            color: #FFFFFF !important;
+          }
+          .expect-desc {
+            color: #94A3B8 !important;
+          }
+
+          .pull-quote {
+            background: rgba(0,214,143,0.08) !important;
+            border-left: 4px solid #00D68F !important;
+            border-radius: 0 12px 12px 0 !important;
+          }
+          .pull-quote-text {
+            color: #F0F4F8 !important;
+          }
+
+          .report-footer {
+            background: #0B1117 !important;
+            border-top: 1px solid rgba(255,255,255,0.1) !important;
+            padding: 24px 0 !important;
+            page-break-inside: avoid !important;
+          }
         }
       `}</style>
 
@@ -461,19 +641,24 @@ const ReportView = ({ lead }) => {
             <button 
               onClick={() => window.print()}
               style={{
-                background: '#00D68F',
-                color: '#0D1117',
+                background: 'linear-gradient(135deg, #00D68F 0%, #00FFA3 100%)',
+                color: '#050A0E',
                 border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                fontWeight: 'bold',
+                padding: '10px 22px',
+                borderRadius: '30px',
+                fontWeight: '700',
                 cursor: 'pointer',
                 fontSize: '12px',
-                letterSpacing: '0.5px',
-                textTransform: 'uppercase'
+                letterSpacing: '0.05em',
+                textTransform: 'uppercase',
+                boxShadow: '0 4px 14px rgba(0, 255, 163, 0.35)',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '8px',
+                transition: 'all 0.2s ease-in-out'
               }}
             >
-              📥 Download / Save PDF
+              <span style={{ fontSize: '15px' }}>📥</span> Save / Download PDF
             </button>
           </div>
           <div className="cover-eyebrow">Confidential Risk Assessment Report</div>
