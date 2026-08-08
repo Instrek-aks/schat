@@ -204,7 +204,7 @@ function decodeReportToken(rawToken) {
         token
       }));
 
-      const shareableLink = `https://sch-t.netlify.app/report/${token}`;
+      const shareableLink = `${window.location.origin}/report/${token}`;
 
       const emailHtml = `
         <!DOCTYPE html>

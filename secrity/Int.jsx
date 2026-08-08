@@ -291,7 +291,7 @@ const SecurityRiskEngine = () => {
 
       setCreatedLeadId(encodedData);
 
-      const shareableLink = `https://sca1-t.netlify.app${window.location.pathname}?report=${encodedData}`;
+      const shareableLink = `${window.location.origin}${window.location.pathname}?report=${encodedData}`;
 
       let themeColor = '#FF4C4C'; // Critical
       if (reportPayload.tier === 'Moderate Risk') {
