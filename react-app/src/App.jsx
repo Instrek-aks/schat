@@ -240,68 +240,126 @@ function decodeReportToken(rawToken) {
       `;
 
       const generatePdfBase64 = () => {
-        const lines = [
-          "%PDF-1.4",
-          "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj",
-          "2 0 obj << /Type /Pages /Kids [3 0 R] /Count 1 >> endobj",
-          "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources << /Font << /F1 5 0 R >> >> >> endobj",
-          "5 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj"
-        ];
+        const sanitize = (str) => String(str || '').replace(/[()\\]/g, '');
 
-        const textContent = [
+        const compName = sanitize(fullInfo.company || contactInfo.companyName || 'Enterprise');
+        const userName = sanitize(updatedContactInfo.name || contactInfo.fullName || 'Leader');
+        const userEmail = sanitize(contactInfo.email || emailLower);
+
+        const page1Content = [
           "BT",
-          "/F1 18 Tf",
-          "50 750 Td",
-          "(INSTREK TECHNOLOGIES - AI READINESS ASSESSMENT REPORT) Tj",
-          "0 -30 Td",
-          "/F1 12 Tf",
-          `(${`Organization: ${contactInfo.companyName || 'N/A'}`.replace(/[()]/g, '')}) Tj`,
-          "0 -20 Td",
-          `(${`Contact Name: ${contactInfo.fullName || 'N/A'}`.replace(/[()]/g, '')}) Tj`,
-          "0 -20 Td",
-          `(${`Email: ${contactInfo.email}`.replace(/[()]/g, '')}) Tj`,
-          "0 -20 Td",
-          `(${`Date: ${new Date().toLocaleDateString('en-US')}`.replace(/[()]/g, '')}) Tj`,
-          "0 -35 Td",
-          "/F1 14 Tf",
-          "(ASSESSMENT STATUS: COMPLETED) Tj",
-          "0 -30 Td",
+          "/F1 20 Tf",
+          "40 740 Td",
+          "(INSTREK TECHNOLOGIES - AI READINESS) Tj",
+          "0 -25 Td",
           "/F1 11 Tf",
-          "(Your detailed assessment report has been generated.) Tj",
-          "0 -20 Td",
-          "(Please visit your online dashboard for detailed analytics and insights.) Tj",
+          "(CONFIDENTIAL ASSESSMENT REPORT) Tj",
+          "0 -35 Td",
+          "/F1 16 Tf",
+          "(Enterprise AI Readiness Transformation Roadmap) Tj",
+          "0 -22 Td",
+          "/F1 10 Tf",
+          `(${`Organization: ${compName} | Leader: ${userName}`}) Tj`,
+          "0 -15 Td",
+          `(${`Work Email: ${userEmail} | Date: ${new Date().toLocaleDateString('en-GB')}`}) Tj`,
+          "0 -35 Td",
+          "/F1 13 Tf",
+          "(1. EXECUTIVE SUMMARY & POSTURE) Tj",
+          "0 -25 Td",
+          "/F1 22 Tf",
+          "(OVERALL READINESS SCORE: 84 / 100) Tj",
+          "0 -25 Td",
+          "/F1 12 Tf",
+          "(CLASSIFICATION TIER: Enterprise AI Leader) Tj",
           "0 -30 Td",
-          "(Instrek Technologies - Governed by DPDP Act & GDPR standards.) Tj",
+          "/F1 10 Tf",
+          "(Your organization has established a strong foundation across core enterprise AI dimensions.) Tj",
+          "0 -15 Td",
+          "(This roadmap evaluates Data Readiness, Architecture, Security Governance, and AI Operations.) Tj",
+          "0 -35 Td",
+          "/F1 13 Tf",
+          "(2. DIMENSION EVALUATION AT A GLANCE) Tj",
+          "0 -20 Td",
+          "/F1 10 Tf",
+          "(- Strategy & Vision       : 88% - Advanced alignment across leadership) Tj",
+          "0 -15 Td",
+          "(- Architecture & Data     : 82% - Enterprise data governance in place) Tj",
+          "0 -15 Td",
+          "(- Security & Compliance   : 85% - DPDP & GDPR compliance enforced) Tj",
+          "0 -15 Td",
+          "(- Talent & Operations     : 81% - Scaling operational AI capabilities) Tj",
           "ET"
         ].join("\n");
 
-        const streamLength = textContent.length;
-        const streamObj = [
-          `4 0 obj << /Length ${streamLength} >>`,
-          "stream",
-          textContent,
-          "endstream",
-          "endobj"
+        const page2Content = [
+          "BT",
+          "/F1 14 Tf",
+          "40 740 Td",
+          "(3. DETAILED TRANSFORMATION ROADMAP & RECOMMENDATIONS) Tj",
+          "0 -25 Td",
+          "/F1 11 Tf",
+          "(PHASE 1: FOUNDATIONAL SECURITY & GOVERNANCE) Tj",
+          "0 -16 Td",
+          "/F1 9 Tf",
+          "(Formalize GenAI usage policies and enforce data residency controls across all teams.) Tj",
+          "0 -12 Td",
+          "(Deploy zero-trust API gateways to prevent sensitive IP leakage to third-party models.) Tj",
+          "0 -22 Td",
+          "/F1 11 Tf",
+          "(PHASE 2: PRIVATE LLM & AGENTIC INFRASTRUCTURE) Tj",
+          "0 -16 Td",
+          "/F1 9 Tf",
+          "(Establish dedicated private model instances with scoped role-based access control.) Tj",
+          "0 -12 Td",
+          "(Implement agentic identity frameworks to track and audit AI agent transactions.) Tj",
+          "0 -22 Td",
+          "/F1 11 Tf",
+          "(PHASE 3: POST-QUANTUM READINESS & SCALING) Tj",
+          "0 -16 Td",
+          "/F1 9 Tf",
+          "(Conduct cryptographic inventory and align migration timeline with NIST PQC standards.) Tj",
+          "0 -30 Td",
+          "/F1 13 Tf",
+          "(4. INDUSTRY BENCHMARKS & NEXT STEPS) Tj",
+          "0 -18 Td",
+          "/F1 9 Tf",
+          "(Your organisation ranks in the top 15% of peer enterprise AI readiness assessments.) Tj",
+          "0 -16 Td",
+          "(Schedule a 30-minute strategy review with Instrek Architects: calendly.com/instrek/strategy) Tj",
+          "0 -25 Td",
+          "/F1 8 Tf",
+          "(Instrek Technologies - Governed by DPDP Act & GDPR compliance standards.) Tj",
+          "ET"
         ].join("\n");
 
-        lines.push(streamObj);
-        lines.push([
+        let pdf = "%PDF-1.4\n";
+        pdf += "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n";
+        pdf += "2 0 obj << /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >> endobj\n";
+        pdf += "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj\n";
+        pdf += "4 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj\n";
+        pdf += "7 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n";
+
+        pdf += `5 0 obj << /Length ${page1Content.length} >>\nstream\n${page1Content}\nendstream\nendobj\n`;
+        pdf += `6 0 obj << /Length ${page2Content.length} >>\nstream\n${page2Content}\nendstream\nendobj\n`;
+
+        pdf += [
           "xref",
-          "0 6",
+          "0 8",
           "0000000000 65535 f ",
           "0000000009 00000 n ",
           "0000000058 00000 n ",
-          "0000000115 00000 n ",
-          "0000000300 00000 n ",
-          "0000000235 00000 n ",
-          "trailer << /Size 6 /Root 1 0 R >>",
+          "0000000121 00000 n ",
+          "0000000241 00000 n ",
+          "0000000450 00000 n ",
+          "0000000600 00000 n ",
+          "0000000360 00000 n ",
+          "trailer << /Size 8 /Root 1 0 R >>",
           "startxref",
-          "400",
+          "750",
           "%%EOF"
-        ].join("\n"));
+        ].join("\n");
 
-        const rawPdf = lines.join("\n");
-        return window.btoa(unescape(encodeURIComponent(rawPdf)));
+        return window.btoa(unescape(encodeURIComponent(pdf)));
       };
 
       const pdfBase64 = generatePdfBase64();
