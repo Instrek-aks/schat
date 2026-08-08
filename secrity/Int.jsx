@@ -422,10 +422,15 @@ const SecurityRiskEngine = () => {
         // Executive summary text
         p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 9 Tf', '40 584 Td', '(EXECUTIVE SUMMARY) Tj', 'ET');
         const execText = "Based on your self-assessment, your GCC operates with unmanaged AI exposures. Critical gaps exist in shadow GenAI controls, autonomous agent tracking, and quantum encryption readiness.";
-        p1Lines.push('BT', '0.4 0.45 0.5 rg', '/F1 9 Tf', '40 570 Td', `(${s(execText)}) Tj`, 'ET');
+        const execW = wrapText(execText, 110);
+        let ey = 572;
+        for (const line of execW) {
+          p1Lines.push('BT', '0.4 0.45 0.5 rg', '/F1 9 Tf', `40 ${ey} Td`, `(${s(line)}) Tj`, 'ET');
+          ey -= 11;
+        }
 
         // Divider
-        p1Lines.push('q', '0.88 0.91 0.93 rg', '40 556 532 1 re f', 'Q');
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '40 548 532 1 re f', 'Q');
 
         // ── 3 Pillar analysis cards compacted on page 1 ──
         p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 11 Tf', '40 535 Td', '(01. RISK PILLAR ANALYSIS) Tj', 'ET');
@@ -557,8 +562,8 @@ const SecurityRiskEngine = () => {
         p2Lines.push('q', '0.06 0.73 0.50 rg', `40 ${ctaTop - 2} 532 2 re f`, 'Q');
 
         p2Lines.push('BT', '0.06 0.53 0.35 rg', '/F2 9 Tf', `60 ${ctaTop - 18} Td`, '(YOUR NEXT ACTION PLAN) Tj', 'ET');
-        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 12 Tf', `60 ${ctaTop - 36} Td`, '(This report surfaces critical issues. We help you resolve them.) Tj', 'ET');
-        p2Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 9 Tf', `60 ${ctaTop - 54} Td`, '(Book a custom 30-min strategy review session: calendly.com/instrek/strategy) Tj', 'ET');
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 10.5 Tf', `60 ${ctaTop - 36} Td`, '(This assessment surfaces critical gaps. Let\'s resolve them.) Tj', 'ET');
+        p2Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 8.5 Tf', `60 ${ctaTop - 54} Td`, '(Book a custom 30-min strategy review session: calendly.com/instrek/strategy) Tj', 'ET');
         p2Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 8 Tf', `60 ${ctaTop - 70} Td`, '(Or contact us at: strategy@instrek.com  |  Visit: instrek.com) Tj', 'ET');
 
         // Clean CTA button on right
