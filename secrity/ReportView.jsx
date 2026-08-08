@@ -133,6 +133,23 @@ const ReportView = ({ lead }) => {
           print-color-adjust: exact !important;
         }
 
+        .print-layout {
+          display: none !important;
+        }
+
+        .screen-layout {
+          display: block !important;
+        }
+
+        @media print {
+          .print-layout {
+            display: block !important;
+          }
+          .screen-layout {
+            display: none !important;
+          }
+        }
+
         .report-root-container *, 
         .report-root-container *::before, 
         .report-root-container *::after { 
@@ -141,9 +158,7 @@ const ReportView = ({ lead }) => {
 
         .page-wrap { max-width: 780px; margin: 0 auto; padding: 0 32px 80px; }
 
-        /* ══════════════════════════════════════════
-           COVER
-           ══════════════════════════════════════════ */
+        /* ── COVER ── */
         .cover {
           background: linear-gradient(155deg, #0B0F1A 0%, #0F172A 40%, #1E293B 100%);
           position: relative; overflow: hidden;
@@ -235,9 +250,7 @@ const ReportView = ({ lead }) => {
           font-weight: 600; letter-spacing: 0.01em;
         }
 
-        /* ══════════════════════════════════════════
-           SCORE BAND
-           ══════════════════════════════════════════ */
+        /* ── SCORE BAND ── */
         .score-band {
           background: linear-gradient(180deg, #111827 0%, #0F172A 100%);
           padding: 40px 52px;
@@ -353,9 +366,7 @@ const ReportView = ({ lead }) => {
         .tier-badge.strong::before { background: var(--green-hi); box-shadow: 0 0 8px rgba(52,211,153,0.6); }
         .tier-desc { font-size: 13px; color: rgba(255,255,255,0.40); font-weight: 400; }
 
-        /* ══════════════════════════════════════════
-           SECTION WRAPPERS
-           ══════════════════════════════════════════ */
+        /* ── SECTION WRAPPERS ── */
         .paper-section { 
           padding: 56px 52px; 
           position: relative;
@@ -392,9 +403,7 @@ const ReportView = ({ lead }) => {
           font-size: 15px; font-weight: 400;
         }
 
-        /* ══════════════════════════════════════════
-           PILLAR CARDS
-           ══════════════════════════════════════════ */
+        /* ── PILLAR CARDS ── */
         .pillar-stack { 
           display: flex; flex-direction: column; gap: 16px; 
         }
@@ -461,9 +470,7 @@ const ReportView = ({ lead }) => {
         .pillar-score-num.moderate { color: var(--amber); }
         .pillar-score-num.strong   { color: var(--green); }
 
-        /* ══════════════════════════════════════════
-           IMPACT GRID
-           ══════════════════════════════════════════ */
+        /* ── IMPACT GRID ── */
         .impact-grid { 
           display: grid; grid-template-columns: 1fr 1fr; 
           gap: 16px; margin-bottom: 36px; 
@@ -495,9 +502,7 @@ const ReportView = ({ lead }) => {
         }
         .impact-stat-val { font-size: 14px; color: var(--muted); line-height: 1.7; }
 
-        /* ══════════════════════════════════════════
-           HIGHLIGHT BOX
-           ══════════════════════════════════════════ */
+        /* ── HIGHLIGHT BOX ── */
         .highlight-box { 
           background: linear-gradient(135deg, var(--green-pale), #F0FDF4);
           border: 1px solid rgba(5,150,105,0.12); 
@@ -518,9 +523,7 @@ const ReportView = ({ lead }) => {
         }
         .highlight-box-body { font-size: 14px; color: var(--ink2); line-height: 1.75; }
 
-        /* ══════════════════════════════════════════
-           PULL QUOTE
-           ══════════════════════════════════════════ */
+        /* ── PULL QUOTE ── */
         .pull-quote {
           border-left: 4px solid var(--green-mid); 
           padding: 24px 32px;
@@ -539,9 +542,7 @@ const ReportView = ({ lead }) => {
           color: var(--muted); letter-spacing: 0.08em; 
         }
 
-        /* ══════════════════════════════════════════
-           ROADMAP
-           ══════════════════════════════════════════ */
+        /* ── ROADMAP ── */
         .roadmap { display: flex; flex-direction: column; gap: 0; position: relative; }
         .roadmap::before {
           content: ''; position: absolute; left: 23px; top: 12px; bottom: 12px;
@@ -603,9 +604,7 @@ const ReportView = ({ lead }) => {
           background: var(--green-pale);
         }
 
-        /* ══════════════════════════════════════════
-           BENCHMARK TABLE
-           ══════════════════════════════════════════ */
+        /* ── BENCHMARK TABLE ── */
         .table-responsive {
           width: 100%;
           overflow-x: auto;
@@ -634,9 +633,7 @@ const ReportView = ({ lead }) => {
         .bm-bar-bg { width: 100%; height: 6px; background: var(--paper2); border-radius: 3px; margin-top: 6px; }
         .bm-bar { height: 6px; border-radius: 3px; }
 
-        /* ══════════════════════════════════════════
-           INTEL CARDS
-           ══════════════════════════════════════════ */
+        /* ── INTEL CARDS ── */
         .intel-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
         .intel-card { 
           border: 1px solid var(--paper3); padding: 24px; 
@@ -658,9 +655,7 @@ const ReportView = ({ lead }) => {
         }
         .intel-card-desc { font-size: 13px; color: var(--muted); line-height: 1.65; }
 
-        /* ══════════════════════════════════════════
-           CTA BLOCK
-           ══════════════════════════════════════════ */
+        /* ── CTA BLOCK ── */
         .cta-block {
           background: linear-gradient(155deg, #0B0F1A 0%, #0F172A 40%, #1E293B 100%);
           padding: 56px 52px;
@@ -776,9 +771,7 @@ const ReportView = ({ lead }) => {
         .expect-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; color: #fff; }
         .expect-desc { font-size: 13px; color: rgba(255,255,255,0.40); line-height: 1.65; }
 
-        /* ══════════════════════════════════════════
-           FOOTER
-           ══════════════════════════════════════════ */
+        /* ── FOOTER ── */
         .report-footer {
           background: linear-gradient(180deg, #0F172A, #0B0F1A);
           padding: 36px 52px;
@@ -807,9 +800,7 @@ const ReportView = ({ lead }) => {
           line-height: 1.7;
         }
 
-        /* ══════════════════════════════════════════
-           DOWNLOAD BUTTON
-           ══════════════════════════════════════════ */
+        /* ── DOWNLOAD BUTTON ── */
         .download-btn {
           background: linear-gradient(135deg, #10B981 0%, #059669 100%);
           color: #fff;
@@ -833,9 +824,7 @@ const ReportView = ({ lead }) => {
           box-shadow: 0 4px 16px rgba(5,150,105,0.4);
         }
 
-        /* ══════════════════════════════════════════
-           RESPONSIVE
-           ══════════════════════════════════════════ */
+        /* ── RESPONSIVE ── */
         @media (max-width: 768px) {
           .cover { padding: 44px 24px 36px; }
           .cover-meta { gap: 0; flex-direction: column; }
@@ -892,12 +881,10 @@ const ReportView = ({ lead }) => {
           .highlight-box { padding: 18px 16px; margin: 18px 0; }
         }
 
-        /* ══════════════════════════════════════════
-           PRINT / PDF STYLES
-           ══════════════════════════════════════════ */
+        /* ── PRINT / PDF STYLES ── */
         @page {
           size: A4;
-          margin: 0;
+          margin: 1.2cm 1.2cm;
         }
 
         @media print {
@@ -908,501 +895,723 @@ const ReportView = ({ lead }) => {
           }
 
           html, body {
+            background: #ffffff !important;
+            color: #0F172A !important;
             margin: 0 !important;
             padding: 0 !important;
+            font-size: 11px !important;
+            line-height: 1.4 !important;
           }
 
-          .download-btn,
-          button { display: none !important; }
+          .print-layout {
+            display: block !important;
+          }
+
+          .screen-layout {
+            display: none !important;
+          }
 
           .report-root-container { 
-            padding-bottom: 0 !important; 
-            font-size: 13px;
+            background: #ffffff !important;
+            padding-bottom: 0 !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            margin: 0 !important;
           }
 
-          .cover { 
+          .page-wrap {
+            max-width: 100% !important;
+            width: 100% !important;
+            padding: 0 !important;
+            margin: 0 !important;
+          }
+
+          /* Clean, light containers for PDF print preview */
+          .print-pdf-page {
+            position: relative;
+            height: 262mm;
             page-break-after: always;
-            padding: 48px 44px 40px;
+            padding: 0 !important;
+            margin: 0 !important;
+            width: 100%;
+            max-width: 100%;
+            box-sizing: border-box;
+          }
+          .print-pdf-page:last-child {
+            page-break-after: avoid;
           }
 
-          .score-band { 
-            page-break-inside: avoid; 
+          .print-header {
+            border-top: 3px solid #10B981;
+            padding-top: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .print-logo-text {
+            font-family: var(--font-sans);
+            font-size: 13px;
+            font-weight: 800;
+            color: #0F172A;
+          }
+          .print-subtitle {
+            font-size: 7px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #64748B;
           }
 
-          .paper-section { 
+          .print-score-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-left: 5px solid var(--tier-color, #DC2626);
+            padding: 10px 14px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 6px;
+          }
+          .print-score-num {
+            font-size: 28px;
+            font-weight: 900;
+            color: var(--tier-color, #DC2626);
+          }
+          .print-badge {
+            background: var(--tier-color, #DC2626);
+            color: #fff;
+            padding: 5px 12px;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            border-radius: 4px;
+          }
+          .print-gauge-track {
+            width: 140px;
+            height: 6px;
+            background: #E2E8F0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 6px;
+          }
+          .print-gauge-fill {
+            height: 6px;
+            background: var(--tier-color, #DC2626);
+          }
+
+          .print-section-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #059669;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #E2E8F0;
+            padding-bottom: 3px;
+          }
+
+          .print-pillar-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-left: 4px solid var(--pillar-color, #64748B);
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            border-radius: 6px;
             page-break-inside: avoid;
           }
+          .print-pillar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+          }
+          .print-pillar-title {
+            font-weight: 700;
+            font-size: 11px;
+            color: #0F172A;
+          }
+          .print-pillar-badge {
+            font-size: 8px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--pillar-color, #64748B);
+          }
+          .print-pillar-text {
+            color: #475569;
+            font-size: 9.5px;
+            line-height: 1.4;
+            margin-bottom: 6px;
+          }
+          .print-pillar-bar-bg {
+            height: 4px;
+            background: #E2E8F0;
+            border-radius: 2px;
+            overflow: hidden;
+          }
+          .print-pillar-bar-fill {
+            height: 4px;
+            background: var(--pillar-color, #64748B);
+          }
 
-          .paper-section::after { display: none; }
-          .score-band::after { display: none; }
-          .report-footer::before { display: none; }
+          /* Page 2 elements */
+          .print-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            font-size: 9.5px;
+          }
+          .print-table th {
+            background: #0F172A;
+            color: #fff;
+            padding: 6px 10px;
+            text-align: left;
+            font-weight: 600;
+          }
+          .print-table td {
+            padding: 6px 10px;
+            border-bottom: 1px solid #E2E8F0;
+          }
+          .print-table tr:nth-child(even) td {
+            background: #ffffff;
+          }
 
-          .pillar-row {
+          .print-roadmap {
+            border-left: 2px solid #E2E8F0;
+            margin-left: 10px;
+            padding-left: 15px;
+            margin-bottom: 25px;
+          }
+          .print-roadmap-step {
+            position: relative;
+            margin-bottom: 12px;
+          }
+          .print-roadmap-step::before {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 3px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--step-color, #64748B);
+          }
+          .print-roadmap-time {
+            font-weight: 700;
+            font-size: 8.5px;
+            color: var(--step-color, #64748B);
+            margin-bottom: 2px;
+          }
+          .print-roadmap-desc {
+            font-size: 9.5px;
+            color: #334155;
+          }
+
+          /* MINIMIZED Next Steps action block */
+          .print-cta-card {
+            background: #ffffff;
+            border: 1px solid #E2E8F0;
+            border-top: 3px solid #10B981;
+            padding: 12px 16px;
+            border-radius: 6px;
             page-break-inside: avoid;
-            box-shadow: none !important;
-            border: 1px solid #ddd;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+          }
+          .print-cta-left {
+            max-width: 70%;
+          }
+          .print-cta-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: #0F172A;
+            margin-bottom: 4px;
+          }
+          .print-cta-desc {
+            font-size: 9px;
+            color: #475569;
+            line-height: 1.3;
+          }
+          .print-cta-right {
+            text-align: right;
+            font-size: 8.5px;
+            font-weight: 700;
+            color: #059669;
+            line-height: 1.5;
           }
 
-          .pillar-row:hover { box-shadow: none !important; }
-
-          .impact-grid { page-break-inside: avoid; }
-
-          .roadmap { page-break-inside: avoid; }
-
-          .cta-block { 
-            page-break-before: always;
-            page-break-inside: avoid;
+          .print-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            border-top: 1px solid #E2E8F0;
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 7.5px;
+            color: #94A3B8;
           }
-
-          .cta-option { 
-            page-break-inside: avoid;
-            border: 1px solid rgba(255,255,255,0.15) !important;
-          }
-          .cta-option:hover { 
-            transform: none !important;
-            box-shadow: none !important;
-          }
-
-          .intel-card {
-            box-shadow: none !important;
-            border: 1px solid #ddd;
-          }
-          .intel-card:hover { 
-            transform: none !important; 
-            box-shadow: none !important; 
-          }
-
-          .highlight-box {
-            box-shadow: none !important;
-            border: 1px solid #c6e9d8;
-          }
-
-          .impact-cell {
-            box-shadow: none !important;
-            border: 1px solid #ddd;
-          }
-
-          .table-responsive {
-            box-shadow: none !important;
-          }
-
-          .step-chip:hover { 
-            border-color: var(--paper3) !important;
-            color: var(--ink3) !important;
-            background: #fff !important;
-          }
-
-          .gauge-fill::after { display: none; }
-
-          .report-footer { page-break-inside: avoid; }
-
-          .expect-steps { page-break-inside: avoid; }
-
-          a { text-decoration: none !important; }
         }
       `}</style>
 
-      {/* ── COVER ── */}
-      <div className="cover">
-        <div className="cover-content">
-          <div className="cover-logo" style={{ justifyContent: 'space-between', width: '100%' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-              <div className="cover-logo-mark">
-                <img src="/log.png" alt="Instrek Technologies Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
+      {/* ── SCREEN ONLY LAYOUT ── */}
+      <div className="screen-layout">
+        {/* ── COVER ── */}
+        <div className="cover">
+          <div className="cover-content">
+            <div className="cover-logo" style={{ justifyContent: 'space-between', width: '100%' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                <div className="cover-logo-mark">
+                  <img src="/log.png" alt="Instrek Technologies Logo" style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '4px' }} />
+                </div>
+                <div className="cover-logo-text">Instrek Technologies</div>
               </div>
-              <div className="cover-logo-text">Instrek Technologies</div>
+              <button 
+                className="download-btn"
+                onClick={() => window.print()}
+              >
+                📥 Download PDF
+              </button>
             </div>
-            <button 
-              className="download-btn"
-              onClick={() => window.print()}
-            >
-              📥 Download PDF
-            </button>
+            <div className="cover-eyebrow">Confidential Risk Assessment Report</div>
+            <h1 className="cover-headline">Your organisation carries <em>three open wounds</em> that your AI roadmap hasn't closed.</h1>
+            <p className="cover-sub">This report maps your organization's AI security exposure across the three pillars that regulators, auditors, and adversaries are already prioritising. It is based on your responses to the Instrek Technologies risk scan.</p>
+            
+            <div className="cover-meta">
+              <div className="cover-meta-item">
+                <div className="cover-meta-label">Prepared for</div>
+                <div className="cover-meta-val">{lead.firstName} {lead.lastName}</div>
+              </div>
+              <div className="cover-meta-item">
+                <div className="cover-meta-label">Role</div>
+                <div className="cover-meta-val">{lead.role}</div>
+              </div>
+              <div className="cover-meta-item">
+                <div className="cover-meta-label">Organisation</div>
+                <div className="cover-meta-val">{lead.company || 'Not Specified'}</div>
+              </div>
+              <div className="cover-meta-item">
+                <div className="cover-meta-label">Report date</div>
+                <div className="cover-meta-val">{dateStr}</div>
+              </div>
+            </div>
           </div>
-          <div className="cover-eyebrow">Confidential Risk Assessment Report</div>
-          <h1 className="cover-headline">Your organisation carries <em>three open wounds</em> that your AI roadmap hasn't closed.</h1>
-          <p className="cover-sub">This report maps your organization's AI security exposure across the three pillars that regulators, auditors, and adversaries are already prioritising. It is based on your responses to the Instrek Technologies risk scan.</p>
+        </div>
+
+        {/* ── SCORE BAND ── */}
+        <div className="score-band">
+          <div className={`score-main ${tier.cls}-glow`}>
+            <div className={`score-num ${tier.cls}`}>{lead.riskScore}<span className="score-of">/100</span></div>
+            <div className="score-label">Composite Risk Score</div>
+          </div>
+          <div className="score-gauge">
+            <div className="gauge-track">
+              <div className="gauge-fill" style={{ width: gaugeWidth }}></div>
+            </div>
+            <div className="gauge-labels">
+              <span>Managed</span>
+              <span>Elevated</span>
+              <span>Critical</span>
+            </div>
+          </div>
+          <div className="score-tier">
+            <div className={`tier-badge ${tier.cls}`}>{tier.label}</div>
+            <div className="tier-desc">{lead.riskScore >= 70 ? '3 of 3 pillars need immediate attention' : lead.riskScore >= 45 ? 'Partial controls - governance gaps remain' : 'Better than 80% of GCC peers'}</div>
+          </div>
+        </div>
+
+        {/* ── SECTION 1 - EXECUTIVE SUMMARY ── */}
+        <div className="paper-section">
+          <div className="page-wrap" style={{ paddingBottom: 0 }}>
+            <div className="section-eyebrow">01 — Executive Summary</div>
+            <h2 className="section-title">The situation your board will ask about next quarter.</h2>
+            <p className="section-body">Based on your self-assessment, your organization is operating with significant unmanaged AI risk. The gap is not primarily technical - it is architectural. Your teams have access to AI tools that your governance framework was not designed for, your agents operate without the identity and auditability of a regulated employee, and your cryptographic infrastructure is built for a threat landscape that has already shifted.</p>
+            <p className="section-body">This is not a future risk. It is a present condition. The DPDP Act has given Indian regulators a mechanism to act. The NIST PQC standards have given your auditors a framework to measure against. And the velocity of agentic AI adoption in organizations means that every week without governance is a week of compounding exposure.</p>
+
+            <div className="pull-quote">
+              <div className="pull-quote-text">"The organisations that define AI governance frameworks now will not just avoid the next breach. They will win the talent, the client trust, and the regulatory goodwill that defines who leads in the next decade of enterprise AI."</div>
+              <div className="pull-quote-source">— Instrek Technologies Research, April 2026</div>
+            </div>
+
+            <div className="impact-grid">
+              <div className="impact-cell">
+                <div className={`impact-num ${tier.cls}-color`}>{lead.riskScore}</div>
+                <div className="impact-label">Your composite risk score out of 100. Above 70 indicates critical exposure requiring immediate architectural intervention.</div>
+              </div>
+              <div className="impact-cell">
+                <div className="impact-stat-label">Highest Risk Pillar</div>
+                <div className="impact-stat-val">{topPillar} — score {Math.max(lead.p1Score, lead.p2Score, lead.p3Score)}/100. This is where your first 30 days of remediation should be focused.</div>
+              </div>
+              <div className="impact-cell">
+                <div className="impact-stat-label">Regulatory Exposure</div>
+                <div className="impact-stat-val">DPDP Act enforcement is active. Your current AI data flow posture may not withstand regulatory scrutiny without documented controls.</div>
+              </div>
+              <div className="impact-cell">
+                <div className="impact-stat-label">Peer Context</div>
+                <div className="impact-stat-val">73% of organizations at your AI deployment stage have not completed a formal AI governance architecture. You are in the majority — and that is the risk.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SECTION 2 - THREE PILLARS ── */}
+        <div className="paper-section">
+          <div className="page-wrap" style={{ paddingBottom: 0 }}>
+            <div className="section-eyebrow">02 — Risk Pillar Breakdown</div>
+            <h2 className="section-title">Where your exposure lives — and what it costs if unaddressed.</h2>
+            <p className="section-body">Your risk profile is mapped across the three AI security pillars that matter most to executives in 2026. Each pillar below reflects your specific answers, the gap they reveal, and the architectural response that closes it.</p>
+
+            <div className="pillar-stack">
+              {/* PILLAR 1 */}
+              <div className="pillar-row">
+                <div className={`pillar-accent ${p1.cls}`}></div>
+                <div className="pillar-body">
+                  <div className="pillar-header">
+                    <div className="pillar-name">🔒 AI Sovereignty &amp; Data Leakage</div>
+                    <div className={`pillar-tag ${p1.cls}`}>{p1.label}</div>
+                  </div>
+                  <div className="pillar-fear">"If my India team uses ChatGPT to write code, where does my IP actually go? Can the vendor train on it?"</div>
+                  <div className="pillar-finding">{getFindingText(p1Findings, lead.p1Score)}</div>
+                  <div className="pillar-score-row">
+                    <div className="pillar-score-bar-bg">
+                      <div className={`pillar-score-bar ${p1.cls}`} style={{ width: `${lead.p1Score}%` }}></div>
+                    </div>
+                    <div className={`pillar-score-num ${p1.cls}`}>{lead.p1Score}</div>
+                  </div>
+                  <div className="highlight-box" style={{ marginTop: '20px' }}>
+                    <div className="highlight-box-title">What "closing this gap" looks like</div>
+                    <div className="highlight-box-body">A Private LLM deployment on your VPC or on-premise gives your developers full GenAI capability with zero data leaving your perimeter. Combined with a Secure RAG architecture, your proprietary codebases and internal documents become the model's knowledge base - not a training leak.</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* PILLAR 2 */}
+              <div className="pillar-row">
+                <div className={`pillar-accent ${p2.cls}`}></div>
+                <div className="pillar-body">
+                  <div className="pillar-header">
+                    <div className="pillar-name">🤖 Agentic Accountability</div>
+                    <div className={`pillar-tag ${p2.cls}`}>{p2.label}</div>
+                  </div>
+                  <div className="pillar-fear">"What happens if an autonomous agent makes a $1M financial error or creates a security backdoor - and I don't find out for weeks?"</div>
+                  <div className="pillar-finding">{getFindingText(p2Findings, lead.p2Score)}</div>
+                  <div className="pillar-score-row">
+                    <div className="pillar-score-bar-bg">
+                      <div className={`pillar-score-bar ${p2.cls}`} style={{ width: `${lead.p2Score}%` }}></div>
+                    </div>
+                    <div className={`pillar-score-num ${p2.cls}`}>{lead.p2Score}</div>
+                  </div>
+                  <div className="highlight-box" style={{ marginTop: '20px' }}>
+                    <div className="highlight-box-title">What "closing this gap" looks like</div>
+                    <div className="highlight-box-body">Treating AI agents as non-human employees - with their own credentials, scoped permissions, and immutable audit trails - converts an invisible risk into a manageable one.</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* PILLAR 3 */}
+              <div className="pillar-row">
+                <div className={`pillar-accent ${p3.cls}`}></div>
+                <div className="pillar-body">
+                  <div className="pillar-header">
+                    <div className="pillar-name">🛡️ Post-Quantum &amp; AI Cyber Defense</div>
+                    <div className={`pillar-tag ${p3.cls}`}>{p3.label}</div>
+                  </div>
+                  <div className="pillar-fear">"Hackers are using AI to find vulnerabilities faster than we can patch them. And in five years, a quantum computer could decrypt everything we encrypted today."</div>
+                  <div className="pillar-finding">{getFindingText(p3Findings, lead.p3Score)}</div>
+                  <div className="pillar-score-row">
+                    <div className="pillar-score-bar-bg">
+                      <div className={`pillar-score-bar ${p3.cls}`} style={{ width: `${lead.p3Score}%` }}></div>
+                    </div>
+                    <div className={`pillar-score-num ${p3.cls}`}>{lead.p3Score}</div>
+                  </div>
+                  <div className="highlight-box" style={{ marginTop: '20px' }}>
+                    <div className="highlight-box-title">What "closing this gap" looks like</div>
+                    <div className="highlight-box-body">A proactive, self-healing SOC uses AI to detect and auto-remediate threats before they reach human escalation. A Post-Quantum Cryptography readiness assessment maps every RSA and ECC dependency.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SECTION 3 - ROADMAP ── */}
+        <div className="paper-section" style={{ background: 'var(--paper2)' }}>
+          <div className="page-wrap" style={{ paddingBottom: 0 }}>
+            <div className="section-eyebrow">03 — Remediation Roadmap</div>
+            <h2 className="section-title">Three horizons. One coherent architecture.</h2>
+            <div className="roadmap">
+              <div className="roadmap-step">
+                <div className="step-dot now">30d</div>
+                <div className="step-content">
+                  <div className="step-horizon now">Immediate — 0 to 30 days</div>
+                  <div className="step-title">Contain the bleed: AI data flow audit + shadow AI policy</div>
+                  <div className="step-desc">A rapid AI data flow audit maps every external LLM API call being made by your teams.</div>
+                </div>
+              </div>
+              <div className="roadmap-step">
+                <div className="step-dot soon">90d</div>
+                <div className="step-content">
+                  <div className="step-horizon soon">Short-term — 30 to 90 days</div>
+                  <div className="step-title">Build the foundation: Private LLM + Agentic Identity</div>
+                  <div className="step-desc">Deploy a Private LLM environment in your VPC or on-premise - with Secure RAG.</div>
+                </div>
+              </div>
+              <div className="roadmap-step">
+                <div className="step-dot plan">12m</div>
+                <div className="step-content">
+                  <div className="step-horizon plan">Strategic — 90 days to 12 months</div>
+                  <div className="step-title">Future-proof: SOC AI uplift + PQC migration roadmap</div>
+                  <div className="step-desc">An AI-powered self-healing SOC shifts your security posture from reactive to proactive.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SECTION 4 - PEER BENCHMARKS ── */}
+        <div className="paper-section">
+          <div className="page-wrap" style={{ paddingBottom: 0 }}>
+            <div className="section-eyebrow">04 — Peer Intelligence</div>
+            <h2 className="section-title">Where executives at your level actually stand.</h2>
+            <div className="table-responsive">
+              <table className="benchmark-table">
+                <thead>
+                  <tr>
+                    <th>Capability</th>
+                    <th>Peer Average</th>
+                    <th>Your Status</th>
+                    <th>Maturity</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>AI Acceptable Use Policy</strong></td>
+                    <td>41% have a formal policy</td>
+                    <td>{bmPolicy}</td>
+                    <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '41%', background: 'linear-gradient(90deg, var(--amber), var(--amber-mid))' }}></div></div></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Private / On-Prem LLM</strong></td>
+                    <td>19% deployed</td>
+                    <td>{bmLlm}</td>
+                    <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '19%', background: 'linear-gradient(90deg, var(--red), var(--red-mid))' }}></div></div></td>
+                  </tr>
+                  <tr>
+                    <td><strong>Agentic Identity Framework</strong></td>
+                    <td>11% operational</td>
+                    <td>{bmAgent}</td>
+                    <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '11%', background: 'linear-gradient(90deg, var(--red), var(--red-mid))' }}></div></div></td>
+                  </tr>
+                  <tr>
+                    <td><strong>PQC Readiness Assessment</strong></td>
+                    <td>18% completed</td>
+                    <td>{bmPqc}</td>
+                    <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '18%', background: 'linear-gradient(90deg, var(--red), var(--red-mid))' }}></div></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        {/* ── SECTION 5 - CTA ── */}
+        <div className="cta-block">
+          <div className="page-wrap" style={{ padding: 0 }}>
+            <div className="cta-label">Your Next Step</div>
+            <h2 className="cta-headline">This report surfaces the risk.<br/><em>A conversation closes it.</em></h2>
+            <div className="cta-options">
+              <a className="cta-option" href="https://calendly.com/instrek/strategy" target="_blank" rel="noreferrer">
+                <div className="cta-option-icon">📅</div>
+                <div className="cta-option-title">Book a 30-min Strategy Call</div>
+                <div className="cta-option-desc">Live session with a security architect. We review your specific pillar profile and recommend a starting architecture.</div>
+              </a>
+              <a className="cta-option" href={`mailto:strategy@instrek.com`} target="_blank" rel="noreferrer">
+                <div className="cta-option-icon">✉️</div>
+                <div className="cta-option-title">Request a Written Blueprint</div>
+                <div className="cta-option-desc">Email us with your report score and we will respond with a written architecture blueprint.</div>
+              </a>
+            </div>
+            <a className="cta-primary-btn" href="https://calendly.com/instrek/strategy" target="_blank" rel="noreferrer">Book My Strategy Call →</a>
+          </div>
+        </div>
+      </div>
+
+      {/* ── PRINT ONLY LAYOUT (Strict 2-page print document) ── */}
+      <div className="print-layout">
+        {/* PAGE 1 */}
+        <div className="print-pdf-page">
+          <div className="print-header">
+            <div>
+              <div className="print-logo-text">INSTREK TECHNOLOGIES</div>
+              <div className="print-subtitle">AI Security assessment report</div>
+            </div>
+            <div style={{ textAlign: 'right', fontSize: '9px', color: '#64748B' }}>
+              <div>CONFIDENTIAL</div>
+              <div>Report Date: {dateStr}</div>
+            </div>
+          </div>
+
+          <div style={{ marginBottom: '16px', fontSize: '11px', color: '#334155' }}>
+            <strong>Prepared for:</strong> {lead.firstName} {lead.lastName} &nbsp;|&nbsp; <strong>Role:</strong> {lead.role} &nbsp;|&nbsp; <strong>Organisation:</strong> {lead.company || 'Not Specified'}
+          </div>
+
+          {/* Score Box */}
+          <div className="print-score-card" style={{ '--tier-color': tier.cls === 'critical' ? '#EF4444' : tier.cls === 'moderate' ? '#F59E0B' : '#10B981' }}>
+            <div>
+              <div style={{ fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#64748B' }}>Composite Risk Score</div>
+              <div className="print-score-num">{lead.riskScore}<span style={{ fontSize: '14px', fontWeight: '400', color: '#94A3B8' }}>/100</span></div>
+            </div>
+            <div>
+              <div className="print-badge" style={{ marginBottom: '6px' }}>{tier.label}</div>
+              <div className="print-gauge-track">
+                <div className="print-gauge-fill" style={{ width: `${lead.riskScore}%` }}></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Exec Summary */}
+          <div className="print-section-title">01. Executive Summary</div>
+          <p style={{ fontSize: '9.5px', color: '#475569', lineHeight: '1.45', marginBottom: '18px' }}>
+            Based on your self-assessment, your organization is operating with significant unmanaged AI risk. The gap is not primarily technical - it is architectural. Your teams have access to AI tools that your governance framework was not designed for, your agents operate without dedicated identity, and your cryptographic infrastructure is unmapped for the post-quantum landscape. Immediate containment and private LLM deployments are recommended.
+          </p>
+
+          {/* Pillars */}
+          <div className="print-section-title">02. Risk Pillar Analysis</div>
           
-          <div className="cover-meta">
-            <div className="cover-meta-item">
-              <div className="cover-meta-label">Prepared for</div>
-              <div className="cover-meta-val">{lead.firstName} {lead.lastName}</div>
+          <div className="print-pillar-card" style={{ '--pillar-color': p1.cls === 'critical' ? '#EF4444' : p1.cls === 'moderate' ? '#F59E0B' : '#10B981' }}>
+            <div className="print-pillar-header">
+              <span className="print-pillar-title">🔒 AI Sovereignty &amp; Data Leakage</span>
+              <span className="print-pillar-badge">{p1.label} (Score: {lead.p1Score}/100)</span>
             </div>
-            <div className="cover-meta-item">
-              <div className="cover-meta-label">Role</div>
-              <div className="cover-meta-val">{lead.role}</div>
-            </div>
-            <div className="cover-meta-item">
-              <div className="cover-meta-label">Organisation</div>
-              <div className="cover-meta-val">{lead.company || 'Not Specified'}</div>
-            </div>
-            <div className="cover-meta-item">
-              <div className="cover-meta-label">Report date</div>
-              <div className="cover-meta-val">{dateStr}</div>
+            <p className="print-pillar-text">{getFindingText(p1Findings, lead.p1Score).substring(0, 240)}...</p>
+            <div className="print-pillar-bar-bg">
+              <div className="print-pillar-bar-fill" style={{ width: `${lead.p1Score}%` }}></div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* ── SCORE BAND ── */}
-      <div className="score-band">
-        <div className={`score-main ${tier.cls}-glow`}>
-          <div className={`score-num ${tier.cls}`}>{lead.riskScore}<span className="score-of">/100</span></div>
-          <div className="score-label">Composite Risk Score</div>
-        </div>
-        <div className="score-gauge">
-          <div className="gauge-track">
-            <div className="gauge-fill" style={{ width: gaugeWidth }}></div>
-          </div>
-          <div className="gauge-labels">
-            <span>Managed</span>
-            <span>Elevated</span>
-            <span>Critical</span>
-          </div>
-        </div>
-        <div className="score-tier">
-          <div className={`tier-badge ${tier.cls}`}>{tier.label}</div>
-          <div className="tier-desc">{tier.desc}</div>
-        </div>
-      </div>
-
-      {!isFromEmail && (
-        <div className="page-wrap" style={{ marginTop: '20px', marginBottom: '40px', padding: '0 20px' }}>
-          <div style={{ padding: '24px', background: 'rgba(0, 214, 143, 0.08)', border: '1px dashed rgba(0, 214, 143, 0.25)', borderRadius: '12px', textAlign: 'center' }}>
-            <p style={{ margin: 0, fontSize: '15px', color: '#00FFA3', fontWeight: 'bold' }}>
-              📧 We have sent the full board-ready Instrek Technologies Risk Report to your email: {lead.email}
-            </p>
-            <p style={{ margin: '8px 0 0 0', fontSize: '13.5px', color: 'rgba(255,255,255,0.7)', lineHeight: '1.5' }}>
-              Please check your inbox (including spam folder) and click the link to view the complete detailed analysis, cryptographic audit maps, compliance readiness levels, and custom remediation roadmaps.
-            </p>
-          </div>
-        </div>
-      )}
-
-      {isFromEmail && (
-        <>
-          {/* ── SECTION 1 - EXECUTIVE SUMMARY ── */}
-          <div className="paper-section">
-        <div className="page-wrap" style={{ paddingBottom: 0 }}>
-          <div className="section-eyebrow">01 — Executive Summary</div>
-          <h2 className="section-title">The situation your board will ask about next quarter.</h2>
-          <p className="section-body">Based on your self-assessment, your organization is operating with significant unmanaged AI risk. The gap is not primarily technical - it is architectural. Your teams have access to AI tools that your governance framework was not designed for, your agents operate without the identity and auditability of a regulated employee, and your cryptographic infrastructure is built for a threat landscape that has already shifted.</p>
-          <p className="section-body">This is not a future risk. It is a present condition. The DPDP Act has given Indian regulators a mechanism to act. The NIST PQC standards have given your auditors a framework to measure against. And the velocity of agentic AI adoption in organizations means that every week without governance is a week of compounding exposure.</p>
-
-          <div className="pull-quote">
-            <div className="pull-quote-text">"The organisations that define AI governance frameworks now will not just avoid the next breach. They will win the talent, the client trust, and the regulatory goodwill that defines who leads in the next decade of enterprise AI."</div>
-            <div className="pull-quote-source">— Instrek Technologies Research, April 2026</div>
-          </div>
-
-          <div className="impact-grid">
-            <div className="impact-cell">
-              <div className={`impact-num ${tier.cls}-color`}>{lead.riskScore}</div>
-              <div className="impact-label">Your composite risk score out of 100. Above 70 indicates critical exposure requiring immediate architectural intervention.</div>
+          <div className="print-pillar-card" style={{ '--pillar-color': p2.cls === 'critical' ? '#EF4444' : p2.cls === 'moderate' ? '#F59E0B' : '#10B981' }}>
+            <div className="print-pillar-header">
+              <span className="print-pillar-title">🤖 Agentic Accountability</span>
+              <span className="print-pillar-badge">{p2.label} (Score: {lead.p2Score}/100)</span>
             </div>
-            <div className="impact-cell">
-              <div className="impact-stat-label">Highest Risk Pillar</div>
-              <div className="impact-stat-val">{topPillar} — score {Math.max(lead.p1Score, lead.p2Score, lead.p3Score)}/100. This is where your first 30 days of remediation should be focused.</div>
-            </div>
-            <div className="impact-cell">
-              <div className="impact-stat-label">Regulatory Exposure</div>
-              <div className="impact-stat-val">DPDP Act enforcement is active. Your current AI data flow posture may not withstand regulatory scrutiny without documented controls.</div>
-            </div>
-            <div className="impact-cell">
-              <div className="impact-stat-label">Peer Context</div>
-              <div className="impact-stat-val">73% of organizations at your AI deployment stage have not completed a formal AI governance architecture. You are in the majority — and that is the risk.</div>
+            <p className="print-pillar-text">{getFindingText(p2Findings, lead.p2Score).substring(0, 240)}...</p>
+            <div className="print-pillar-bar-bg">
+              <div className="print-pillar-bar-fill" style={{ width: `${lead.p2Score}%` }}></div>
             </div>
           </div>
+
+          <div className="print-pillar-card" style={{ '--pillar-color': p3.cls === 'critical' ? '#EF4444' : p3.cls === 'moderate' ? '#F59E0B' : '#10B981' }}>
+            <div className="print-pillar-header">
+              <span className="print-pillar-title">🛡️ Post-Quantum &amp; AI Cyber Defense</span>
+              <span className="print-pillar-badge">{p3.label} (Score: {lead.p3Score}/100)</span>
+            </div>
+            <p className="print-pillar-text">{getFindingText(p3Findings, lead.p3Score).substring(0, 240)}...</p>
+            <div className="print-pillar-bar-bg">
+              <div className="print-pillar-bar-fill" style={{ width: `${lead.p3Score}%` }}></div>
+            </div>
+          </div>
+
+          <div className="print-footer">
+            <span>Instrek Technologies AI Security Report</span>
+            <span>Page 1 of 2</span>
+          </div>
         </div>
-      </div>
 
-      {/* ── SECTION 2 - THREE PILLARS ── */}
-      <div className="paper-section">
-        <div className="page-wrap" style={{ paddingBottom: 0 }}>
-          <div className="section-eyebrow">02 — Risk Pillar Breakdown</div>
-          <h2 className="section-title">Where your exposure lives — and what it costs if unaddressed.</h2>
-          <p className="section-body">Your risk profile is mapped across the three AI security pillars that matter most to executives in 2026. Each pillar below reflects your specific answers, the gap they reveal, and the architectural response that closes it.</p>
+        {/* PAGE 2 */}
+        <div className="print-pdf-page">
+          <div className="print-header">
+            <div>
+              <div className="print-logo-text">INSTREK TECHNOLOGIES</div>
+              <div className="print-subtitle">AI Security assessment report</div>
+            </div>
+            <div style={{ textAlign: 'right', fontSize: '9px', color: '#64748B' }}>
+              <span>Page 2 of 2</span>
+            </div>
+          </div>
 
-          <div className="pillar-stack">
-            {/* PILLAR 1 — AI SOVEREIGNTY */}
-            <div className="pillar-row">
-              <div className={`pillar-accent ${p1.cls}`}></div>
-              <div className="pillar-body">
-                <div className="pillar-header">
-                  <div className="pillar-name">🔒 AI Sovereignty &amp; Data Leakage</div>
-                  <div className={`pillar-tag ${p1.cls}`}>{p1.label}</div>
-                </div>
-                <div className="pillar-fear">"If my India team uses ChatGPT to write code, where does my IP actually go? Can the vendor train on it?"</div>
-                <div className="pillar-finding">{getFindingText(p1Findings, lead.p1Score)}</div>
-                
-                <div className="pillar-score-row">
-                  <div className="pillar-score-bar-bg">
-                    <div className={`pillar-score-bar ${p1.cls}`} style={{ width: `${lead.p1Score}%` }}></div>
-                  </div>
-                  <div className={`pillar-score-num ${p1.cls}`}>{lead.p1Score}</div>
-                </div>
+          {/* Benchmarks Table */}
+          <div className="print-section-title">03. Peer intelligence &amp; Benchmarks</div>
+          <table className="print-table">
+            <thead>
+              <tr>
+                <th>Security Capability</th>
+                <th>Peer Average</th>
+                <th>Your Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>AI Acceptable Use Policy</strong></td>
+                <td>41% have a formal policy</td>
+                <td>{bmPolicy}</td>
+              </tr>
+              <tr>
+                <td><strong>Private / On-Prem LLM</strong></td>
+                <td>19% deployed VPC instance</td>
+                <td>{bmLlm}</td>
+              </tr>
+              <tr>
+                <td><strong>Agentic Identity Framework</strong></td>
+                <td>11% operationalised identities</td>
+                <td>{bmAgent}</td>
+              </tr>
+              <tr>
+                <td><strong>PQC Readiness Assessment</strong></td>
+                <td>18% completed inventory</td>
+                <td>{bmPqc}</td>
+              </tr>
+            </tbody>
+          </table>
 
-                <div className="highlight-box" style={{ marginTop: '20px' }}>
-                  <div className="highlight-box-title">What "closing this gap" looks like</div>
-                  <div className="highlight-box-body">A Private LLM deployment on your VPC or on-premise gives your developers full GenAI capability with zero data leaving your perimeter. Combined with a Secure RAG architecture, your proprietary codebases and internal documents become the model's knowledge base - not a training leak. DPDP-compliant data flow mapping ensures every AI interaction is auditable and defensible to regulators.</div>
-                </div>
+          {/* Timeline Roadmap */}
+          <div className="print-section-title">04. Remediation Roadmap (3 Horizons)</div>
+          <div className="print-roadmap">
+            <div className="print-roadmap-step" style={{ '--step-color': '#EF4444' }}>
+              <div className="print-roadmap-time">Immediate (0 - 30 Days)</div>
+              <div className="print-roadmap-desc">Contain the bleed: Run AI data flow audits and establish strict acceptable use policies.</div>
+            </div>
+            <div className="print-roadmap-step" style={{ '--step-color': '#F59E0B' }}>
+              <div className="print-roadmap-time">Short-term (30 - 90 Days)</div>
+              <div className="print-roadmap-desc">Build the foundation: Deploy private VPC LLM environments and setup scoped agent identity keys.</div>
+            </div>
+            <div className="print-roadmap-step" style={{ '--step-color': '#10B981' }}>
+              <div className="print-roadmap-time">Strategic (90 Days - 12 Months)</div>
+              <div className="print-roadmap-desc">Future-proof: Uplift security operations (SOC) with defensive AI and draft PQC crypto migration roadmaps.</div>
+            </div>
+          </div>
+
+          {/* Minimised Next Action Card */}
+          <div className="print-section-title">05. Next Action Plan</div>
+          <div className="print-cta-card">
+            <div className="print-cta-left">
+              <div className="print-cta-title">This assessment surfaces critical risks. A conversation closes them.</div>
+              <div className="print-cta-desc">
+                Review your results with an Instrek Security Architect. We will outline a concrete, actionable starting blueprint tailored to your stack.
               </div>
             </div>
-
-            {/* PILLAR 2 — AGENTIC */}
-            <div className="pillar-row">
-              <div className={`pillar-accent ${p2.cls}`}></div>
-              <div className="pillar-body">
-                <div className="pillar-header">
-                  <div className="pillar-name">🤖 Agentic Accountability</div>
-                  <div className={`pillar-tag ${p2.cls}`}>{p2.label}</div>
-                </div>
-                <div className="pillar-fear">"What happens if an autonomous agent makes a $1M financial error or creates a security backdoor - and I don't find out for weeks?"</div>
-                <div className="pillar-finding">{getFindingText(p2Findings, lead.p2Score)}</div>
-                
-                <div className="pillar-score-row">
-                  <div className="pillar-score-bar-bg">
-                    <div className={`pillar-score-bar ${p2.cls}`} style={{ width: `${lead.p2Score}%` }}></div>
-                  </div>
-                  <div className={`pillar-score-num ${p2.cls}`}>{lead.p2Score}</div>
-                </div>
-
-                <div className="highlight-box" style={{ marginTop: '20px' }}>
-                  <div className="highlight-box-title">What "closing this gap" looks like</div>
-                  <div className="highlight-box-body">Treating AI agents as non-human employees - with their own credentials, scoped permissions, and immutable audit trails - converts an invisible risk into a manageable one. Human-in-the-loop (HITL) checkpoints at financial, security, and data-write actions ensure no agent can exceed a defined blast radius without human approval. An AI Governance framework gives your board a risk register entry with an owner.</div>
-                </div>
+             <div className="print-cta-right">
+              <div>Schedule strategy session:</div>
+              <div>
+                <a href="https://calendly.com/instrek/strategy" target="_blank" rel="noreferrer" style={{ color: '#10B981', textDecoration: 'underline' }}>
+                  calendly.com/instrek/strategy
+                </a>
               </div>
-            </div>
-
-            {/* PILLAR 3 — POST-QUANTUM */}
-            <div className="pillar-row">
-              <div className={`pillar-accent ${p3.cls}`}></div>
-              <div className="pillar-body">
-                <div className="pillar-header">
-                  <div className="pillar-name">🛡️ Post-Quantum &amp; AI Cyber Defense</div>
-                  <div className={`pillar-tag ${p3.cls}`}>{p3.label}</div>
-                </div>
-                <div className="pillar-fear">"Hackers are using AI to find vulnerabilities faster than we can patch them. And in five years, a quantum computer could decrypt everything we encrypted today."</div>
-                <div className="pillar-finding">{getFindingText(p3Findings, lead.p3Score)}</div>
-                
-                <div className="pillar-score-row">
-                  <div className="pillar-score-bar-bg">
-                    <div className={`pillar-score-bar ${p3.cls}`} style={{ width: `${lead.p3Score}%` }}></div>
-                  </div>
-                  <div className={`pillar-score-num ${p3.cls}`}>{lead.p3Score}</div>
-                </div>
-
-                <div className="highlight-box" style={{ marginTop: '20px' }}>
-                  <div className="highlight-box-title">What "closing this gap" looks like</div>
-                  <div className="highlight-box-body">A proactive, self-healing SOC uses AI to detect and auto-remediate threats before they reach human escalation - matching adversarial AI velocity with defensive AI velocity. A Post-Quantum Cryptography readiness assessment maps every RSA and ECC dependency in your environment and produces a NIST PQC-aligned migration roadmap. The organisations that start this migration now will complete it before the quantum threat is realised. Those that wait will not.</div>
-                </div>
+              <div style={{ marginTop: '2px' }}>
+                <a href="mailto:strategy@instrek.com" style={{ color: '#64748B', textDecoration: 'none' }}>
+                  Email: strategy@instrek.com
+                </a>
               </div>
             </div>
           </div>
-        </div>
-      </div>
 
-      {/* ── SECTION 3 - REMEDIATION ROADMAP ── */}
-      <div className="paper-section" style={{ background: 'var(--paper2)' }}>
-        <div className="page-wrap" style={{ paddingBottom: 0 }}>
-          <div className="section-eyebrow">03 — Remediation Roadmap</div>
-          <h2 className="section-title">Three horizons. One coherent architecture.</h2>
-          <p className="section-body">Based on your risk profile, we recommend a structured remediation across three time horizons. This is not a linear checklist - these tracks run in parallel, governed by a single AI Security architecture that prevents the point-solution sprawl that most organizations fall into.</p>
-
-          <div className="roadmap">
-            <div className="roadmap-step">
-              <div className="step-dot now">30d</div>
-              <div className="step-content">
-                <div className="step-horizon now">Immediate — 0 to 30 days</div>
-                <div className="step-title">Contain the bleed: AI data flow audit + shadow AI policy</div>
-                <div className="step-desc">Before any architecture change, you need to know what you are dealing with. A rapid AI data flow audit maps every external LLM API call being made by your teams - including shadow usage. Simultaneously, a published AI acceptable-use policy with enforcement creates a defensible posture for regulators while architectural controls are being built.</div>
-                <div className="step-services">
-                  <span className="step-chip">AI Data Flow Audit</span>
-                  <span className="step-chip">Shadow AI Detection</span>
-                  <span className="step-chip">Acceptable Use Policy</span>
-                  <span className="step-chip">DPDP Gap Assessment</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="roadmap-step">
-              <div className="step-dot soon">90d</div>
-              <div className="step-content">
-                <div className="step-horizon soon">Short-term — 30 to 90 days</div>
-                <div className="step-title">Build the foundation: Private LLM + Agentic Identity</div>
-                <div className="step-desc">Deploy a Private LLM environment in your VPC or on-premise - with Secure RAG indexing your internal knowledge bases. In parallel, implement agentic identity management - assigning non-human credentials, scoped access controls, and HITL audit checkpoints to every AI agent operating in production. This closes the two highest-velocity risk vectors simultaneously.</div>
-                <div className="step-services">
-                  <span className="step-chip">Private LLM Deployment</span>
-                  <span className="step-chip">Secure RAG Architecture</span>
-                  <span className="step-chip">Agentic Identity Framework</span>
-                  <span className="step-chip">HITL Audit Trails</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="roadmap-step">
-              <div className="step-dot plan">12m</div>
-              <div className="step-content">
-                <div className="step-horizon plan">Strategic — 90 days to 12 months</div>
-                <div className="step-title">Future-proof: SOC AI uplift + PQC migration roadmap</div>
-                <div className="step-desc">With the immediate risks contained, the strategic horizon is about asymmetric capability. An AI-powered self-healing SOC shifts your security posture from reactive to proactive. A Post-Quantum Cryptography readiness assessment produces the migration roadmap your board will need - beginning the transition from RSA/ECC to NIST PQC-approved algorithms across your infrastructure before the regulatory mandate arrives.</div>
-                <div className="step-services">
-                  <span className="step-chip">AI-Powered SOC</span>
-                  <span className="step-chip">Self-Healing Infrastructure</span>
-                  <span className="step-chip">PQC Readiness Assessment</span>
-                  <span className="step-chip">Crypto-Agile Migration</span>
-                  <span className="step-chip">NIST PQC Roadmap</span>
-                </div>
-              </div>
-            </div>
+          <div className="print-footer">
+            <span>Instrek Technologies Ltd. &copy; 2026. Governed by DPDP Act & GDPR compliance.</span>
+            <span>Page 2 of 2</span>
           </div>
         </div>
       </div>
 
-      {/* ── SECTION 4 - PEER BENCHMARKS ── */}
-      <div className="paper-section">
-        <div className="page-wrap" style={{ paddingBottom: 0 }}>
-          <div className="section-eyebrow">04 — Peer Intelligence</div>
-          <h2 className="section-title">Where executives at your level actually stand.</h2>
-          <p className="section-body">These benchmarks are drawn from Instrek Technologies's assessment data across 340 organisations scanned in Q1 2026. They give you an objective read on how your posture compares - and where the largest competitive differentiation opportunity sits.</p>
-
-          <div className="intel-cards" style={{ marginBottom: '28px' }}>
-            <div className="intel-card">
-              <div className="intel-card-label">Organizations with formal AI governance</div>
-              <div className="intel-card-stat">27%</div>
-              <div className="intel-card-desc">Only 1 in 4 organizations has a documented AI governance framework with an assigned owner. The other 73% rely on informal policies that would not survive an audit.</div>
-            </div>
-            <div className="intel-card">
-              <div className="intel-card-label">Organizations with agentic identity mgmt</div>
-              <div className="intel-card-stat">11%</div>
-              <div className="intel-card-desc">Fewer than 1 in 10 organizations deploying AI agents has implemented dedicated agent credentials. The rest operate with agents inheriting human access - invisible to audit systems.</div>
-            </div>
-            <div className="intel-card">
-              <div className="intel-card-label">Organizations that have started PQC planning</div>
-              <div className="intel-card-stat">18%</div>
-              <div className="intel-card-desc">Post-quantum migration is a multi-year programme. The 18% that started in 2025-26 will complete ahead of the regulatory mandate. The majority will not.</div>
-            </div>
-            <div className="intel-card">
-              <div className="intel-card-label">Avg time to detect shadow AI usage</div>
-              <div className="intel-card-stat">94 days</div>
-              <div className="intel-card-desc">The median organization takes over 90 days to detect that developers have introduced an unauthorised AI tool. In that window, the IP damage is already done.</div>
-            </div>
-          </div>
-
-          <div className="table-responsive">
-            <table className="benchmark-table">
-              <thead>
-                <tr>
-                  <th>Capability</th>
-                  <th>Peer Average</th>
-                  <th>Your Status</th>
-                  <th>Maturity</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><strong>AI Acceptable Use Policy</strong></td>
-                  <td>41% have a formal policy</td>
-                  <td>{bmPolicy}</td>
-                  <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '41%', background: 'linear-gradient(90deg, var(--amber), var(--amber-mid))' }}></div></div></td>
-                </tr>
-                <tr>
-                  <td><strong>Private / On-Prem LLM</strong></td>
-                  <td>19% deployed</td>
-                  <td>{bmLlm}</td>
-                  <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '19%', background: 'linear-gradient(90deg, var(--red), var(--red-mid))' }}></div></div></td>
-                </tr>
-                <tr>
-                  <td><strong>Agentic Identity Framework</strong></td>
-                  <td>11% operational</td>
-                  <td>{bmAgent}</td>
-                  <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '11%', background: 'linear-gradient(90deg, var(--red), var(--red-mid))' }}></div></div></td>
-                </tr>
-                <tr>
-                  <td><strong>PQC Readiness Assessment</strong></td>
-                  <td>18% completed</td>
-                  <td>{bmPqc}</td>
-                  <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '18%', background: 'linear-gradient(90deg, var(--red), var(--red-mid))' }}></div></div></td>
-                </tr>
-                <tr>
-                  <td><strong>AI-Powered SOC</strong></td>
-                  <td>33% deployed or piloting</td>
-                  <td>Likely not yet - majority position</td>
-                  <td><div className="bm-bar-bg"><div className="bm-bar" style={{ width: '33%', background: 'linear-gradient(90deg, var(--amber), var(--amber-mid))' }}></div></div></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      {/* ── SECTION 5 - CTA ── */}
-      <div className="cta-block">
-        <div className="page-wrap" style={{ padding: 0 }}>
-          <div className="cta-label">Your Next Step</div>
-          <h2 className="cta-headline">This report surfaces the risk.<br/><em>A conversation closes it.</em></h2>
-          <p className="cta-sub">Our security architects review a maximum of 8 new organisations per month. A 30-minute strategy call is not a sales call - it is a working session where we map your specific architecture against your highest-priority pillar and give you a concrete, actionable starting point. No commitment required.</p>
-
-          <div className="cta-options">
-            <a className="cta-option" href="https://calendly.com/instrek/strategy" target="_blank" rel="noreferrer">
-              <div className="cta-option-icon">📅</div>
-              <div className="cta-option-title">Book a 30-min Strategy Call</div>
-              <div className="cta-option-desc">Live session with a security architect. We review your specific pillar profile and recommend a starting architecture. This week's slots are filling.</div>
-            </a>
-            <a className="cta-option" href={`mailto:strategy@instrek.com?subject=Instrek Technologies Risk Report - Architecture Review Request for ${encodeURIComponent(lead.company || '')}`} target="_blank" rel="noreferrer">
-              <div className="cta-option-icon">✉️</div>
-              <div className="cta-option-title">Request a Written Architecture Blueprint</div>
-              <div className="cta-option-desc">Prefer async? Email us with your report score and we will respond within 24 hours with a written architecture recommendation tailored to your organization size and sector.</div>
-            </a>
-            <a className="cta-option" href="#" onClick={(e) => { e.preventDefault(); alert("Preparing framework download..."); }}>
-              <div className="cta-option-icon">📄</div>
-              <div className="cta-option-title">Download the Full AI Risk Framework</div>
-              <div className="cta-option-desc">Our 40-page technical framework covers all three pillars with architecture diagrams, vendor evaluation criteria, and implementation checklists for each.</div>
-            </a>
-            <a className="cta-option" href="#" onClick={(e) => { e.preventDefault(); alert("Report link copied to clipboard! Share it with your team."); navigator.clipboard.writeText(window.location.href); }}>
-              <div className="cta-option-icon">👥</div>
-              <div className="cta-option-title">Share This Report With Your Team</div>
-              <div className="cta-option-desc">Forward this report link to your CISO, CTO, or technology head. A shared risk view accelerates internal alignment and shortens the path to a governance decision.</div>
-            </a>
-          </div>
-
-          <a className="cta-primary-btn" href="https://calendly.com/instrek/strategy" target="_blank" rel="noreferrer">Book My Strategy Call →</a>
-
-          <div className="cta-urgency">
-            <div className="cta-urgency-text">⚠️ We reviewed 340 risk profiles in Q1 2026. The organisations that acted on their highest-risk pillar within 30 days of assessment reduced their measured exposure by an average of 61%. The ones that filed this report and moved on did not. The window to act before your next board AI risk review is now.</div>
-          </div>
-
-          <div className="expect-steps" style={{ marginTop: '40px' }}>
-            <div className="expect-step">
-              <div className="expect-num">01</div>
-              <div className="expect-title">You book the call</div>
-              <div className="expect-desc">A 30-minute slot with a security architect. Bring your biggest question. We bring the answers.</div>
-            </div>
-            <div className="expect-step">
-              <div className="expect-num">02</div>
-              <div className="expect-title">We map your architecture</div>
-              <div className="expect-desc">We review your risk profile, your current stack, and your timeline. You leave with a concrete starting point - not a pitch deck.</div>
-            </div>
-            <div className="expect-step">
-              <div className="expect-num">03</div>
-              <div className="expect-title">You decide what happens next</div>
-              <div className="expect-desc">If there is a fit, we scope a pilot engagement. If there is not, we will tell you honestly and point you to the right resource.</div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-          {/* ── FOOTER ── */}
-          <div className="report-footer">
-            <div className="footer-brand">Instrek Technologies — AI Security</div>
-            <div className="footer-links">
-              <a className="footer-link" href="mailto:strategy@instrek.com">strategy@instrek.com</a>
-              <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>instrek.com</a>
-              <a className="footer-link" href="#" onClick={(e) => e.preventDefault()}>Privacy Policy</a>
-            </div>
-            <div className="footer-disclaimer">This report is based on self-reported data from the Instrek Technologies risk assessment. It is intended as a strategic orientation tool and does not constitute a formal security audit. Risk scores are indicative and derived from heuristic models calibrated against peer data. Instrek Technologies accepts no liability for decisions made solely on the basis of this report without further technical due diligence.</div>
-          </div>
-        </>
-      )}
     </div>
   );
 };

@@ -60,7 +60,6 @@ const SecurityRiskEngine = () => {
     const reportData = params.get('report');
     const importGcc = params.get('importGcc');
     const leadId = params.get('leadId');
-    
     if (reportData) {
       try {
         const decodedStr = decodeURIComponent(escape(window.atob(reportData)));
@@ -337,152 +336,297 @@ const SecurityRiskEngine = () => {
         </html>
       `;
 
-      // Generate PDF template matching exact report layout, branding, and color structure
+      // Generate a clean, well-structured, compact 2-page PDF with light backgrounds and clean layout
       const generateReportPdfBase64 = (data) => {
-        const sanitize = (str) => String(str || '').replace(/[()\\]/g, '');
+        const s = (str) => String(str || '').replace(/[()\\]/g, '');
+        const wrapText = (text, maxChars = 92) => {
+          const words = text.split(' ');
+          const lines = [];
+          let line = '';
+          for (const w of words) {
+            if ((line + ' ' + w).trim().length > maxChars) {
+              lines.push(line.trim());
+              line = w;
+            } else {
+              line = line ? line + ' ' + w : w;
+            }
+          }
+          if (line.trim()) lines.push(line.trim());
+          return lines;
+        };
+
+        const tierColor = data.riskScore >= 70 ? '0.94 0.27 0.27' : data.riskScore >= 45 ? '0.96 0.62 0.04' : '0.06 0.73 0.50';
+        const tierLabel = data.tier || (data.riskScore >= 70 ? 'Critical Exposure' : data.riskScore >= 45 ? 'Moderate Risk' : 'Strong Foundation');
+
+        const p1Color = data.p1Score >= 70 ? '0.86 0.15 0.15' : data.p1Score >= 45 ? '0.85 0.47 0.02' : '0.02 0.59 0.41';
+        const p2Color = data.p2Score >= 70 ? '0.86 0.15 0.15' : data.p2Score >= 45 ? '0.85 0.47 0.02' : '0.02 0.59 0.41';
+        const p3Color = data.p3Score >= 70 ? '0.86 0.15 0.15' : data.p3Score >= 45 ? '0.85 0.47 0.02' : '0.02 0.59 0.41';
+        const p1Label = data.p1Score >= 70 ? 'Critical Risk' : data.p1Score >= 45 ? 'Elevated Risk' : 'Managed';
+        const p2Label = data.p2Score >= 70 ? 'Critical Risk' : data.p2Score >= 45 ? 'Elevated Risk' : 'Managed';
+        const p3Label = data.p3Score >= 70 ? 'Critical Risk' : data.p3Score >= 45 ? 'Elevated Risk' : 'Managed';
 
         const p1Text = data.p1Score >= 70 
-          ? "Your assessment indicates the majority of your India GCC developers are actively using external GenAI tools with no formal governance, audit trail, or data residency controls. Every API call to an external LLM is a potential IP transfer event."
+          ? "Developers are actively using external GenAI tools without formal audit trails or data residency controls. Every API call to an external LLM is a potential IP transfer event."
           : data.p1Score >= 45 
-            ? "Your assessment indicates partial or informal controls around GenAI tool usage in your India GCC. While some awareness exists, the absence of a formal audit trail means you cannot demonstrate to a regulator what data has left your perimeter."
-            : "Your assessment indicates proactive controls around GenAI tool usage. The strategic priority now is formalising and scaling these controls as your AI deployment velocity increases.";
-
+            ? "Partial controls exist around GenAI usage. Gaps remain as unmonitored tools are used, and shadow AI posture leaves key data flows unmapped."
+            : "Proactive controls are in place around GenAI tool usage. Deployed private LLM pathways and secure data boundaries are well-managed.";
         const p2Text = data.p2Score >= 70 
-          ? "Your assessment indicates AI agents operating in your GCC environment are functioning without dedicated identity, scoped permissions, or independent audit trails. When an agent takes an action, there is no mechanism to attribute that action or roll back the consequence."
+          ? "AI agents function without dedicated identity or independent audit trails, inheriting default human credentials. Attribution and scoped boundaries are missing."
           : data.p2Score >= 45 
-            ? "Your assessment indicates some agents are tracked but the framework is incomplete. Partial coverage creates a false sense of governance while leaving high-risk agents unmonitored."
-            : "Your assessment indicates a mature approach to agentic AI governance. Priority is ensuring framework scales with newer agents.";
-
+            ? "Some agentic pathways are tracked, but coverage is incomplete. High-risk actions lack dedicated credential structures."
+            : "Agentic boundaries are controlled. Dedicated agent identities and scoped permission schemes are successfully operationalised.";
         const p3Text = data.p3Score >= 70 
-          ? "Your assessment indicates no formal cryptographic inventory has been conducted and post-quantum readiness is not on your active roadmap. Nation-state actors are currently executing harvest now, decrypt later operations."
+          ? "No formal cryptographic inventory has been conducted and post-quantum readiness is unmapped. High risk of harvest-now, decrypt-later threats."
           : data.p3Score >= 45 
-            ? "Your assessment indicates partial awareness of post-quantum risk but no formal migration programme. A PQC readiness assessment converts your current known unknown into a mapped migration roadmap."
-            : "Your assessment indicates a proactive posture on post-quantum readiness. Priority is completing the cryptographic inventory and validating NIST PQC algorithm selections.";
+            ? "Partial awareness of quantum cryptographic risks, but a formal migration roadmap or NIST standard adoption is not yet initiated."
+            : "Cryptographic inventory is complete and NIST PQC migration planning is proactively under way across all systems.";
 
-        const page1Content = [
-          "BT",
-          "/F1 20 Tf",
-          "40 740 Td",
-          "(INSTREK TECHNOLOGIES - AI SECURITY) Tj",
-          "0 -25 Td",
-          "/F1 11 Tf",
-          "(CONFIDENTIAL RISK ASSESSMENT REPORT) Tj",
-          "0 -35 Td",
-          "/F1 16 Tf",
-          "(GCC AI Security Risk Engine Report) Tj",
-          "0 -22 Td",
-          "/F1 10 Tf",
-          `(${sanitize(`Prepared for: ${data.firstName || ''} ${data.lastName || ''} | ${data.company || 'GCC Leader'}`)}) Tj`,
-          "0 -15 Td",
-          `(${sanitize(`Work Email: ${data.email} | Date: ${new Date().toLocaleDateString('en-GB')}`)}) Tj`,
-          "0 -35 Td",
-          "/F1 13 Tf",
-          "(1. EXECUTIVE SUMMARY & RISK SCORE) Tj",
-          "0 -25 Td",
-          "/F1 22 Tf",
-          `(${sanitize(`OVERALL RISK SCORE: ${data.riskScore} / 100`)}) Tj`,
-          "0 -25 Td",
-          "/F1 12 Tf",
-          `(${sanitize(`CLASSIFICATION TIER: ${data.tier}`)}) Tj`,
-          "0 -30 Td",
-          "/F1 10 Tf",
-          "(Your organisation carries specific vulnerabilities across the three core AI security pillars.) Tj",
-          "0 -15 Td",
-          "(This report maps your exposure across AI Sovereignty, Agentic Accountability, and Post-Quantum Defense.) Tj",
-          "0 -35 Td",
-          "/F1 13 Tf",
-          "(2. PILLAR POSTURE AT A GLANCE) Tj",
-          "0 -20 Td",
-          "/F1 10 Tf",
-          `(${sanitize(`Pillar 1 - AI Sovereignty & Data Leakage : ${data.p1Score}%`)}) Tj`,
-          "0 -15 Td",
-          `(${sanitize(`Pillar 2 - Agentic Accountability      : ${data.p2Score}%`)}) Tj`,
-          "0 -15 Td",
-          `(${sanitize(`Pillar 3 - Post-Quantum Defense         : ${data.p3Score}%`)}) Tj`,
-          "ET"
-        ].join("\n");
+        const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
-        const page2Content = [
-          "BT",
-          "/F1 14 Tf",
-          "40 740 Td",
-          "(3. DETAILED PILLAR BREAKDOWN & REMEDIATION ROADMAP) Tj",
-          "0 -25 Td",
-          "/F1 11 Tf",
-          "(PILLAR 1: AI SOVEREIGNTY & DATA LEAKAGE) Tj",
-          "0 -16 Td",
-          "/F1 9 Tf",
-          `(${sanitize(p1Text.substring(0, 110))}) Tj`,
-          "0 -12 Td",
-          `(${sanitize(p1Text.substring(110, 220))}) Tj`,
-          "0 -22 Td",
-          "/F1 11 Tf",
-          "(PILLAR 2: AGENTIC ACCOUNTABILITY) Tj",
-          "0 -16 Td",
-          "/F1 9 Tf",
-          `(${sanitize(p2Text.substring(0, 110))}) Tj`,
-          "0 -12 Td",
-          `(${sanitize(p2Text.substring(110, 220))}) Tj`,
-          "0 -22 Td",
-          "/F1 11 Tf",
-          "(PILLAR 3: POST-QUANTUM DEFENSE) Tj",
-          "0 -16 Td",
-          "/F1 9 Tf",
-          `(${sanitize(p3Text.substring(0, 110))}) Tj`,
-          "0 -12 Td",
-          `(${sanitize(p3Text.substring(110, 220))}) Tj`,
-          "0 -30 Td",
-          "/F1 13 Tf",
-          "(4. PEER INTELLIGENCE & BENCHMARKS) Tj",
-          "0 -18 Td",
-          "/F1 9 Tf",
-          "(External GenAI Policy      : 64% of GCC peers have enforced policies) Tj",
-          "0 -14 Td",
-          "(Private LLM Infrastructure  : 19% deployed private instance) Tj",
-          "0 -14 Td",
-          "(Agentic Identity Framework : 11% operationalized agent identity) Tj",
-          "0 -14 Td",
-          "(PQC Readiness Assessment   : 18% completed cryptographic inventory) Tj",
-          "0 -35 Td",
-          "/F1 13 Tf",
-          "(5. NEXT STEPS & STRATEGY CALL) Tj",
-          "0 -18 Td",
-          "/F1 9 Tf",
-          "(Book a 30-minute strategy call with Instrek Security Architects: calendly.com/instrek/strategy) Tj",
-          "0 -14 Td",
-          "(Or access your live interactive report at any time on your dashboard.) Tj",
-          "0 -25 Td",
-          "/F1 8 Tf",
-          "(Instrek Technologies Ltd. - Governed by DPDP Act & GDPR compliance standards.) Tj",
-          "ET"
-        ].join("\n");
+        // ── PAGE 1: Header + Score Card + Executive Summary + Pillar Analysis ──
+        const p1Lines = [];
+        
+        // Clean Top header (White bg with top border)
+        p1Lines.push('q', '0.06 0.73 0.50 rg', '0 788 612 4 re f', 'Q');
+        
+        // Logo & Title
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 16 Tf', '40 754 Td', '(INSTREK TECHNOLOGIES - AI SECURITY) Tj', 'ET');
+        p1Lines.push('BT', '0.4 0.45 0.55 rg', '/F1 8 Tf', '40 740 Td', '(GCC CONFIDENTIAL RISK ASSESSMENT REPORT) Tj', 'ET');
+        p1Lines.push('BT', '0.4 0.45 0.55 rg', '/F1 8 Tf', '450 754 Td', `(Date: ${s(dateStr)}) Tj`, 'ET');
 
-        let pdf = "%PDF-1.4\n";
-        pdf += "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n";
-        pdf += "2 0 obj << /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >> endobj\n";
-        pdf += "3 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj\n";
-        pdf += "4 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj\n";
-        pdf += "7 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n";
+        // Divider
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '40 728 532 1 re f', 'Q');
 
-        pdf += `5 0 obj << /Length ${page1Content.length} >>\nstream\n${page1Content}\nendstream\nendobj\n`;
-        pdf += `6 0 obj << /Length ${page2Content.length} >>\nstream\n${page2Content}\nendstream\nendobj\n`;
+        // Prepared for subtitle
+        p1Lines.push('BT', '0.1 0.15 0.25 rg', '/F2 12 Tf', '40 706 Td', `(Risk Report for: ${s(data.firstName)} ${s(data.lastName)} | ${s(data.role)} | ${s(data.company)}) Tj`, 'ET');
 
-        pdf += [
-          "xref",
-          "0 8",
-          "0000000000 65535 f ",
-          "0000000009 00000 n ",
-          "0000000058 00000 n ",
-          "0000000121 00000 n ",
-          "0000000241 00000 n ",
-          "0000000450 00000 n ",
-          "0000000600 00000 n ",
-          "0000000360 00000 n ",
-          "trailer << /Size 8 /Root 1 0 R >>",
-          "startxref",
-          "750",
-          "%%EOF"
-        ].join("\n");
+        // ── Score Card (Light Grey Box with color accent) ──
+        p1Lines.push('q', '0.96 0.97 0.99 rg', '40 610 532 76 re f', 'Q');
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '40 610 532 76 re S', 'Q');
+        p1Lines.push('q', `${tierColor} rg`, '40 610 5 76 re f', 'Q');
+
+        // Risk Score Big text
+        p1Lines.push('BT', `${tierColor} rg`, '/F2 36 Tf', '60 636 Td', `(${data.riskScore}) Tj`, 'ET');
+        p1Lines.push('BT', '0.5 0.55 0.6 rg', '/F1 11 Tf', '125 640 Td', '(/100) Tj', 'ET');
+        p1Lines.push('BT', '0.3 0.35 0.4 rg', '/F1 8 Tf', '60 622 Td', '(COMPOSITE RISK SCORE) Tj', 'ET');
+
+        // Tier badge
+        p1Lines.push('q', `${tierColor} rg`, '340 648 180 20 re f', 'Q');
+        p1Lines.push('BT', '1 1 1 rg', '/F2 9 Tf', '355 654 Td', `(${s(tierLabel).toUpperCase()}) Tj`, 'ET');
+
+        // Gauge bar background
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '340 630 180 6 re f', 'Q');
+        const gaugeW = Math.round(180 * data.riskScore / 100);
+        p1Lines.push('q', `${tierColor} rg`, `340 630 ${gaugeW} 6 re f`, 'Q');
+
+        // Executive summary text
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 9 Tf', '40 584 Td', '(EXECUTIVE SUMMARY) Tj', 'ET');
+        const execText = "Based on your self-assessment, your GCC operates with unmanaged AI exposures. Critical gaps exist in shadow GenAI controls, autonomous agent tracking, and quantum encryption readiness.";
+        p1Lines.push('BT', '0.4 0.45 0.5 rg', '/F1 9 Tf', '40 570 Td', `(${s(execText)}) Tj`, 'ET');
+
+        // Divider
+        p1Lines.push('q', '0.88 0.91 0.93 rg', '40 556 532 1 re f', 'Q');
+
+        // ── 3 Pillar analysis cards compacted on page 1 ──
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 11 Tf', '40 535 Td', '(01. RISK PILLAR ANALYSIS) Tj', 'ET');
+
+        let cy = 520;
+
+        // Pillar 1 Card
+        p1Lines.push('q', '0.98 0.98 0.99 rg', `40 ${cy - 138} 532 125 re f`, 'Q');
+        p1Lines.push('q', '0.90 0.92 0.94 rg', `40 ${cy - 138} 532 125 re S`, 'Q');
+        p1Lines.push('q', `${p1Color} rg`, `40 ${cy - 138} 4 125 re f`, 'Q');
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 10 Tf', `55 ${cy - 20} Td`, '(AI Sovereignty & Data Leakage) Tj', 'ET');
+        p1Lines.push('BT', `${p1Color} rg`, '/F2 9 Tf', `480 ${cy - 20} Td`, `(Score: ${data.p1Score}/100) Tj`, 'ET');
+        const p1W = wrapText(p1Text, 88);
+        let py1 = cy - 38;
+        for (const line of p1W) {
+          p1Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 9 Tf', `55 ${py1} Td`, `(${s(line)}) Tj`, 'ET');
+          py1 -= 13;
+        }
+        // What closing the gap looks like
+        p1Lines.push('BT', '0.02 0.59 0.41 rg', '/F2 8 Tf', `55 ${cy - 92} Td`, '(REMEDIATION TARGET: Private LLM deployments & secure RAG gateways to keep all IP inside the perimeter.) Tj', 'ET');
+        p1Lines.push('q', '0.90 0.92 0.94 rg', `55 ${cy - 110} 460 4 re f`, 'Q');
+        p1Lines.push('q', `${p1Color} rg`, `55 ${cy - 110} ${Math.round(460 * data.p1Score / 100)} 4 re f`, 'Q');
+
+        // Pillar 2 Card
+        cy -= 144;
+        p1Lines.push('q', '0.98 0.98 0.99 rg', `40 ${cy - 138} 532 125 re f`, 'Q');
+        p1Lines.push('q', '0.90 0.92 0.94 rg', `40 ${cy - 138} 532 125 re S`, 'Q');
+        p1Lines.push('q', `${p2Color} rg`, `40 ${cy - 138} 4 125 re f`, 'Q');
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 10 Tf', `55 ${cy - 20} Td`, '(Agentic Accountability) Tj', 'ET');
+        p1Lines.push('BT', `${p2Color} rg`, '/F2 9 Tf', `480 ${cy - 20} Td`, `(Score: ${data.p2Score}/100) Tj`, 'ET');
+        const p2W = wrapText(p2Text, 88);
+        let py2 = cy - 38;
+        for (const line of p2W) {
+          p1Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 9 Tf', `55 ${py2} Td`, `(${s(line)}) Tj`, 'ET');
+          py2 -= 13;
+        }
+        p1Lines.push('BT', '0.02 0.59 0.41 rg', '/F2 8 Tf', `55 ${cy - 92} Td`, '(REMEDIATION TARGET: Structured agent identities & human-in-the-loop permission approvals.) Tj', 'ET');
+        p1Lines.push('q', '0.90 0.92 0.94 rg', `55 ${cy - 110} 460 4 re f`, 'Q');
+        p1Lines.push('q', `${p2Color} rg`, `55 ${cy - 110} ${Math.round(460 * data.p2Score / 100)} 4 re f`, 'Q');
+
+        // Pillar 3 Card
+        cy -= 144;
+        p1Lines.push('q', '0.98 0.98 0.99 rg', `40 ${cy - 138} 532 125 re f`, 'Q');
+        p1Lines.push('q', '0.90 0.92 0.94 rg', `40 ${cy - 138} 532 125 re S`, 'Q');
+        p1Lines.push('q', `${p3Color} rg`, `40 ${cy - 138} 4 125 re f`, 'Q');
+        p1Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 10 Tf', `55 ${cy - 20} Td`, '(Post-Quantum & AI Cyber Defense) Tj', 'ET');
+        p1Lines.push('BT', `${p3Color} rg`, '/F2 9 Tf', `480 ${cy - 20} Td`, `(Score: ${data.p3Score}/100) Tj`, 'ET');
+        const p3W = wrapText(p3Text, 88);
+        let py3 = cy - 38;
+        for (const line of p3W) {
+          p1Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 9 Tf', `55 ${py3} Td`, `(${s(line)}) Tj`, 'ET');
+          py3 -= 13;
+        }
+        p1Lines.push('BT', '0.02 0.59 0.41 rg', '/F2 8 Tf', `55 ${cy - 92} Td`, '(REMEDIATION TARGET: Crypto agile discovery inventories & migration plans to NIST post-quantum standard.) Tj', 'ET');
+        p1Lines.push('q', '0.90 0.92 0.94 rg', `55 ${cy - 110} 460 4 re f`, 'Q');
+        p1Lines.push('q', `${p3Color} rg`, `55 ${cy - 110} ${Math.round(460 * data.p3Score / 100)} 4 re f`, 'Q');
+
+        // Footer Page 1
+        p1Lines.push('q', '0.06 0.73 0.50 rg', '0 30 612 1 re f', 'Q');
+        p1Lines.push('BT', '0.5 0.55 0.6 rg', '/F1 7 Tf', '40 18 Td', '(Instrek Technologies | Confidential Security Scan Report | Page 1 of 2) Tj', 'ET');
+
+        const page1Content = p1Lines.join('\n');
+
+        // ── PAGE 2: Peer intelligence, Roadmap, and Call-to-action ──
+        const p2Lines = [];
+        // Header band (Clean light border)
+        p2Lines.push('q', '0.06 0.73 0.50 rg', '0 788 612 4 re f', 'Q');
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 10 Tf', '40 762 Td', '(INSTREK TECHNOLOGIES  |  SECURITY COMPLIANCE ROADMAP) Tj', 'ET');
+        p2Lines.push('q', '0.88 0.91 0.93 rg', '40 750 532 1 re f', 'Q');
+
+        // Peer Intelligence Section
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 11 Tf', '40 724 Td', '(02. PEER INTEL & BENCHMARKS) Tj', 'ET');
+
+        // Table
+        const tTop = 698;
+        p2Lines.push('q', '0.96 0.97 0.99 rg', `40 ${tTop - 18} 532 18 re f`, 'Q');
+        p2Lines.push('q', '0.88 0.91 0.93 rg', `40 ${tTop - 18} 532 18 re S`, 'Q');
+        p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F2 8 Tf', `50 ${tTop - 13} Td`, '(CAPABILITY) Tj', 'ET');
+        p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F2 8 Tf', `250 ${tTop - 13} Td`, '(PEER AVG) Tj', 'ET');
+        p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F2 8 Tf', `400 ${tTop - 13} Td`, '(MATURITY GAPS) Tj', 'ET');
+
+        const benchmarks = [
+          ['AI Acceptable Use Policy', '41% set rules', 41, '0.85 0.47 0.02'],
+          ['Private / On-Prem LLM', '19% deployed', 19, '0.86 0.15 0.15'],
+          ['Agentic Identity Framework', '11% operational', 11, '0.86 0.15 0.15'],
+          ['PQC Readiness Assessment', '18% completed', 18, '0.86 0.15 0.15'],
+          ['AI-Powered SOC', '33% active', 33, '0.85 0.47 0.02'],
+        ];
+        let ty = tTop - 18;
+        benchmarks.forEach((bm, i) => {
+          const rowBg = i % 2 === 0 ? '0.98 0.99 1' : '1 1 1';
+          p2Lines.push('q', `${rowBg} rg`, `40 ${ty - 22} 532 22 re f`, 'Q');
+          p2Lines.push('q', '0.93 0.94 0.96 rg', `40 ${ty - 22} 532 22 re S`, 'Q');
+          p2Lines.push('BT', '0.1 0.1 0.15 rg', '/F1 9 Tf', `50 ${ty - 14} Td`, `(${bm[0]}) Tj`, 'ET');
+          p2Lines.push('BT', '0.4 0.45 0.5 rg', '/F1 9 Tf', `250 ${ty - 14} Td`, `(${bm[1]}) Tj`, 'ET');
+          // Bar
+          p2Lines.push('q', '0.92 0.94 0.96 rg', `400 ${ty - 16} 150 5 re f`, 'Q');
+          p2Lines.push('q', `${bm[3]} rg`, `400 ${ty - 16} ${Math.round(150 * bm[2] / 100)} 5 re f`, 'Q');
+          ty -= 22;
+        });
+
+        // Roadmap Section
+        const rmTop = ty - 32;
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 11 Tf', `40 ${rmTop} Td`, '(03. REMEDIATION ROADMAP - THREE HORIZONS) Tj', 'ET');
+
+        // Roadmap timeline items
+        const steps = [
+          { time: '0-30 DAYS (Immediate)', title: 'AI Data Flow Audit + Shadow AI Policy implementation.', color: '0.86 0.15 0.15', badge: '30d' },
+          { time: '30-90 DAYS (Short-term)', title: 'VPC-based Private LLM setup & Scoped Agent identities.', color: '0.85 0.47 0.02', badge: '90d' },
+          { time: '90d-12 MONTHS (Strategic)', title: 'AI SOC implementation & post-quantum NIST cryptomigration.', color: '0.02 0.59 0.41', badge: '12m' },
+        ];
+        let ry = rmTop - 25;
+        // Vertical timeline bar
+        p2Lines.push('q', '0.90 0.92 0.94 rg', `58 ${ry - 95} 2 100 re f`, 'Q');
+        steps.forEach((step) => {
+          // Dot
+          p2Lines.push('q', `${step.color} rg`, `50 ${ry - 2} 18 18 re f`, 'Q');
+          p2Lines.push('BT', '1 1 1 rg', '/F2 7 Tf', `53 ${ry + 3} Td`, `(${step.badge}) Tj`, 'ET');
+          // Details
+          p2Lines.push('BT', `${step.color} rg`, '/F2 8 Tf', `80 ${ry + 10} Td`, `(${step.time}) Tj`, 'ET');
+          p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F1 9 Tf', `80 ${ry - 2} Td`, `(${s(step.title)}) Tj`, 'ET');
+          ry -= 44;
+        });
+
+        // CTA Section (Light gradient card instead of dark background)
+        const ctaTop = ry - 25;
+        p2Lines.push('q', '0.96 0.97 0.99 rg', `40 ${ctaTop - 85} 532 85 re f`, 'Q');
+        p2Lines.push('q', '0.88 0.91 0.93 rg', `40 ${ctaTop - 85} 532 85 re S`, 'Q');
+        p2Lines.push('q', '0.06 0.73 0.50 rg', `40 ${ctaTop - 2} 532 2 re f`, 'Q');
+
+        p2Lines.push('BT', '0.06 0.53 0.35 rg', '/F2 9 Tf', `60 ${ctaTop - 18} Td`, '(YOUR NEXT ACTION PLAN) Tj', 'ET');
+        p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 12 Tf', `60 ${ctaTop - 36} Td`, '(This report surfaces critical issues. We help you resolve them.) Tj', 'ET');
+        p2Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 9 Tf', `60 ${ctaTop - 54} Td`, '(Book a custom 30-min strategy review session: calendly.com/instrek/strategy) Tj', 'ET');
+        p2Lines.push('BT', '0.35 0.4 0.45 rg', '/F1 8 Tf', `60 ${ctaTop - 70} Td`, '(Or contact us at: strategy@instrek.com  |  Visit: instrek.com) Tj', 'ET');
+
+        // Clean CTA button on right
+        p2Lines.push('q', '0.06 0.73 0.50 rg', `410 ${ctaTop - 50} 145 25 re f`, 'Q');
+        p2Lines.push('BT', '1 1 1 rg', '/F2 8 Tf', `430 ${ctaTop - 42} Td`, '(BOOK CALL NOW) Tj', 'ET');
+
+        // Footer Page 2
+        p2Lines.push('q', '0.06 0.73 0.50 rg', '0 30 612 1 re f', 'Q');
+        p2Lines.push('BT', '0.5 0.55 0.6 rg', '/F1 7 Tf', '40 18 Td', '(Instrek Technologies | Confidential Security Scan Report | Page 2 of 2) Tj', 'ET');
+        p2Lines.push('BT', '0.6 0.65 0.7 rg', '/F1 6 Tf', '40 8 Td', '(All details are subject to NDA. Instrek accepts no liability for decisions made solely on the basis of this assessment.) Tj', 'ET');
+
+        const page2Content = p2Lines.join('\n');
+
+        // ── Assemble PDF ──
+        const objects = [];
+        let objNum = 1;
+
+        // Object 1: Catalog
+        objects.push(`${objNum} 0 obj << /Type /Catalog /Pages 2 0 R >> endobj`);
+        objNum++;
+
+        // Object 2: Pages
+        objects.push(`${objNum} 0 obj << /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >> endobj`);
+        objNum++;
+
+        // Object 3: Page 1
+        objects.push(`${objNum} 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 5 0 R /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> >> endobj`);
+        objNum++;
+
+        // Object 4: Page 2
+        objects.push(`${objNum} 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R /F2 8 0 R >> >> >> endobj`);
+        objNum++;
+
+        // Object 5: Page 1 content stream
+        objects.push(`${objNum} 0 obj << /Length ${page1Content.length} >>\nstream\n${page1Content}\nendstream\nendobj`);
+        objNum++;
+
+        // Object 6: Page 2 content stream
+        objects.push(`${objNum} 0 obj << /Length ${page2Content.length} >>\nstream\n${page2Content}\nendstream\nendobj`);
+        objNum++;
+
+        // Object 7: Font Helvetica (regular)
+        objects.push(`${objNum} 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj`);
+        objNum++;
+
+        // Object 8: Font Helvetica-Bold
+        objects.push(`${objNum} 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >> endobj`);
+        objNum++;
+
+        let pdf = '%PDF-1.4\n';
+        const offsets = [];
+        for (const obj of objects) {
+          offsets.push(pdf.length);
+          pdf += obj + '\n';
+        }
+
+        const xrefOffset = pdf.length;
+        pdf += 'xref\n';
+        pdf += `0 ${objNum}\n`;
+        pdf += '0000000000 65535 f \n';
+        for (const offset of offsets) {
+          pdf += String(offset).padStart(10, '0') + ' 00000 n \n';
+        }
+
+        pdf += `trailer << /Size ${objNum} /Root 1 0 R >>\n`;
+        pdf += 'startxref\n';
+        pdf += xrefOffset + '\n';
+        pdf += '%%EOF';
 
         return window.btoa(unescape(encodeURIComponent(pdf)));
       };
