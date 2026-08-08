@@ -13,6 +13,8 @@ import ResultsDashboard from './components/ResultsDashboard.jsx';
 
 import AdminPanel from './components/AdminPanel.jsx';
 import { adminDataService } from './services/adminDataService.js';
+import { useScoring } from './hooks/useScoring.js';
+import { CATEGORIES, MATURITY_TIERS } from './config/data.js';
 
 // View states: 'home' | 'assessment' | 'gate' | 'results' | 'admin'
 export default function App() {
@@ -138,6 +140,8 @@ function decodeReportToken(rawToken) {
     document.body.style.overflow = 'hidden';
   }
 
+  const { calculateCategoryScores, calculateOverallScore } = useScoring();
+
   function handleAssessmentComplete(answers) {
     setAssessmentAnswers(answers);
     setView('gate');
@@ -152,6 +156,12 @@ function decodeReportToken(rawToken) {
     setView('results');
     document.body.style.overflow = 'auto';
 
+    // Dynamically calculate scores for PDF & Admin database
+    const catScoresMap = calculateCategoryScores(assessmentAnswers || {});
+    const catScores = CATEGORIES.map(c => catScoresMap[c.id] || 0);
+    const overall = calculateOverallScore(assessmentAnswers || {});
+    const tier = MATURITY_TIERS.find(t => overall >= t.min && overall <= t.max) || MATURITY_TIERS[0];
+
     // Client-side & Backend submission recording for Admin Panel
     const magnetoPayload = {
       sessionId: sessionId || 'session_' + Date.now(),
@@ -162,8 +172,8 @@ function decodeReportToken(rawToken) {
       role: fullInfo.role || 'Leader',
       size: fullInfo.size || '100-500',
       revenue: fullInfo.revenue || 'N/A',
-      overallPct: 84,
-      tier: 'Leader'
+      overallPct: overall,
+      tier: tier.name
     };
 
     adminDataService.saveAiReadinessSubmission(magnetoPayload);
