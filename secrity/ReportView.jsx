@@ -438,6 +438,13 @@ const ReportView = ({ lead }) => {
           .step-content { padding-top: 4px; }
           .highlight-box { padding: 16px; margin: 16px 0; }
         }
+
+        @media print {
+          button { display: none !important; }
+          .report-root-container { padding-bottom: 0 !important; background: #fff !important; }
+          .cover, .score-band, .paper-section, .cta-block, .report-footer { page-break-inside: avoid; }
+          .paper-section { page-break-before: auto; }
+        }
       `}</style>
 
       {/* ── COVER ── */}

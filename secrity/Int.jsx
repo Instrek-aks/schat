@@ -337,8 +337,10 @@ const SecurityRiskEngine = () => {
         </html>
       `;
 
-      // Generate rich, complete multi-page PDF matching the full GCC AI Security Risk Engine report format
+      // Generate PDF template matching exact report layout, branding, and color structure
       const generateReportPdfBase64 = (data) => {
+        const sanitize = (str) => String(str || '').replace(/[()\\]/g, '');
+
         const p1Text = data.p1Score >= 70 
           ? "Your assessment indicates the majority of your India GCC developers are actively using external GenAI tools with no formal governance, audit trail, or data residency controls. Every API call to an external LLM is a potential IP transfer event."
           : data.p1Score >= 45 
@@ -357,110 +359,103 @@ const SecurityRiskEngine = () => {
             ? "Your assessment indicates partial awareness of post-quantum risk but no formal migration programme. A PQC readiness assessment converts your current known unknown into a mapped migration roadmap."
             : "Your assessment indicates a proactive posture on post-quantum readiness. Priority is completing the cryptographic inventory and validating NIST PQC algorithm selections.";
 
-        const sanitize = (str) => String(str || '').replace(/[()\\]/g, '');
+        const page1Content = [
+          "BT",
+          "/F1 20 Tf",
+          "40 740 Td",
+          "(INSTREK TECHNOLOGIES - AI SECURITY) Tj",
+          "0 -25 Td",
+          "/F1 11 Tf",
+          "(CONFIDENTIAL RISK ASSESSMENT REPORT) Tj",
+          "0 -35 Td",
+          "/F1 16 Tf",
+          "(GCC AI Security Risk Engine Report) Tj",
+          "0 -22 Td",
+          "/F1 10 Tf",
+          `(${sanitize(`Prepared for: ${data.firstName || ''} ${data.lastName || ''} | ${data.company || 'GCC Leader'}`)}) Tj`,
+          "0 -15 Td",
+          `(${sanitize(`Work Email: ${data.email} | Date: ${new Date().toLocaleDateString('en-GB')}`)}) Tj`,
+          "0 -35 Td",
+          "/F1 13 Tf",
+          "(1. EXECUTIVE SUMMARY & RISK SCORE) Tj",
+          "0 -25 Td",
+          "/F1 22 Tf",
+          `(${sanitize(`OVERALL RISK SCORE: ${data.riskScore} / 100`)}) Tj`,
+          "0 -25 Td",
+          "/F1 12 Tf",
+          `(${sanitize(`CLASSIFICATION TIER: ${data.tier}`)}) Tj`,
+          "0 -30 Td",
+          "/F1 10 Tf",
+          "(Your organisation carries specific vulnerabilities across the three core AI security pillars.) Tj",
+          "0 -15 Td",
+          "(This report maps your exposure across AI Sovereignty, Agentic Accountability, and Post-Quantum Defense.) Tj",
+          "0 -35 Td",
+          "/F1 13 Tf",
+          "(2. PILLAR POSTURE AT A GLANCE) Tj",
+          "0 -20 Td",
+          "/F1 10 Tf",
+          `(${sanitize(`Pillar 1 - AI Sovereignty & Data Leakage : ${data.p1Score}%`)}) Tj`,
+          "0 -15 Td",
+          `(${sanitize(`Pillar 2 - Agentic Accountability      : ${data.p2Score}%`)}) Tj`,
+          "0 -15 Td",
+          `(${sanitize(`Pillar 3 - Post-Quantum Defense         : ${data.p3Score}%`)}) Tj`,
+          "ET"
+        ].join("\n");
 
-        const pages = [
-          // PAGE 1: COVER & OVERALL SCORE
-          [
-            "BT",
-            "/F1 22 Tf",
-            "40 740 Td",
-            "(INSTREK TECHNOLOGIES) Tj",
-            "0 -25 Td",
-            "/F1 11 Tf",
-            "(CONFIDENTIAL RISK ASSESSMENT REPORT) Tj",
-            "0 -40 Td",
-            "/F1 18 Tf",
-            "(GCC AI Security Risk Engine Report) Tj",
-            "0 -25 Td",
-            "/F1 10 Tf",
-            `(${sanitize(`Prepared for: ${data.firstName || ''} ${data.lastName || ''} | ${data.company || 'GCC Leader'}`)}) Tj`,
-            "0 -15 Td",
-            `(${sanitize(`Work Email: ${data.email} | Date: ${new Date().toLocaleDateString('en-US')}`)}) Tj`,
-            "0 -35 Td",
-            "/F1 14 Tf",
-            "(OVERALL RISK POSTURE) Tj",
-            "0 -25 Td",
-            "/F1 24 Tf",
-            `(${sanitize(`OVERALL RISK SCORE: ${data.riskScore} / 100` )}) Tj`,
-            "0 -25 Td",
-            "/F1 12 Tf",
-            `(${sanitize(`CLASSIFICATION TIER: ${data.tier}`)}) Tj`,
-            "0 -35 Td",
-            "/F1 12 Tf",
-            "(EXECUTIVE SUMMARY:) Tj",
-            "0 -18 Td",
-            "/F1 10 Tf",
-            "(Your organization carries specific vulnerabilities across the 3 core AI security pillars.) Tj",
-            "0 -15 Td",
-            "(This report evaluates AI Sovereignty, Agentic Accountability, and Post-Quantum Defense.) Tj",
-            "0 -30 Td",
-            "/F1 12 Tf",
-            "(PILLAR SCORES AT A GLANCE:) Tj",
-            "0 -18 Td",
-            "/F1 10 Tf",
-            `(${sanitize(`- Pillar 1: AI Sovereignty & Data Leakage : ${data.p1Score}%` )}) Tj`,
-            "0 -15 Td",
-            `(${sanitize(`- Pillar 2: Agentic Accountability      : ${data.p2Score}%` )}) Tj`,
-            "0 -15 Td",
-            `(${sanitize(`- Pillar 3: Post-Quantum Defense         : ${data.p3Score}%` )}) Tj`,
-            "ET"
-          ].join("\n"),
-
-          // PAGE 2: DETAILED PILLAR ANALYSIS & BENCHMARKS
-          [
-            "BT",
-            "/F1 16 Tf",
-            "40 740 Td",
-            "(DETAILED PILLAR FINDINGS & RISK BREAKDOWN) Tj",
-            "0 -30 Td",
-            "/F1 12 Tf",
-            "(PILLAR 1: AI SOVEREIGNTY & DATA LEAKAGE) Tj",
-            "0 -18 Td",
-            "/F1 9 Tf",
-            `(${sanitize(p1Text.substring(0, 110))}) Tj`,
-            "0 -12 Td",
-            `(${sanitize(p1Text.substring(110, 220))}) Tj`,
-            "0 -25 Td",
-            "/F1 12 Tf",
-            "(PILLAR 2: AGENTIC ACCOUNTABILITY) Tj",
-            "0 -18 Td",
-            "/F1 9 Tf",
-            `(${sanitize(p2Text.substring(0, 110))}) Tj`,
-            "0 -12 Td",
-            `(${sanitize(p2Text.substring(110, 220))}) Tj`,
-            "0 -25 Td",
-            "/F1 12 Tf",
-            "(PILLAR 3: POST-QUANTUM DEFENSE) Tj",
-            "0 -18 Td",
-            "/F1 9 Tf",
-            `(${sanitize(p3Text.substring(0, 110))}) Tj`,
-            "0 -12 Td",
-            `(${sanitize(p3Text.substring(110, 220))}) Tj`,
-            "0 -35 Td",
-            "/F1 12 Tf",
-            "(GCC PEER BENCHMARK COMPARISON) Tj",
-            "0 -18 Td",
-            "/F1 9 Tf",
-            "(External GenAI Policy      : 64% of GCC peers have enforced policies) Tj",
-            "0 -14 Td",
-            "(Private LLM Infrastructure  : 19% deployed private instance) Tj",
-            "0 -14 Td",
-            "(Agentic Identity Framework : 11% operationalized agent identity) Tj",
-            "0 -14 Td",
-            "(PQC Readiness Assessment   : 18% completed cryptographic inventory) Tj",
-            "0 -40 Td",
-            "/F1 10 Tf",
-            "(RECOMMENDED NEXT STEPS:) Tj",
-            "0 -15 Td",
-            "(1. Schedule 30-min Strategy Call with Instrek Security Architects.) Tj",
-            "0 -15 Td",
-            "(2. Access your online dashboard at any time using your registered lead link.) Tj",
-            "0 -25 Td",
-            "(Instrek Technologies Ltd. - Governed by DPDP Act & GDPR compliance standards.) Tj",
-            "ET"
-          ].join("\n")
-        ];
+        const page2Content = [
+          "BT",
+          "/F1 14 Tf",
+          "40 740 Td",
+          "(3. DETAILED PILLAR BREAKDOWN & REMEDIATION ROADMAP) Tj",
+          "0 -25 Td",
+          "/F1 11 Tf",
+          "(PILLAR 1: AI SOVEREIGNTY & DATA LEAKAGE) Tj",
+          "0 -16 Td",
+          "/F1 9 Tf",
+          `(${sanitize(p1Text.substring(0, 110))}) Tj`,
+          "0 -12 Td",
+          `(${sanitize(p1Text.substring(110, 220))}) Tj`,
+          "0 -22 Td",
+          "/F1 11 Tf",
+          "(PILLAR 2: AGENTIC ACCOUNTABILITY) Tj",
+          "0 -16 Td",
+          "/F1 9 Tf",
+          `(${sanitize(p2Text.substring(0, 110))}) Tj`,
+          "0 -12 Td",
+          `(${sanitize(p2Text.substring(110, 220))}) Tj`,
+          "0 -22 Td",
+          "/F1 11 Tf",
+          "(PILLAR 3: POST-QUANTUM DEFENSE) Tj",
+          "0 -16 Td",
+          "/F1 9 Tf",
+          `(${sanitize(p3Text.substring(0, 110))}) Tj`,
+          "0 -12 Td",
+          `(${sanitize(p3Text.substring(110, 220))}) Tj`,
+          "0 -30 Td",
+          "/F1 13 Tf",
+          "(4. PEER INTELLIGENCE & BENCHMARKS) Tj",
+          "0 -18 Td",
+          "/F1 9 Tf",
+          "(External GenAI Policy      : 64% of GCC peers have enforced policies) Tj",
+          "0 -14 Td",
+          "(Private LLM Infrastructure  : 19% deployed private instance) Tj",
+          "0 -14 Td",
+          "(Agentic Identity Framework : 11% operationalized agent identity) Tj",
+          "0 -14 Td",
+          "(PQC Readiness Assessment   : 18% completed cryptographic inventory) Tj",
+          "0 -35 Td",
+          "/F1 13 Tf",
+          "(5. NEXT STEPS & STRATEGY CALL) Tj",
+          "0 -18 Td",
+          "/F1 9 Tf",
+          "(Book a 30-minute strategy call with Instrek Security Architects: calendly.com/instrek/strategy) Tj",
+          "0 -14 Td",
+          "(Or access your live interactive report at any time on your dashboard.) Tj",
+          "0 -25 Td",
+          "/F1 8 Tf",
+          "(Instrek Technologies Ltd. - Governed by DPDP Act & GDPR compliance standards.) Tj",
+          "ET"
+        ].join("\n");
 
         let pdf = "%PDF-1.4\n";
         pdf += "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n";
@@ -469,10 +464,8 @@ const SecurityRiskEngine = () => {
         pdf += "4 0 obj << /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 6 0 R /Resources << /Font << /F1 7 0 R >> >> >> endobj\n";
         pdf += "7 0 obj << /Type /Font /Subtype /Type1 /BaseFont /Helvetica >> endobj\n";
 
-        // Stream page 1
-        pdf += `5 0 obj << /Length ${pages[0].length} >>\nstream\n${pages[0]}\nendstream\nendobj\n`;
-        // Stream page 2
-        pdf += `6 0 obj << /Length ${pages[1].length} >>\nstream\n${pages[1]}\nendstream\nendobj\n`;
+        pdf += `5 0 obj << /Length ${page1Content.length} >>\nstream\n${page1Content}\nendstream\nendobj\n`;
+        pdf += `6 0 obj << /Length ${page2Content.length} >>\nstream\n${page2Content}\nendstream\nendobj\n`;
 
         pdf += [
           "xref",
