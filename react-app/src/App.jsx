@@ -389,7 +389,7 @@ function decodeReportToken(rawToken) {
         p2Lines.push('BT', '0.05 0.1 0.2 rg', '/F2 11 Tf', '40 538 Td', '(03. INDUSTRY PERFORMANCE BENCHMARKS) Tj', 'ET');
         
         const bTop = 512;
-        p2Lines.push('q', '0.96 0.97 0.99 rg', `40 ${bTop - 18} 532 18 re f', 'Q');
+        p2Lines.push('q', '0.96 0.97 0.99 rg', `40 ${bTop - 18} 532 18 re f`, 'Q');
         p2Lines.push('q', '0.88 0.91 0.93 rg', `40 ${bTop - 18} 532 18 re S`, 'Q');
         p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F2 8 Tf', `50 ${bTop - 13} Td`, '(CAPABILITY) Tj', 'ET');
         p2Lines.push('BT', '0.1 0.15 0.2 rg', '/F2 8 Tf', `250 ${bTop - 13} Td`, '(PEER AVERAGE) Tj', 'ET');
